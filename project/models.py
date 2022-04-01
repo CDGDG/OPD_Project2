@@ -44,8 +44,8 @@ class Recruit(models.Model):
         return self.title
     
 class RecruitOk(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, null=False)
-    developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE, null=False)
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE)
+    developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE)
     contents = models.TextField()
 
     class Meta:
