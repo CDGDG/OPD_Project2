@@ -13,7 +13,7 @@ class Admin(models.Model):
         return self.adminid
 
 class Notice(models.Model):
-    admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
+    # admin = models.ForeignKey("admin.Admin", on_delete=models.CASCADE)
     title = models.CharField(max_length=20)
     contents = models.TextField()
     regdate = models.DateTimeField(auto_now_add=True)
@@ -28,7 +28,7 @@ class Notice(models.Model):
         return self.title
 
 class NoticeImg(models.Model):
-    notice = models.ForeignKey(Notice,on_delete=models.CASCADE)
+    # notice = models.ForeignKey("admin.Notice",on_delete=models.CASCADE)
     img = models.FileField(upload_to='noticeimg_img/')
     img_original = models.TextField(null=False)
 
