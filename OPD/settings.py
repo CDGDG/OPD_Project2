@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'admin',
     'project',
     'developer',
-    'company',
     'board',
     'company',
 ]
