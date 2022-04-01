@@ -1,5 +1,4 @@
 from django.db import models
-# from developer.models import Developer
 
 
 class Board(models.Model):
