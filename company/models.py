@@ -1,6 +1,5 @@
 from django.db import models
 
-# from project.models import Language, Project
 
 class Company(models.Model):
     companyid = models.CharField(max_length=20, verbose_name='회사아이디')
@@ -18,9 +17,9 @@ class Company(models.Model):
     people = models.PositiveIntegerField(verbose_name='직원수')
     category = models.CharField(max_length=10, verbose_name='분류')
 
-    # likeproject = models.ManyToManyField('project.Project', verbose_name='좋아요한 프로젝트')
+    likeproject = models.ManyToManyField('project.Project', verbose_name='좋아요한 프로젝트')
 
-    # language = models.ManyToManyField('admin.Language', verbose_name='사용언어')
+    language = models.ManyToManyField('admin.Language', verbose_name='사용언어')
 
     class Meta:
         db_table = 'opd_company'
