@@ -23,11 +23,11 @@ class Project(models.Model):
         return self.title
 
 class Recruit(models.Model):
-    # project = models.OneToOneField(
-    #     'project.Project',
-    #     on_delete=models.CASCADE,
-    #     primary_key=True,
-    # )
+    project = models.OneToOneField(
+        'project.Project',
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
 
     title = models.CharField(max_length=50, verbose_name='모집 타이틀')
     contents = models.TextField(verbose_name='모집 내용')
@@ -57,8 +57,8 @@ class RecruitOk(models.Model):
         return self.developer.userid + "|" + self.project.title
     
 class Recruit_Language(models.Model):
-    recruit = models.ForeignKey('project.Recruit', on_delete=models.CASCADE, null=True)
-    language = models.ForeignKey('admin.Language', on_delete=models.CASCADE, null=True)
+    recruit = models.ForeignKey('project.Recruit', on_delete=models.CASCADE)
+    language = models.ForeignKey('admin.Language', on_delete=models.CASCADE)
     people = models.IntegerField()
 
     class Meta:

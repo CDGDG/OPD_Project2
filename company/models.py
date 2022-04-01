@@ -1,6 +1,5 @@
 from django.db import models
 
-# from project.models import Language, Project
 
 class Company(models.Model):
     companyid = models.CharField(max_length=20, verbose_name='회사아이디')
