@@ -14,8 +14,8 @@ class Developer(models.Model):
     resume = models.FileField(upload_to = 'developer_resume/',null=True)
     resume_original = models.TextField(default="")
 
-    # language = models.ManyToManyField('admin.Language')
-    # likeproject = models.ManyToManyField('project.Project')
+    language = models.ManyToManyField('admin.Language')
+    likeproject = models.ManyToManyField('project.Project')
 
     class Meta:
         db_table = 'opd_developer'
@@ -26,16 +26,16 @@ class Developer(models.Model):
     def __str__(self):
         return self.userid
 
-# class Follow(models.Model):
-#     developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE,related_name='%(class)s_follow_developer')
-#     follower = models.ForeignKey('developer.Developer',on_delete=models.CASCADE,related_name='%(class)s_follow_follower')
+class Follow(models.Model):
+    developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE,related_name='%(class)s_follow_developer')
+    follower = models.ForeignKey('developer.Developer',on_delete=models.CASCADE,related_name='%(class)s_follow_follower')
 
-#     class Meta:
-#         db_table='opd_follow'
-#         verbose_name='팔로우'
-#         verbose_name_plural = '팔로우(들)'
-
-#     def __str__(self):
-#         return self.developer
+    class Meta:
+        db_table='opd_follow'
+        verbose_name='팔로우'
+        verbose_name_plural = '팔로우(들)'
+ 
+    def __str__(self):
+        return self.developer
 
 
