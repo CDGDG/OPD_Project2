@@ -9,9 +9,9 @@ class Developer(models.Model):
     phonenum = models.CharField(max_length=11,verbose_name='핸드폰 번호')
     email = models.EmailField(max_length=128,verbose_name='이메일')
     regdate = models.DateTimeField(auto_now_add=True,verbose_name='등록일')
-    pic = models.FileField(upload_to='developer_pic/',null = True, blank=True)
+    pic = models.ImageField(upload_to='developer_pic/')
     pic_original = models.TextField(default= "")
-    resume = models.FileField(upload_to = 'developer_resume/',null=True, blank=True)
+    resume = models.FileField(upload_to = 'developer_resume/')
     resume_original = models.TextField(default="")
 
     language = models.ManyToManyField('admin.Language')

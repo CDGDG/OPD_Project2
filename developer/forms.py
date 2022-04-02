@@ -1,5 +1,4 @@
 from django import forms
-from .models import Developer
 from admin.models import Language
 from django.contrib.auth.hashers import make_password
 
@@ -44,10 +43,10 @@ class JoinForm(forms.Form):
         error_messages={
             'required' : '이메일을 입력해주세요'
         },
-        max_length=15,label='이메일'
+        label='이메일'
     )
-    # pic = forms.FileField(label='프로필사진')
-    # resume = forms.FileField(label='이력서')
+    pic = forms.ImageField(label='프로필사진', required=False)
+    resume = forms.FileField(label='이력서', required=False)
     CHOICES = []
     for lang in Language.objects.all():
         CHOICES.append((lang.pk,lang.language))

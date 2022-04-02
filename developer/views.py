@@ -9,8 +9,6 @@ def join(request):
     if request.method=="POST":
         form = JoinForm(request.POST,request.FILES)
         if form.is_valid():
-            # developer = Developer()
-            print("==========",request.FILES['resume'].name,"================")
             developer = Developer(
                     userid = form.userid,
                     password = form.password,
@@ -18,22 +16,12 @@ def join(request):
                     registnum = form.registnum,
                     phonenum = form.phonenum,
                     email = form.email,
-                    # resume = request.FILES.get('resume'),
-                    resume = request.FILES['resume'],
-                    resume_original = request.FILES['resume'].name,
-                    # pic = request.FILES.get('pic'),
                     pic = request.FILES['pic'],
                     pic_original = request.FILES['pic'].name,
+                    resume = request.FILES['resume'],
+                    resume_original = request.FILES['resume'].name,
             )
         
-            # developer.userid = form.cleaned_data['userid']
-            # developer.password=form.cleaned_data['password']
-            # developer.nickname =form.cleaned_data['nickname']
-            # developer.registnum=form.cleaned_data['registnum']
-            # developer.phonenum=form.cleaned_data['phonenum']
-            # developer.resume = request.FILES['resume']
-            # developer.email=form.cleaned_data['email']
-            # developer.pic = request.FILES['pic']
             developer.save()
             
             for pk in form.language:
