@@ -10,12 +10,26 @@
         </div>
         <div class="mt-3">
 
-            <a class="btn btn-primary" href='{% url "Project:update" %}'>수정하기</a>
+            <a class="btn btn-primary" href='{% url "Project:update" project.pk %}'>수정하기</a>
 
-            <a class="btn btn-primary" href='{% url "Project:delete" %}'>삭제하기</a>
+            <button type="button" class="btn btn-outline-dark" onclick="chkDelete()">삭제하기</button>
+            <form action="{% url 'Project:delete' %}" name="delete" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="pk" value="{{project.pk}}">
+            </form>
+            <script>
+                function chkDelete(){
+                    // 삭제 여부 확인
+                    var r = confirm("삭제하시겠습니까?")
+                    if(r){
+                        document.forms.delete.submit();
+                    }
+                }
+            </script>
             
             <a class="btn btn-primary" href='{% url "Project:list" %}'>돌아가기</a>
         </div>
+        
     </div>
 </div>
 {% endblock %}
