@@ -1,6 +1,8 @@
 from django import forms
 from admin.models import Language
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
+
+from developer.models import Developer
 
 class JoinForm(forms.Form):
     userid = forms.CharField(
@@ -13,13 +15,13 @@ class JoinForm(forms.Form):
         error_messages={
             'required' : '비밀번호를 입력해주세요'
         },
-        widget=forms.PasswordInput,max_length=50,label='비밀번호'
+        widget=forms.PasswordInput,max_length=200,label='비밀번호'
     )
     check_passwored = forms.CharField(
         error_messages={
             'required' : '비밀번호를 입력해주세요'
         },
-        widget=forms.PasswordInput,max_length=50,label='비밀번호 확인'
+        widget=forms.PasswordInput,max_length=200,label='비밀번호 확인'
     )
     nickname = forms.CharField(
         error_messages={
@@ -68,10 +70,4 @@ class JoinForm(forms.Form):
 
         print(cleaned_data.items())
         
-
-
-
-
-
-
 
