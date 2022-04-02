@@ -46,8 +46,8 @@ class JoinForm(forms.Form):
         },
         max_length=15,label='이메일'
     )
-    pic = forms.FileField(label='프로필사진')
-    resume = forms.FileField(label='이력서')
+    # pic = forms.FileField(label='프로필사진')
+    # resume = forms.FileField(label='이력서')
     CHOICES = []
     for lang in Language.objects.all():
         CHOICES.append((lang.pk,lang.language))
@@ -57,6 +57,7 @@ class JoinForm(forms.Form):
   
     def clean(self):
         cleaned_data = super().clean()
+
         self.userid = cleaned_data.get('userid')
         self.password = cleaned_data.get('password')
         self.check_password = cleaned_data.get('check_password')
@@ -66,24 +67,8 @@ class JoinForm(forms.Form):
         self.email = cleaned_data.get('email')
         self.language = cleaned_data.get('language')
 
-    
-        # developer = Developer(
-        #             userid = cleaned_data.get('userid'),
-        #             password = cleaned_data.get('password'),
-        #             nickname = cleaned_data.get('nickname'),
-        #             registnum = cleaned_data.get('registnum'),
-        #             phonenum = cleaned_data.get('phonenum'),
-        #             email = cleaned_data.get('email'),
-        #             language = cleaned_data.get('language'),
-        #             resume = cleaned_data.get('resume'),
-        #             pic = cleaned_data.get('pic'),
-        # )
-        # developer.save()
+        print(cleaned_data.items())
         
-    
-
-
-
 
 
 
