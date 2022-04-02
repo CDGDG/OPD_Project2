@@ -13,7 +13,7 @@ class JoinForm(forms.Form):
         error_messages={
             'required' : '비밀번호를 입력해주세요'
         },
-        widget=forms.PasswordInput,max_length=50,label='비밀번호'
+        widget=forms.PasswordInput,max_length=200,label='비밀번호'
     )
     check_passwored = forms.CharField(
         error_messages={
@@ -66,7 +66,6 @@ class JoinForm(forms.Form):
         self.email = cleaned_data.get('email')
         self.language = cleaned_data.get('language')
 
-        print(cleaned_data.items())
         
 
 

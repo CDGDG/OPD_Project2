@@ -8,8 +8,7 @@
             <table class="table table-light table-hover">
                 <tbody class="text-dark">
                     {% for project in projects %}
-                    {% comment %} <tr onclick='location.href="/project/detail/{{project.id}}/"'> {% endcomment %}
-                    <tr>
+                    <tr onclick='location.href="/project/detail/{{project.id}}/"'>
                         <td>{{project.id}}</td>
                         <td>{{project.title}}</td>
                         <td><img src="{{project.thumbnail.url}}" alt=""></td>

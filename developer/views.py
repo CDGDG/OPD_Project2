@@ -11,7 +11,7 @@ def join(request):
         if form.is_valid():
             developer = Developer(
                     userid = form.userid,
-                    password = form.password,
+                    password = make_password(form.password),
                     nickname = form.nickname,
                     registnum = form.registnum,
                     phonenum = form.phonenum,
