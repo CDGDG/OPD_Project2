@@ -68,6 +68,5 @@ class JoinForm(forms.Form):
         self.email = cleaned_data.get('email')
         self.language = cleaned_data.get('language')
 
-        print(cleaned_data.items())
         
 

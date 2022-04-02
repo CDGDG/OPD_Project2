@@ -1,4 +1,5 @@
 from functools import reduce
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
 
@@ -44,3 +45,21 @@ def create(request):
 
     form = Projectform()
     return render(request, 'project_create.html', {'form': form})
+
+def detail(request, pk):
+    try:
+        project = Project.objects.get(pk=pk)
+    except Project.DoesNotExist:
+        raise Http404('프로젝트를 찾을 수 없습니다.')
+    return render(request, 'project_detail.html', {'project': project})
+
+def update(request, pk):
+    try:
+        project = Project.objects.get(pk=pk)
+    except Project.DoesNotExist:
+        raise Http404('프로젝트를 찾을 수 없습니다.')
+    return render(request, 'project_update.html', {'project': project})
+
+
+def delete(request):
+    pass
