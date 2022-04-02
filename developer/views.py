@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from admin.models import Language
 from .models import Developer
-from .forms import JoinForm
+from .forms import JoinForm, LoginForm
 from django.contrib.auth.hashers import make_password
 # check_password
+
+
 
 def join(request):
     if request.method=="POST":
@@ -33,6 +35,7 @@ def join(request):
     else:
         form = JoinForm()
     return render(request,'developer_join.html',{'form':form})
+
 
 def info(request):
     return render(request,'developer_info.html')
