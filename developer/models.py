@@ -2,8 +2,8 @@
 from django.db import models
 
 class Developer(models.Model):
-    userid = models.CharField(max_length=20, verbose_name ='개발자 아이디')
-    password = models.CharField(max_length=200,verbose_name='개발자 비밀번호')
+    userid = models.CharField(max_length=20, verbose_name ='개발자 아이디', unique=True)
+    password = models.CharField(max_length=500,verbose_name='개발자 비밀번호')
     nickname = models.CharField(max_length=15,verbose_name='닉네임')
     registnum = models.CharField(max_length=13,verbose_name = '주민번호')
     phonenum = models.CharField(max_length=11,verbose_name='핸드폰 번호')
