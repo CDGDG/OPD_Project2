@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}수정{% endblock  %}
+{% block content %}
+<h2>수정</h2>
+<hr>
+<div class="mb-3 mt-3 clearfix">
+    {% comment %} <span class="float-start me-2">id: {{board.id}}</span>
+    <span class="float-end ms-4">작성일: {{board.reg_date|date:"Y-m-s H:i:s"}}</span>
+    <span class="float-end">조회수: {{board.view_cnt}}</span> {% endcomment %}
+</div>
+
+<form action="{% url 'Project:update' pk %}" method="POST">
+    {% csrf_token %}
+    {{form}}
+    
+    <button type="submit" class="btn btn-outline-dark">수정완료</button>
+    <button type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</button>
+    <a class="btn btn-outline-dark" href="{% url 'Project:list' %}">목록</a>
+    
+</form>
+{% endblock content %}

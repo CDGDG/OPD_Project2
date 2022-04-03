@@ -3,7 +3,8 @@
 {% block content %}
     <form action="{% url 'Project:create' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {% for field in form %}   {#  form 의 각 필드 별로 for 순환 #}
+        {{form.as_p}}
+        {% comment %} {% for field in form %}   {#  form 의 각 필드 별로 for 순환 #}
         {#  field 변수 안에는 필요한 정보들이 있다. #}
         <div class="form-group mt-3">
             {% if field.name == 'language' %}
@@ -30,7 +31,7 @@
         {% if field.errors %}
         <span class="text-danger">{{ field.errors }}</span>
         {% endif %}
-        {% endfor %}
+        {% endfor %} {% endcomment %}
 
         <button class="btn btn-primary mt-3">프로젝트 생성</button>
     </form>
