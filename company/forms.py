@@ -41,7 +41,7 @@ class CompanyJoinForm(forms.Form):
         error_messages={
             'required': '전화번호를 입력해주세요.'
         },
-        max_length=256, label='회사 전화번호'
+        max_length=20, label='회사 전화번호'
     )
 
     email = forms.EmailField(
