@@ -13,11 +13,8 @@
                     <li>{{f}}</li>
                     {% endfor %}
                 </ul>
-                {% elif field.name == 'email_id'%}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                <input type="{{field.field.widget.input_type}}" id="{{field.name}}" name="{{field.name}}" class="form-control">
+                {% elif field.name == 'email_option'%}
                     @<input type="{{field.field.widget.input_type}}" id="{{field.name}}" name="{{field.name}}" class="form-control">
-
                     <select id="email_select">
                         <option value="">직접입력</option>
                         <option value="naver.com">naver.com</option>
@@ -29,10 +26,13 @@
                 <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
                     placeholder="{{ field.label }}" name="{{ field.name }}" />
                     <div id="check_{{field.name}}"></div>
-                    {% if field.name == "userid" %}
-                    <input type="button" id="check_id" value="중복검사"><div id="check_result"></div>
+                    {% if field.name == "userid"%}
+                    <input type="button" id="duple_userid" value="중복검사"><div id="dupleId_result"></div>
                     {% endif %}
+                    {% if field.name == "nickname"%}
+                    <input type="button" id="duple_nickname" value="중복검사"><div id="dupleNick_result"></div>
                     {% endif %}
+                {% endif %}
                 {% if field.errors %}
                 <span class="text-danger">{{ field.errors }}</span>
                 {% endif %}
@@ -49,9 +49,11 @@
 {% block script %}
 <script>
 $(document).ready(function(){
-    $('#check_id').click(function(){
+    var id_button = false;
+    var nick_button = false;
+    $('#duple_userid').click(function(){
         var userid=$('#id_userid').val()
-
+        console.log(userid)
         $.ajax({
             url: "{% url 'Developer:check_id' %}",
             data: {'userid': userid},
@@ -59,13 +61,16 @@ $(document).ready(function(){
     
             success : function(response){
                 if(response.blank){
-                    $('#check_result').html('<p>아이디를 입력해주세요</p>')
+                    $('#dupleId_result').html('<p>아이디를 입력해주세요</p>')
+                    id_button = false
                 }else{
                     if(response.data == 'not exist'){
-                        $('#check_result').html('<p style="color:green">사용가능한 아이디입니다</p>')
+                        $('#dupleId_result').html('<p style="color:green">사용가능한 아이디입니다</p>')
+                        id_button = true
                         return;
                     }else{
-                        $('#check_result').html('<p style="color:red">중복된 아이디입니다</p>')
+                        $('#dupleId_result').html('<p style="color:red">중복된 아이디입니다</p>')
+                        id_button = false
                         return;
                         
                     }
@@ -76,14 +81,43 @@ $(document).ready(function(){
             
         })
     })
+    $('#duple_nickname').click(function(){
+        var nickname=$('#id_nickname').val()
+        $.ajax({
+            url:"{% url 'Developer:check_nick' %}",
+            data:{'nickname':nickname},
+            datatype:'json',
+
+            success : function(response){
+                if(response.blank){
+                    $('#dupleNick_result').html('<p>닉네임을 입력해주세요</p>')
+                    nick_button = false
+                }else{
+                    if(response.data == 'not exist'){
+                        $('#dupleNick_result').html('<p style="color:green">사용가능한 닉네임입니다</p>')
+                        nick_button=true;
+                        return;
+                    }else{
+                        $('#dupleNick_result').html('<p style="color:red">중복된 닉네임입니다</p>')
+                        nick_button=false;
+                        return;
+                        
+                    }
+
+                }
+                
+            }
+        })
+    })
+
     
-   /* $('#join').click(function(){
+    $('#join').click(function(){
         var joinfrm = document.forms['joinfrm']
         var reg_email = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 		var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 		var reg_id = /^[a-z]+[a-z0-9]{5,19}$/g; 
         
-        if(!reg_id.test(joinfrm['userid'].value.trim())){
+        /**if(!reg_id.test(joinfrm['userid'].value.trim())){
             joinfrm['userid'].focus();
             $('#check_userid').html('<p style="color:red">유효한 아이디가 아닙니다</p>')
             return false;
@@ -93,25 +127,31 @@ $(document).ready(function(){
             joinfrm['password'].focus();
             $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>')
             return false;
+        }**/
+        
+        if(!id_button){
+            joinfrm['userid'].focus();
+            $('#check_userid').html('<p style="color:red">아이디 중복검사를 해주세요</p>')
+            return false;
+        }
+        if(!nick_button){
+            joinfrm['nick_button'].focus();
+            $('#check_nickname').html('<p style="color:red">닉네임 중복검사를 해주세요</p>')
+            return false;
+
         }
         
-        if (!reg_email.test(joinfrm['email_id'].value.trim()+"@"+joinfrm['email_option'].value.trim())) {
-            joinfrm['email_id'].focus();
-            $('#check_email').html('<p style="color:red">유효한 이메일이 아닙니다</p>')
-			return false;
-            
-        }
         joinfrm.submit();
-    }) */
+    }) 
 
     
     $('#email_select').change(function(){
-        console.log($("#email_select").val())
         $("#email_option").val($('#email_select').val());
         $('#email_option').attr("disabled",true);
-        if($('#email_select').val==""){
+        if($('#email_select').val()==""){
             $('#email_option').attr("disabled",false);
         }
+        
     })
     
 })

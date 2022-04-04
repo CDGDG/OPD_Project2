@@ -4,7 +4,6 @@ from admin.models import Language
 from .models import Developer
 from .forms import JoinForm,LoginForm
 from django.contrib.auth.hashers import make_password
-# check_password
 
 def home(request):
     if request.method == "POST":
@@ -23,7 +22,6 @@ def join(request):
             developer = Developer(
                     userid = form.userid,
                     password = make_password(form.password),
-                    # password = form.password,
                     nickname = form.nickname,
                     registnum = form.registnum,
                     phonenum = form.phonenum,
@@ -51,6 +49,7 @@ def join(request):
 
 def check_id(request):
     userid = request.GET.get('userid')
+    print("==============",userid)
     context={}
     try:
         Developer.objects.get(userid=userid)
@@ -60,6 +59,21 @@ def check_id(request):
         context['blank'] = True
 
     return JsonResponse(context)
+
+
+def check_nick(request):
+    nickname = request.GET.get('nickname')
+    context={}
+    try:
+        Developer.objects.get(nickname=nickname)
+    except:
+        context['data'] = "not exist"
+    if nickname=="":
+        context['blank'] = True
+
+    return JsonResponse(context)
+
+
 
 def logout(request):
     if request.session.get('developer'):
