@@ -7,6 +7,7 @@ app_name = "Developer"
 urlpatterns = [
     path('info/',views.info,name = 'info'),
     path('join/',views.join, name= 'join'),
+    path('check_id',views.check_id, name='check_id'),
     path('logout/',views.logout,name="logout"),
     path('update/<int:pk>',views.update, name = 'update'),
     path('myproject/',views.myproject, name = 'myproject'),

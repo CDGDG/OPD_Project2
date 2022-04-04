@@ -2,7 +2,7 @@
 {% block content %}
 <div class="row mt-5">
     <div class="col-12">
-        <form method="POST" action="{% url 'Developer:join' %}" enctype="multipart/form-data">
+        <form method="POST" action="{% url 'Developer:join' %}" enctype="multipart/form-data" name="joinfrm">
             {% csrf_token %}
             {% for field in form %}
             <div class="form-group">
@@ -13,20 +13,108 @@
                     <li>{{f}}</li>
                     {% endfor %}
                 </ul>
+                {% elif field.name == 'email_id'%}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input type="{{field.field.widget.input_type}}" id="{{field.name}}" name="{{field.name}}" class="form-control">
+                    @<input type="{{field.field.widget.input_type}}" id="{{field.name}}" name="{{field.name}}" class="form-control">
+
+                    <select id="email_select">
+                        <option value="">직접입력</option>
+                        <option value="naver.com">naver.com</option>
+                        <option value="gmail.com">gmail.com</option>
+                        <option value="daum.net">daum.net</option>
+                    </select>
                 {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
                     placeholder="{{ field.label }}" name="{{ field.name }}" />
+                    <div id="check_{{field.name}}"></div>
+                    {% if field.name == "userid" %}
+                    <input type="button" id="check_id" value="중복검사"><div id="check_result"></div>
+                    {% endif %}
                     {% endif %}
                 {% if field.errors %}
                 <span class="text-danger">{{ field.errors }}</span>
                 {% endif %}
                 {% endfor %}
                 <div class="mt-3">
-                <button type="submit" class="btn btn-primary mt-3">회원가입</button>
+                <button type="submit" class="btn btn-primary mt-3" id="join">회원가입</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 {% endblock content %}
+
+{% block script %}
+<script>
+$(document).ready(function(){
+    $('#check_id').click(function(){
+        var userid=$('#id_userid').val()
+
+        $.ajax({
+            url: "{% url 'Developer:check_id' %}",
+            data: {'userid': userid},
+            datatype:'json',
+    
+            success : function(response){
+                if(response.blank){
+                    $('#check_result').html('<p>아이디를 입력해주세요</p>')
+                }else{
+                    if(response.data == 'not exist'){
+                        $('#check_result').html('<p style="color:green">사용가능한 아이디입니다</p>')
+                        return;
+                    }else{
+                        $('#check_result').html('<p style="color:red">중복된 아이디입니다</p>')
+                        return;
+                        
+                    }
+
+                }
+                
+            }
+            
+        })
+    })
+    
+   /* $('#join').click(function(){
+        var joinfrm = document.forms['joinfrm']
+        var reg_email = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+		var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+		var reg_id = /^[a-z]+[a-z0-9]{5,19}$/g; 
+        
+        if(!reg_id.test(joinfrm['userid'].value.trim())){
+            joinfrm['userid'].focus();
+            $('#check_userid').html('<p style="color:red">유효한 아이디가 아닙니다</p>')
+            return false;
+        }
+        
+        if(!reg_pass.test(joinfrm['password'].value.trim())){
+            joinfrm['password'].focus();
+            $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>')
+            return false;
+        }
+        
+        if (!reg_email.test(joinfrm['email_id'].value.trim()+"@"+joinfrm['email_option'].value.trim())) {
+            joinfrm['email_id'].focus();
+            $('#check_email').html('<p style="color:red">유효한 이메일이 아닙니다</p>')
+			return false;
+            
+        }
+        joinfrm.submit();
+    }) */
+
+    
+    $('#email_select').change(function(){
+        console.log($("#email_select").val())
+        $("#email_option").val($('#email_select').val());
+        $('#email_option').attr("disabled",true);
+        if($('#email_select').val==""){
+            $('#email_option').attr("disabled",false);
+        }
+    })
+    
+})
+
+</script>
+{% endblock script %}

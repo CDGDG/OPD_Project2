@@ -1,7 +1,8 @@
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
 from .models import Developer
-from .forms import JoinForm, LoginForm
+from .forms import JoinForm
 from django.contrib.auth.hashers import make_password
 # check_password
 
@@ -21,17 +22,19 @@ def join(request):
         if form.is_valid():
             developer = Developer(
                     userid = form.userid,
-                    # password = make_password(form.password),
-                    password = form.password,
+                    password = make_password(form.password),
+                    # password = form.password,
                     nickname = form.nickname,
                     registnum = form.registnum,
                     phonenum = form.phonenum,
                     email = form.email,
-                    pic = request.FILES['pic'],
-                    pic_original = request.FILES['pic'].name,
-                    resume = request.FILES['resume'],
-                    resume_original = request.FILES['resume'].name,
+                    pic = request.FILES.get('pic'),
+                    resume = request.FILES.get('resume'),
             )
+            if developer.pic:
+                developer.pic_original = developer.pic.name
+            if developer.resume:
+                developer.resume_original = developer.resume.name
             print(make_password(form.password))
         
             developer.save()
@@ -46,6 +49,17 @@ def join(request):
         form = JoinForm()
     return render(request,'developer_join.html',{'form':form})
 
+def check_id(request):
+    userid = request.GET.get('userid')
+    context={}
+    try:
+        Developer.objects.get(userid=userid)
+    except:
+        context['data'] = "not exist"
+    if userid=="":
+        context['blank'] = True
+
+    return JsonResponse(context)
 
 def logout(request):
     if request.session.get('developer'):
