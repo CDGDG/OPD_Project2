@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from developer.views import home
 
 urlpatterns = [
     path('admin/',include('admin.urls')),
@@ -10,6 +11,7 @@ urlpatterns = [
     path('board/', include('board.urls')),
     path('company/', include('company.urls')),
     path('recruit/', include('recruit.urls')),
+    path('',home)
 ]
 
 # MEDIA 경로 추가
