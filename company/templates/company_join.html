@@ -5,7 +5,7 @@
 {% block content %}
 <div class="row mt-5">
     <div class="col-12">
-        <form method="POST" action=".">
+        <form method="POST" id='joinForm' action="." enctype="multipart/form-data">
             {% csrf_token %}  
 
             {% for field in form %}   {#  form 의 각 필드 별로 for 순환 #}
@@ -13,21 +13,32 @@
             <div class="form-group mt-3">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                 {% if field.name == 'tel' %}
-                <input type="tel" class="form-control" id="{{ field.id_for_label }}"
-                    placeholder="- 빼고 입력해주세요" name="{{ field.name }}"/>
+                    <input type="hidden" name="{{ field.name }}"/>
+                    <input type="text" class="form-control" id="{{ field.id_for_label }}"
+                    placeholder="- 빼고 입력해주세요" name="{{ field.name }}1"/>
+                    <input type="text" class="form-control" id="{{ field.id_for_label }}"
+                    placeholder="- 빼고 입력해주세요" name="{{ field.name }}2"/>
+                    <input type="text" class="form-control" id="{{ field.id_for_label }}"
+                    placeholder="- 빼고 입력해주세요" name="{{ field.name }}3"/>
                 {% elif field.name == 'summary' %}
-                <textarea class="form-control" name="{{ field.name }}" placeholder="{{ field.label }}"></textarea>
+                    <textarea class="form-control" name="{{ field.name }}" placeholder="{{ field.label }}"></textarea>
                 {% elif field.name == 'category' %}
-                {{ field }}
+                    {{ field }}
                 {% elif field.name == 'address' %}
-                <input type="text" id="sample6_postcode" placeholder="우편번호" readonly>
-                <input type="button" class="btn btn-primary mb-1" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-                <input type="text" class="form-control" id="sample6_address" placeholder="주소" readonly><br>
-                <input type="text" class="form-control mb-1" id="sample6_detailAddress" placeholder="상세주소">
-                <input type="text" class="form-control" id="sample6_extraAddress" placeholder="참고항목" readonly>
+                    <input type="text" id="sample6_postcode" placeholder="우편번호" readonly>
+                    <input type="button" class="btn btn-primary mb-1" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+                    <input type="text" class="form-control" id="sample6_address" name="{{ field.name }}" placeholder="주소" readonly><br>
+                    <input type="text" class="form-control mb-1" id="sample6_detailAddress" name="address_detail" placeholder="상세주소">
+                    <input type="text" class="form-control" id="sample6_extraAddress" placeholder="참고항목" readonly>
+                {% elif field.name == 'language' %}
+                    <ul class='form-control' style='list-style-type: none;'>
+                        {% for f in field %}
+                        <li>{{f}}</li>
+                        {% endfor %}
+                    </ul>
                 {% else %}
-                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
-                    placeholder="{{ field.label }}" name="{{ field.name }}"/>
+                    <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                        placeholder="{{ field.label }}" name="{{ field.name }}"/>
                 {% endif %}
             </div>
             {% if field.errors %}
@@ -36,7 +47,7 @@
             {% endfor %}
 
             <div class="mt-3">
-                <input type="submit" class="btn btn-primary mt-3" value="회원가입">
+                <input type="button" class="btn btn-primary mt-3 mb-3" id='submitbtn' onclick="sendit()" value="회원가입">
                 {% comment %} <button type="submit" class="btn btn-primary mt-3">글쓰기</button>
                 <a class="btn btn-primary mt-3" href="{% url 'Board:list' %}">돌아가기</a> {% endcomment %}
             </div>
@@ -46,6 +57,22 @@
 {% endblock %}
 {% block script %}
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<script>
+    function sendit(){
+        let frm = document.forms.joinForm
+        let tel1 = document.getElementsByName('tel1')[0].value
+        let tel2 = document.getElementsByName('tel2')[0].value
+        let tel3 = document.getElementsByName('tel3')[0].value
+
+        document.getElementsByName('tel')[0].value = tel1 + '-' + tel2 + '-' + tel3
+
+        alert(document.getElementsByName('tel')[0].value)
+
+        frm.submit();
+    }
+</script>
+
 <script>
     function sample6_execDaumPostcode() {
         new daum.Postcode({
