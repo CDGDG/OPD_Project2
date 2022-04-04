@@ -31,4 +31,24 @@
         </form>
     </div>
 </div>
+<!-- <h2>작성</h2>
+<hr>
+<form action="/board/write/" method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="name">작성자:</label>
+        <input type="text" class="form-control" id="developer" placeholder="작성자를 입력하세요" name="developer" required>
+    </div>
+    <div class="mb-3 mt-3">
+        <label for="subject">제목:</label>
+        <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요" name="title" required>
+    </div>
+    <div class="mb-3 mt-3">
+        <label for="content">내용:</label>
+        <textarea class="form-control" rows="5" id="contents" placeholder="내용을 입력하세요" name="contents"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-outline-dark">작성</button>
+    <a class="btn btn-outline-dark" href="{% url 'board_list' %}">목록</a>
+</form> -->
 {% endblock %}
