@@ -3,11 +3,11 @@ from django.db import models
 
 class Company(models.Model):
     companyid = models.CharField(max_length=20, verbose_name='회사아이디')
-    password = models.CharField(max_length=50, verbose_name='회사비밀번호')
+    password = models.CharField(max_length=500, verbose_name='회사비밀번호')
     name = models.CharField(max_length=15, verbose_name='회사이름')
     pic = models.FileField(upload_to="company_pic/", verbose_name='회사프로필사진')
     pic_original = models.CharField(max_length=200, null=False, verbose_name='회사프로필사진이름')
-    tel = models.CharField(max_length=11, verbose_name='회사전화번호')
+    tel = models.CharField(max_length=20, verbose_name='회사전화번호')
     email = models.EmailField(max_length=128, verbose_name='회사이메일')
     address = models.CharField(max_length=30, verbose_name='회사주소')
     address_detail = models.CharField(max_length=100, verbose_name='회사상세주소')

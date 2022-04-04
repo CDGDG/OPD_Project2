@@ -1,6 +1,8 @@
-from distutils.log import error
-from random import choices
+from functools import reduce
 from django import forms
+from admin.models import Language
+
+from admin.models import Language
 
 class CompanyJoinForm(forms.Form):
 
@@ -16,14 +18,14 @@ class CompanyJoinForm(forms.Form):
         error_messages={
             'required': '비밀번호를 입력해주세요.'
         },
-        max_length=50, label='비밀번호', widget=forms.PasswordInput
+        max_length=256, label='비밀번호', widget=forms.PasswordInput
     )
 
     re_password = forms.CharField(
         error_messages={
             'required': '비밀번호를 입력해주세요.'
         },
-        max_length=50, label='비밀번호 확인', widget=forms.PasswordInput
+        max_length=256, label='비밀번호 확인', widget=forms.PasswordInput
     )
 
     name = forms.CharField(
@@ -33,13 +35,13 @@ class CompanyJoinForm(forms.Form):
         max_length=15, label='회사 이름'
     )
 
-    resume = forms.FileField(label='회사 사진')
+    pic = forms.FileField(label='회사 사진')
 
     tel = forms.CharField(
         error_messages={
             'required': '전화번호를 입력해주세요.'
         },
-        max_length=11, label='회사 전화번호'
+        max_length=20, label='회사 전화번호'
     )
 
     email = forms.EmailField(
@@ -78,4 +80,8 @@ class CompanyJoinForm(forms.Form):
         choices=(('big','대기업'),('littlebig','중견기업'),('small','중소기업'),('start','스타트업')),
         label='회사 규모'
     )
+
+    LANGUAGE_OPTIONS = reduce(lambda result, lang: result.append((lang.id, lang.language)) or result,Language.objects.all(), [])
+
+    language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='사용 언어')
 

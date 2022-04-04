@@ -1,1 +1,69 @@
-<h1>list</h1>
+{% extends "base.html" %}
+{% block content %}
+<div class="row mt-5">
+    <div class="col-12">
+        <table class="table table-light table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>회사명</th>
+                    <th>회사규모</th>
+                    <th>전화번호</th>
+                    <th>이메일</th>
+                </tr>
+            </thead>
+            <tbody class="text-dark">
+                {% for company in companys %}
+                <tr onclick="location.href='{% url 'Company:detail' company.id %}'">
+                    <td>{{ company.id }}</td>
+                    <td>{{ company.name }}</td>
+                    <td>{{ company.category }}</td>
+                    <td>{{ company.tel }}</td>
+                    <td>{{ company.email }}</td>
+                    {% comment %} <td>{{ board.registered_dttm|date:"Y-m-d H:i:s"}}</td> {% endcomment %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- pagination -->
+<div class="row mt-2">
+    <div class="col-12">
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if companys.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?p={{ companys.previous_page_number }}">이전으로</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link disabled" href="#">이전으로</a>
+                </li>
+                {% endif %}
+                <li class="page-item active">
+                    <a class="page-link" href="#">{{ companys.number }} / {{ companys.paginator.num_pages }}</a>
+                </li>    
+                {% if companys.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?p={{ companys.next_page_number }}">다음으로</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link disabled" href="#">다음으로</a>
+                </li>
+                {% endif %}            
+            </ul>
+        </nav>
+    </div>
+</div>
+<!-- pagination -->
+
+
+<div class="row">
+    <div class="col-12">
+        {% comment %} <a class="btn btn-primary" href="{% url 'Board:write' %}">글쓰기</a> {% endcomment %}
+    </div>
+</div>
+{% endblock %}
