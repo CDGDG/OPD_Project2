@@ -14,7 +14,7 @@
                     {% endfor %}
                 </ul>
                 {% elif field.name == 'email_option'%}
-                    @<input type="{{field.field.widget.input_type}}" id="{{field.name}}" name="{{field.name}}" class="form-control">
+                    @<input type="{{field.field.widget.input_type}}" id="email_option" name="{{field.name}}" class="form-control">
                     <select id="email_select">
                         <option value="">직접입력</option>
                         <option value="naver.com">naver.com</option>
@@ -53,7 +53,6 @@ $(document).ready(function(){
     var nick_button = false;
     $('#duple_userid').click(function(){
         var userid=$('#id_userid').val()
-        console.log(userid)
         $.ajax({
             url: "{% url 'Developer:check_id' %}",
             data: {'userid': userid},
@@ -109,15 +108,18 @@ $(document).ready(function(){
             }
         })
     })
-
+    
+    $('#email_select').change(function(){
+        $("#email_option").val($('#email_select').val());
+    })
     
     $('#join').click(function(){
         var joinfrm = document.forms['joinfrm']
-        var reg_email = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 		var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 		var reg_id = /^[a-z]+[a-z0-9]{5,19}$/g; 
+        console.log(joinfrm['email_option'])
         
-        /**if(!reg_id.test(joinfrm['userid'].value.trim())){
+        if(!reg_id.test(joinfrm['userid'].value.trim())){
             joinfrm['userid'].focus();
             $('#check_userid').html('<p style="color:red">유효한 아이디가 아닙니다</p>')
             return false;
@@ -127,7 +129,7 @@ $(document).ready(function(){
             joinfrm['password'].focus();
             $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>')
             return false;
-        }**/
+        }
         
         if(!id_button){
             joinfrm['userid'].focus();
@@ -138,21 +140,14 @@ $(document).ready(function(){
             joinfrm['nick_button'].focus();
             $('#check_nickname').html('<p style="color:red">닉네임 중복검사를 해주세요</p>')
             return false;
-
+            
         }
+       
         
         joinfrm.submit();
     }) 
 
     
-    $('#email_select').change(function(){
-        $("#email_option").val($('#email_select').val());
-        $('#email_option').attr("disabled",true);
-        if($('#email_select').val()==""){
-            $('#email_option').attr("disabled",false);
-        }
-        
-    })
     
 })
 

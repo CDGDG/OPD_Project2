@@ -1,3 +1,4 @@
+import email
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
@@ -49,7 +50,6 @@ def join(request):
 
 def check_id(request):
     userid = request.GET.get('userid')
-    print("==============",userid)
     context={}
     try:
         Developer.objects.get(userid=userid)
