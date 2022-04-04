@@ -21,6 +21,7 @@
                         <option value="gmail.com">gmail.com</option>
                         <option value="daum.net">daum.net</option>
                     </select>
+                    <input type="button" value="이메일 인증">
                 {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
@@ -62,6 +63,7 @@ $(document).ready(function(){
                 if(response.blank){
                     $('#dupleId_result').html('<p>아이디를 입력해주세요</p>')
                     id_button = false
+                    return;
                 }else{
                     if(response.data == 'not exist'){
                         $('#dupleId_result').html('<p style="color:green">사용가능한 아이디입니다</p>')
@@ -91,6 +93,7 @@ $(document).ready(function(){
                 if(response.blank){
                     $('#dupleNick_result').html('<p>닉네임을 입력해주세요</p>')
                     nick_button = false
+                    return;
                 }else{
                     if(response.data == 'not exist'){
                         $('#dupleNick_result').html('<p style="color:green">사용가능한 닉네임입니다</p>')

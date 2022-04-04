@@ -72,7 +72,8 @@ class JoinForm(forms.Form):
         self.nickname = cleaned_data.get('nickname')
         self.registnum = cleaned_data.get('registnum')
         self.phonenum = cleaned_data.get('phonenum')
-        self.email = cleaned_data.get('email_id')+"@"+cleaned_data.get('email_option')
+        self.email_id = cleaned_data.get('email_id')
+        self.email_option = cleaned_data.get('email_option')
         self.language = cleaned_data.get('language')
 
         
