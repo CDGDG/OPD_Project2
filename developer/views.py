@@ -21,8 +21,11 @@ def login(request):
                         # 비밀번호가 틀렸습니다.
                         context['data'] = "wrong password"
                     else:
-                        print(userid + "로그인 성공")
-                        request.session['developer'] = developer.pk
+                        print(userid + "로그인 성공" + developer.nickname)
+                        request.session['developer_id'] = developer.id
+                        request.session['developer_nickname'] = developer.nickname
+                        if developer.pic:
+                            request.session['developer_pic_url'] = developer.pic.url
                         context['data'] = 'success login'
                 except Developer.DoesNotExist:
                     # 아이디가 없습니다
@@ -102,8 +105,11 @@ def check_nick(request):
 
 
 def logout(request):
-    if request.session.get('developer'):
-        del(request.session['developer']) 
+    if request.session.get('developer_id'):
+        del(request.session['developer_id']) 
+        del(request.session['developer_nickname'])
+        if request.session.get('developer_pic_url'):
+            del(request.session['developer_pic_url']) 
     return redirect('/') 
 
 
