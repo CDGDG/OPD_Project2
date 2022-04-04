@@ -1,8 +1,24 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import make_password, check_password
+from admin.models import Language
 from .forms import CompanyJoinForm
+from .models import Company
+from django.core.paginator import Paginator
 
 def list(request):
-    return render(request, 'list.html')
+    all_companys = Company.objects.all().order_by('-id')
+
+    # 페이징
+    page = int(request.GET.get('p', 1))
+    paginator = Paginator(all_companys, 5)  # 한 페이지당 5개씩 보여주는 paginator 생성
+    companys = paginator.get_page(page)
+
+    print(companys)
+    print(all_companys)
+    print (companys.number)
+    print (companys.paginator.num_pages)
+
+    return render(request, 'company_list.html', {'companys': companys})
 
 def detail(request, pk):
     return render(request, 'detail.html', {'pk':pk})
@@ -19,32 +35,44 @@ def join(request):
         form = CompanyJoinForm()
         return render(request, 'company_join.html', {'form': form})
     # POST 방식.  회원가입 처리
-    # elif request.method == "POST":
-    #     username = request.POST['username'] # name='username' 값을 받아온다
-    #     useremail = request.POST['useremail']
-    #     password = request.POST['password']
-    #     re_password = request.POST['re-password']
+    elif request.method == "POST":
+        form = CompanyJoinForm(request.POST, request.FILES)
+        if form.is_valid():
+            # tel = '-'.join[form.cleaned_data['tel1'], form.cleaned_data['tel2'], form.cleaned_data['tel3']]
+            # print(form.cleaned_data['tel1'])
+            # print(form.cleaned_data['tel2'])
+            # print(form.cleaned_data['tel3'])
+            print(form.cleaned_data['tel'])
+            company = Company(
+                companyid = form.cleaned_data['companyid'],
+                # password = form.cleaned_data['password'],
+                password = make_password(form.cleaned_data['password']),
+                name = form.cleaned_data['name'],
+                tel = form.cleaned_data['tel'],
+                email = form.cleaned_data['email'],
+                address = form.cleaned_data['address'],
+                address_detail = request.POST['address_detail'],
+                people = form.cleaned_data['people'],
+                url = form.cleaned_data['url'],
+                summary = form.cleaned_data['summary'],
+                category = form.cleaned_data['category'],
+                pic = request.FILES['pic'],
+                pic_original = request.FILES['pic'].name,
+                # language = form.language
+            )
+            print(company.password)
+            print(company.tel)
+            company.save()
 
-    #     res_data = {}  # 템플릿에 전달할 context 데이터 준비
+            for pk in form.cleaned_data['language']:    # 선택한 언어 반복
+                print("pk : ",pk)
+                if not pk: continue
+                _language = Language.objects.get(pk = pk) # 선택한 language의 pk로 language 정보 가져오기
+                company.language.add(_language) # many to many 추가
 
-    #     # 데이터 검증. 빈 문자, 혹은 값이 없으면 에러 처리하기
-    #     if not(username and useremail and password and re_password):
-    #         res_data['error'] = '모든 값을 입력해야 합니다.'
-    #     # password와 re-password가 다르면 회원가입 진행할 수 없다
-    #     elif password != re_password:
-    #         res_data['error'] = '비밀번호가 다릅니다.'
-    #     else:
-    #         # 받아온 값으로 User 생성
-    #         user = User(
-    #             username = username,
-    #             useremail = useremail,
-    #             password = make_password(password)  # 암호화 하여 저장
-    #             )
+            return redirect('/')
+        return redirect('/company/join/')
 
-    #         # DB에 저장
-    #         user.save()
-
-    #     return redirect('/')
 
 def login(request):
     return render(request, 'login.html')
