@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from admin.models import Language
@@ -12,16 +13,33 @@ def list(request):
     page = int(request.GET.get('p', 1))
     paginator = Paginator(all_companys, 5)  # 한 페이지당 5개씩 보여주는 paginator 생성
     companys = paginator.get_page(page)
-
-    print(companys)
-    print(all_companys)
-    print (companys.number)
-    print (companys.paginator.num_pages)
+    for company in companys:
+        if company.category == 'big':
+            company.category = '대기업'
+        elif company.category == 'littlebig':
+            company.category = '중견기업'
+        elif company.category == 'small':
+            company.category = '중소기업'
+        elif company.category == 'start':
+            company.category = '스타트업'
 
     return render(request, 'company_list.html', {'companys': companys})
 
 def detail(request, pk):
-    return render(request, 'detail.html', {'pk':pk})
+    try:
+        company = Company.objects.get(pk=pk)
+        if company.category == 'big':
+            company.category = '대기업'
+        elif company.category == 'littlebig':
+            company.category = '중견기업'
+        elif company.category == 'small':
+            company.category = '중소기업'
+        elif company.category == 'start':
+            company.category = '스타트업'
+
+    except Company.DoesNotExist:
+        raise Http404('존재하지 않는 기업입니다') # django에서 기본적으로 제공하는 에러 페이지
+    return render(request, 'company_detail.html', {'company': company})
 
 def update(request, pk):
     return render(request, 'update.html', {'pk':pk})
@@ -38,11 +56,6 @@ def join(request):
     elif request.method == "POST":
         form = CompanyJoinForm(request.POST, request.FILES)
         if form.is_valid():
-            # tel = '-'.join[form.cleaned_data['tel1'], form.cleaned_data['tel2'], form.cleaned_data['tel3']]
-            # print(form.cleaned_data['tel1'])
-            # print(form.cleaned_data['tel2'])
-            # print(form.cleaned_data['tel3'])
-            print(form.cleaned_data['tel'])
             company = Company(
                 companyid = form.cleaned_data['companyid'],
                 # password = form.cleaned_data['password'],
@@ -60,8 +73,7 @@ def join(request):
                 pic_original = request.FILES['pic'].name,
                 # language = form.language
             )
-            print(company.password)
-            print(company.tel)
+
             company.save()
 
             for pk in form.cleaned_data['language']:    # 선택한 언어 반복
@@ -71,6 +83,7 @@ def join(request):
                 company.language.add(_language) # many to many 추가
 
             return redirect('/')
+
         return redirect('/company/join/')
 
 
