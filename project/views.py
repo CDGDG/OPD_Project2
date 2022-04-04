@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
 
 from admin.models import Language
+from recruit.models import Recruit, Recruit_Language
 
 from .models import Project
 from .forms import ProjectUpdateForm, Projectform
@@ -36,7 +37,23 @@ def create(request):
 
             for _language in form.language:    # 선택한 언어 반복
                 if not _language: continue
-                project.language.add(_language) # many to many 추가
+                project.language.add(Language.objects.get(pk=_language)) # many to many 추가
+
+            recruit = Recruit(
+                title = project.title + "모집",
+                contents = project.title + '모집 내용입니다.',
+                ing = False,
+                project = project
+            )
+            recruit.save()
+
+            for _language in form.language:
+                recru_lang = Recruit_Language(
+                    recruit = recruit,
+                    language = Language.objects.get(pk=_language),
+                    people = 0
+                )
+                recru_lang.save()
 
             return redirect(f'/project/detail/{project.pk}/')
         else:

@@ -9,6 +9,7 @@ urlpatterns = [
     path('project/', include('project.urls')),
     path('board/', include('board.urls')),
     path('company/', include('company.urls')),
+    path('recruit/', include('recruit.urls')),
 ]
 
 # MEDIA 경로 추가
