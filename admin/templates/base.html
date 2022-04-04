@@ -15,9 +15,6 @@
     <link rel="stylesheet" href="/static/js/base.js">
     <title>{% block title%}타이틀{%endblock%}</title>
 </head>
-{% block script %}
-
-{% endblock script %}
 <body>
     {% comment %} <div class="jumbotron text-center p-2">
         <a href="#" class="btn btn-default glyphicon jumbotron-text text-white">["our", "project", "diary"]</a>
@@ -61,6 +58,9 @@
         {% endblock content %}
     </div>
 </body>
+{% block script %}
+
+{% endblock script %}
 
 <script>
   $(document).ready(function(){
