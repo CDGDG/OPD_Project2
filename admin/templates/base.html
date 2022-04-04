@@ -7,16 +7,66 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="/static/bs/css/bootstrap.min.css">
     <script src="/static/bs/js/bootstrap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/js/base.js">
     <title>{% block title%}타이틀{%endblock%}</title>
 </head>
 {% block script %}
 
 {% endblock script %}
 <body>
+    {% comment %} <div class="jumbotron text-center p-2">
+        <a href="#" class="btn btn-default glyphicon jumbotron-text text-white">["our", "project", "diary"]</a>
+    </div> {% endcomment %}
+    <header class="mb-3">
+        <div class="container">
+          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start py-3">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none header-text py-2 px-4">
+              ["our", "project", "diary"]
+              {% comment %} <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"> {% endcomment %}
+            </a>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+              <li><a href="{% url 'Project:list' %}" class="nav-link py-3 px-4 mx-4 link-dark">프로젝트</a></li>
+              <li><a href="{% url 'Recruit:list' %}" class="nav-link py-3 px-4 mx-4 link-dark">프로젝트 모집</a></li>
+              <li><a href="{% url 'Company:list' %}" class="nav-link py-3 px-4 mx-4 link-dark">기업 찾기</a></li>
+              <li><a href="{% url 'Company:list' %}" class="nav-link py-3 px-4 mx-4 link-dark">회원 찾기</a></li>
+            </ul>
+    
+            {% comment %} <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+              <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+            </form> {% endcomment %}
+    
+            <div class="dropdown text-end">
+              <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="true">
+                <img src="https://github.com/mdo.png" alt="mdo" width="64" height="64" class="rounded-circle">
+              </a>
+              <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser" id="dropdownUserToggle">
+                <li><a class="dropdown-item pb-2" href="#">내 정보</a></li>
+                <li><a class="dropdown-item pb-2" href="#">내 프로젝트</a></li>
+                <li><a class="dropdown-item pb-2" href="#">팔로우</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item pb-2" href="#">로그아웃</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+
     <div class="container mt-3">
         {% block content %}
         {% endblock content %}
     </div>
 </body>
 
+<script>
+  $(document).ready(function(){
+    $("#dropdownUser").click(function(){
+      $("#dropdownUserToggle").slideToggle("fast");
+    })
+  })
+</script>
 </html>

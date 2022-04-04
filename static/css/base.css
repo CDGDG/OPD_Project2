@@ -1,0 +1,22 @@
+header{
+    background-color:#ffb6c1;
+}
+.header-text{
+    font-size: 2vw;
+    font-family: 'Dongle';
+    background-color: white;
+    color: lightpink !important;
+    text-align: center;
+    border-radius: 10px;
+}
+header{
+    border-bottom: 2px solid #ffb6c1;
+}
+.nav-link{
+    font-family: 'Dongle', sans-serif;
+    color: white;
+    font-size: 2vw;
+}
+.nav-link:hover{
+    background-color: #ffb6c1;
+}
