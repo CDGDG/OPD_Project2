@@ -52,7 +52,7 @@ def join(request):
                     nickname = form.nickname,
                     registnum = form.registnum,
                     phonenum = form.phonenum,
-                    email = form.email,
+                    email = form.email_id+"@"+form.email_option,
                     pic = request.FILES.get('pic'),
                     resume = request.FILES.get('resume'),
             )

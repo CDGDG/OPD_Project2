@@ -2,8 +2,6 @@ from functools import reduce
 from django import forms
 from admin.models import Language
 
-from admin.models import Language
-
 class CompanyJoinForm(forms.Form):
 
     companyid = forms.CharField(
@@ -18,14 +16,14 @@ class CompanyJoinForm(forms.Form):
         error_messages={
             'required': '비밀번호를 입력해주세요.'
         },
-        max_length=256, label='비밀번호', widget=forms.PasswordInput
+        max_length=500, label='비밀번호', widget=forms.PasswordInput
     )
 
     re_password = forms.CharField(
         error_messages={
             'required': '비밀번호를 입력해주세요.'
         },
-        max_length=256, label='비밀번호 확인', widget=forms.PasswordInput
+        max_length=500, label='비밀번호 확인', widget=forms.PasswordInput
     )
 
     name = forms.CharField(
@@ -84,4 +82,6 @@ class CompanyJoinForm(forms.Form):
     LANGUAGE_OPTIONS = reduce(lambda result, lang: result.append((lang.id, lang.language)) or result,Language.objects.all(), [])
 
     language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='사용 언어')
+
+
 
