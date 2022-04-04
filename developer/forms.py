@@ -1,7 +1,8 @@
 from django import forms
-from .models import Developer
 from admin.models import Language
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
+
+from developer.models import Developer
 
 class JoinForm(forms.Form):
     userid = forms.CharField(
@@ -14,13 +15,13 @@ class JoinForm(forms.Form):
         error_messages={
             'required' : '비밀번호를 입력해주세요'
         },
-        widget=forms.PasswordInput,max_length=50,label='비밀번호'
+        widget=forms.PasswordInput,max_length=500,label='비밀번호'
     )
     check_passwored = forms.CharField(
         error_messages={
             'required' : '비밀번호를 입력해주세요'
         },
-        widget=forms.PasswordInput,max_length=50,label='비밀번호 확인'
+        widget=forms.PasswordInput,max_length=500,label='비밀번호 확인'
     )
     nickname = forms.CharField(
         error_messages={
@@ -44,10 +45,10 @@ class JoinForm(forms.Form):
         error_messages={
             'required' : '이메일을 입력해주세요'
         },
-        max_length=15,label='이메일'
+        label='이메일'
     )
-    pic = forms.FileField(label='프로필사진')
-    resume = forms.FileField(label='이력서')
+    pic = forms.ImageField(label='프로필사진', required=False)
+    resume = forms.FileField(label='이력서', required=False)
     CHOICES = []
     for lang in Language.objects.all():
         CHOICES.append((lang.pk,lang.language))
@@ -57,6 +58,7 @@ class JoinForm(forms.Form):
   
     def clean(self):
         cleaned_data = super().clean()
+
         self.userid = cleaned_data.get('userid')
         self.password = cleaned_data.get('password')
         self.check_password = cleaned_data.get('check_password')
@@ -66,28 +68,37 @@ class JoinForm(forms.Form):
         self.email = cleaned_data.get('email')
         self.language = cleaned_data.get('language')
 
-    
-        # developer = Developer(
-        #             userid = cleaned_data.get('userid'),
-        #             password = cleaned_data.get('password'),
-        #             nickname = cleaned_data.get('nickname'),
-        #             registnum = cleaned_data.get('registnum'),
-        #             phonenum = cleaned_data.get('phonenum'),
-        #             email = cleaned_data.get('email'),
-        #             language = cleaned_data.get('language'),
-        #             resume = cleaned_data.get('resume'),
-        #             pic = cleaned_data.get('pic'),
-        # )
-        # developer.save()
         
-    
+
+class LoginForm(forms.Form):
+    userid = forms.CharField(
+        error_messages={
+            'required' : '아이디를 입력해주세요'
+        },
+        max_length=20,label='아이디'
+    )
+    password = forms.CharField(
+        error_messages={
+            'required' : '비밀번호를 입력해주세요'
+        },
+        widget=forms.PasswordInput,max_length=100,label='비밀번호'
+    )
 
 
+    def clean(self):
+        cleaned_data = super().clean()
 
+        userid = cleaned_data.get('userid')
+        password = cleaned_data.get('password')
 
+        if userid and password:
+            try:
+                developer = Developer.objects.get(userid=userid)
+            except Developer.DoesNotExist:
+                self.add_error('userid','아이디가 없습니다')
+                return
+            # if not check_password(password,developer.password):
+            #     self.add_error('password','비밀번호가 틀렸습니다')
 
-
-
-
-
-
+            # else:
+        self.developer_pk = developer.pk

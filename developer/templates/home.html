@@ -2,29 +2,24 @@
 {% block content %}
 <div class="row mt-5">
     <div class="col-12">
-        <form method="POST" action="{% url 'Developer:join' %}" enctype="multipart/form-data">
+        {% if request.session.developer %}
+        <div class="col-12 d-grid">
+            <a class="btn btn-primary btn-block"  href='{% url "Developer:logout" %}'>로그아웃</a>
+        </div>
+        {% else %}
+        <form method="POST" action="." enctype="multipart/form-data">
             {% csrf_token %}
             {% for field in form %}
             <div class="form-group">
-                {% if field.name == 'language' %}
-                <label>{{field.label}}</label>
-                <ul class='form-control' style='list-style-type: none;'>
-                    {% for f in field %}
-                    <li>{{f}}</li>
-                    {% endfor %}
-                </ul>
-                {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
                     placeholder="{{ field.label }}" name="{{ field.name }}" />
-                    {% endif %}
                 {% if field.errors %}
                 <span class="text-danger">{{ field.errors }}</span>
                 {% endif %}
                 {% endfor %}
-                <div class="mt-3">
-                <button type="submit" class="btn btn-primary mt-3">회원가입</button>
-                </div>
+                <button type="submit">로그인</button>
+                {% endif %}
             </div>
         </form>
     </div>

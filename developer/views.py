@@ -1,37 +1,64 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from admin.models import Language
 from .models import Developer
-from .forms import JoinForm
+from .forms import JoinForm, LoginForm
 from django.contrib.auth.hashers import make_password
 # check_password
+
+def home(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            request.session['developer'] = form.developer_pk
+            return redirect("/")
+    else:
+        form = LoginForm()
+        return render(request,"home.html",{'form':form})
 
 def join(request):
     if request.method=="POST":
         form = JoinForm(request.POST,request.FILES)
         if form.is_valid():
-            developer = Developer()
-            # developer = Developer(
-            #         userid = form.userid,
-            #         password = make_password(form.password),
-            #         nickname = form.nickname,
-            #         registnum = form.registnum,
-            #         phonenum = form.phonenum,
-            #         email = form.email,
-            #         language = form.language,
-            #         resume = request.FILES['resume'],
-            #         # resume_original = form['resume'].name,
-            #         pic = request.FILES['pic'],
-            #         # pic_original = form['pic'].name,
-            # )
-
-            developer.userid = form.cleaned_data['userid']
+            developer = Developer(
+                    userid = form.userid,
+                    # password = make_password(form.password),
+                    password = form.password,
+                    nickname = form.nickname,
+                    registnum = form.registnum,
+                    phonenum = form.phonenum,
+                    email = form.email,
+                    pic = request.FILES['pic'],
+                    pic_original = request.FILES['pic'].name,
+                    resume = request.FILES['resume'],
+                    resume_original = request.FILES['resume'].name,
+            )
+            print(make_password(form.password))
+        
             developer.save()
+            
+            for pk in form.language:
+                if not pk: continue
+                _language = Language.objects.get(pk=pk)
+                developer.language.add(_language)
 
-            return render(request,'developer_join.html')
+            return render(request,'home.html')
     else:
         form = JoinForm()
     return render(request,'developer_join.html',{'form':form})
 
+
+def logout(request):
+    if request.session.get('developer'):
+        del(request.session['developer']) 
+    return redirect('/') 
+
+
+
+
 def info(request):
+    if not request.session.get('developr'):
+        return render(request,'home.html')
+        
     return render(request,'developer_info.html')
 def update(request):
     return render(request,'developer_update.html')
