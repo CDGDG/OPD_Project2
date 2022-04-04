@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="form-group">
+            <label for="title">프로젝트 제목</label>
+            <input type="text" class="form-control" id="title" value="{{recruit.project.title}}" readonly/>
+            <label for="contents">내용</label>
+            <textarea class="form-control" id="contents" readonly>{{recruit.contents}}</textarea>
+            
+        </div>
+        <div class="mt-3">
+
+            <a class="btn btn-primary" href='{% url "Project:detail" recruit.project.pk %}'>프로젝트 보기</a>
+
+            <a class="btn btn-primary" href='{% url "Recruit:update" recruit.pk %}'>수정하기</a>
+
+            {% comment %} <button type="button" class="btn btn-outline-dark" onclick="chkDelete()">삭제하기</button> {% endcomment %}
+            {% comment %} <form action="{% url 'Project:delete' %}" name="delete" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="pk" value="{{project.pk}}">
+            </form>
+            <script>
+                function chkDelete(){
+                    // 삭제 여부 확인
+                    var r = confirm("삭제하시겠습니까?")
+                    if(r){
+                        document.forms.delete.submit();
+                    }
+                }
+            </script> {% endcomment %}
+            
+            <a class="btn btn-primary" href='{% url "Recruit:list" %}'>돌아가기</a>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

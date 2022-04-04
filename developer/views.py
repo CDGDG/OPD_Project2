@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
 from .models import Developer
-from .forms import JoinForm, LoginForm
+from .forms import JoinForm
 from django.contrib.auth.hashers import make_password
 # check_password
 

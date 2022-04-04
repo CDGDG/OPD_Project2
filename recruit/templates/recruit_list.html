@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}프로젝트 모집 리스트{% endblock %}
+
+{% block content %}
+    <h1>프로젝트 모집 리스트 입니다.</h1>
+    <div class="row mt-5">
+        <div class="col-12">
+            <table class="table table-light table-hover">
+                <tbody class="text-dark">
+                    {% for recruit in recruits %}
+                    <tr onclick='location.href="/recruit/detail/{{recruit.pk}}/"'>
+                        <td>{{recruit.project.id}}</td>
+                        <td>{{recruit.project.title}}</td>
+                        <td><img src="{{recruit.project.thumbnail.url}}" alt=""></td>
+                        <td>{{recruit.title}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- pagination -->
+    <div class="row mt-2">
+        <div class="col-12">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if recruits.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?p={{recruits.previous_page_number}}">이전으로</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disable">
+                        <a class="page-link disable" href="#">이전으로</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item active">
+                        <a class="page-link" href="">{{recruit.number}} / {{recruits.paginator.num_pages}}</a>
+                    </li>
+                    {% if recruits.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?p={{recruits.next_page_number}}">다음으로</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disable">
+                        <a class="page-link disabled" href="#">다음으로</a>
+                    </li>
+                    {% endif %}          
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+{% endblock  %}
