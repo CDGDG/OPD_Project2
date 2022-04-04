@@ -4,17 +4,43 @@ from django.shortcuts import redirect, render
 from admin.models import Language
 from .models import Developer
 from .forms import JoinForm,LoginForm
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
-def home(request):
-    if request.method == "POST":
+def login(request):
+    if request.method=="POST":
         form = LoginForm(request.POST)
+        context={}
         if form.is_valid():
-            request.session['developer'] = form.developer_pk
-            return redirect("/")
+            userid = form.userid
+            password = form.password
+
+            if userid and password:
+                try:
+                    developer = Developer.objects.get(userid=userid)
+                    if not check_password(password,developer.password):
+                        # 비밀번호가 틀렸습니다.
+                        context['data'] = "wrong password"
+                    else:
+                        print(userid + "로그인 성공")
+                        request.session['developer'] = developer.pk
+                        context['data'] = 'success login'
+                except Developer.DoesNotExist:
+                    # 아이디가 없습니다
+                    context['data'] = "wrong id"
+            else:
+                context['blank'] = True
+            return JsonResponse(context)
     else:
-        form = LoginForm()
-        return render(request,"home.html",{'form':form})
+        return render(request, "developer_join.html")
+
+    
+    # if request.method == "POST":
+    #     form = LoginForm(request.POST)
+    #     if form.is_valid():
+    #         print("로그인 성공")
+    #         request.session['developer'] = form.developer_pk
+    #         return redirect("/")
+    # return render(request,"home.html")
 
 def join(request):
     if request.method=="POST":
