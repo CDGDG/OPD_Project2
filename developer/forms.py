@@ -98,15 +98,4 @@ class LoginForm(forms.Form):
 
         self.userid = cleaned_data.get('userid')
         self.password = cleaned_data.get('password')
-
-        if self.userid and self.password:
-            try:
-                developer = Developer.objects.get(userid=self.userid)
-            except Developer.DoesNotExist:
-                self.add_error('userid','아이디가 없습니다')
-                return
-            if not check_password(self.password,developer.password):
-                self.add_error('password','비밀번호가 틀렸습니다')
-
-            else:
-                self.developer_pk = developer.pk
+            

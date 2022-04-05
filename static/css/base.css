@@ -9,6 +9,9 @@ header{
     text-align: center;
     border-radius: 10px;
 }
+.header-text:hover, .login-icon:hover{
+    background-color: #1a1e21;
+}
 header{
     border-bottom: 2px solid #ffb6c1;
 }

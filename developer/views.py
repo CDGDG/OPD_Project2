@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from admin.models import Language
 from .models import Developer
 from .forms import JoinForm,LoginForm
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 #이메일 인증
 from django.contrib.sites.shortcuts import get_current_site
@@ -14,16 +14,44 @@ from django.core.mail import EmailMessage
 # from django.utils.encoding import force_bytes, force_text
 # from .tokens import account_activation_token
 
-
-def home(request):
-    if request.method == "POST":
+def login(request):
+    if request.method=="POST":
         form = LoginForm(request.POST)
+        context={}
         if form.is_valid():
-            request.session['developer'] = form.developer_pk
-            return redirect("/")
+            userid = form.userid
+            password = form.password
+
+            if userid and password:
+                try:
+                    developer = Developer.objects.get(userid=userid)
+                    if not check_password(password,developer.password):
+                        # 비밀번호가 틀렸습니다.
+                        context['data'] = "wrong password"
+                    else:
+                        print(userid + "로그인 성공" + developer.nickname)
+                        request.session['developer_id'] = developer.id
+                        request.session['developer_nickname'] = developer.nickname
+                        if developer.pic:
+                            request.session['developer_pic_url'] = developer.pic.url
+                        context['data'] = 'success login'
+                except Developer.DoesNotExist:
+                    # 아이디가 없습니다
+                    context['data'] = "wrong id"
+            else:
+                context['blank'] = True
+            return JsonResponse(context)
     else:
-        form = LoginForm()
-        return render(request,"home.html",{'form':form})
+        return render(request, "developer_join.html")
+
+    
+    # if request.method == "POST":
+    #     form = LoginForm(request.POST)
+    #     if form.is_valid():
+    #         print("로그인 성공")
+    #         request.session['developer'] = form.developer_pk
+    #         return redirect("/")
+    # return render(request,"home.html")
 
 def join(request):
     if request.method=="POST":
@@ -107,8 +135,11 @@ def check_nick(request):
 
 
 def logout(request):
-    if request.session.get('developer'):
-        del(request.session['developer']) 
+    if request.session.get('developer_id'):
+        del(request.session['developer_id']) 
+        del(request.session['developer_nickname'])
+        if request.session.get('developer_pic_url'):
+            del(request.session['developer_pic_url']) 
     return redirect('/') 
 
 

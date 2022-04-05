@@ -1,5 +1,7 @@
 from django.http import Http404
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+
+import board
 from .models import Board
 from django.core.paginator import Paginator
 from .forms import Boardform
@@ -15,6 +17,7 @@ def board_list(request):
     return render(request, 'board_list.html', {'boards': boards})
 
 def board_create(request):
+
     if request.method == "POST":
         form = Boardform(request.POST)
         if form.is_valid():
@@ -52,4 +55,39 @@ def board_detail(request, pk):
     return render(request, 'board_detail.html', {'board': board})
     
 def board_update(request, pk):
-    pass
+    # board = get_object_or_404(Board, pk=pk)
+    # if request.method=="POST":
+    #     form = BoardUpdateForm(request.POST, instance=board)
+    #     if form.is_valid():
+    #         board = form.save(commit=False)
+    #         board.save()
+    #         return redirect(f"/board/detail/{pk}/")
+    #     else:
+    #         print('board:update - form 검증 False')
+    #     form = BoardUpdateForm(instance=board)
+    #     return render(request, 'board_update.html', {'form' : form, 'pk': pk})
+
+    if request.method == "GET":
+        try:
+            board = Board.objects.get(pk=pk)
+        except Board.DoesNotExist:
+            raise Http404('게시글을 찾을수 없습니다')
+
+        return render(request, 'board/update.html', {'board': board})
+    
+    elif request.method == "POST":
+        img = request.POST['img']
+        img_original = request.POST['img_original']
+
+        board = Board.objects.get(pk=pk)
+        board.img = img
+        board.img_original = img_original
+        board.save()
+
+        return render(request, 'board/updateOk.html', {"pk": board.pk})
+        
+def board_delete(request):
+    pk = request.POST.get('pk')
+    board = get_object_or_404(Board, pk=pk)
+    board.delete()
+    return render(request, 'board_deleteOk.html')

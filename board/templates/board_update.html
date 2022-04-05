@@ -1,3 +1,23 @@
 {% extends 'base.html' %}
+{% block title %}게시글 수정{% endblock %}
 {% block content%}
-{% endblock%}
+<h2>게시글 수정</h2>
+<hr>
+<div class="mb-3 mt-3 clearfix">
+    {% comment %} <span class="float-start me-2">id: {{board.id}}</span>
+    <span class="float-end ms-4">작성일: {{board.reg_date|date: Y-m-s H:i:s"}}</span>
+    <span class="float-end">조회수: {{board.view_cnt}}</span> {% endcomment %}
+</div> 
+
+<form action="{% url 'Board:update' pk %}" method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="name">작성자</label>
+        <div class="border bg-light rounded p-2"></div>
+    </div>
+
+    <button type="submit" class="btn btn-outline-dark">저장</button>
+    <button type="button" class="btn btn-outline-dark" onclick="history.back()">취소</button>
+    <a class="btn btn-outline-dark" href="{% url 'Board:list' %}">목록</a>
+</form>
+{% endblock content%}

@@ -1,4 +1,7 @@
+from functools import reduce
 from django import forms
+
+from board.models import Board
 
 class Boardform(forms.Form):
     #제목
