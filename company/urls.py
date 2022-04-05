@@ -10,4 +10,5 @@ urlpatterns = [
     path('delete/<int:pk>/', views.delete, name='delete'),
     path('join/', views.join, name='join'),
     path('login/', views.login, name='login'),
+    path('check_id/',views.check_id, name='check_id'),
 ]
