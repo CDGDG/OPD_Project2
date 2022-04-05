@@ -1,3 +1,36 @@
 {% extends 'base.html' %}
+{% block title %}수정{% endblock  %}
 {% block content %}
+{% load bootstrap4 %}
+<h2>수정</h2>
+<hr>
+<div class="mb-3 mt-3 clearfix">
+
+</div>
+<form action="{% url 'Developer:update' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-outline-dark">수정완료</button>
+    <button type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</button>
+</form>
 {% endblock content %}
+{% block script %}
+<script>
+    function readImage(input) {
+        if (input.target.files && input.target.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                $('#pic_preview').attr('src',e.target.result)
+            }
+            reader.readAsDataURL(input.target.files[0]);
+        }
+    }
+    // 이벤트 리스너
+    $(document).ready(function(){
+        $('#id_pic').change(function(e){
+            readImage(e)
+        })
+    })
+</script>
+{% endblock  %}

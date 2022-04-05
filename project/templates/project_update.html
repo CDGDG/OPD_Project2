@@ -9,11 +9,9 @@
     <span class="float-end ms-4">작성일: {{board.reg_date|date:"Y-m-s H:i:s"}}</span>
     <span class="float-end">조회수: {{board.view_cnt}}</span> {% endcomment %}
 </div>
-
 <form action="{% url 'Project:update' pk %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
-    
     <button type="submit" class="btn btn-outline-dark">수정완료</button>
     <button type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</button>
     <a class="btn btn-outline-dark" href="{% url 'Project:list' %}">목록</a>
