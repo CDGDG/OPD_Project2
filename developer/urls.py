@@ -9,6 +9,7 @@ urlpatterns = [
     path('join/',views.join, name= 'join'),
     path('check_id/',views.check_id, name='check_id'),
     path('check_nick/',views.check_nick, name='check_nick'),
+    path('send_email/',views.send_email, name='send_email'),
     path('logout/',views.logout,name="logout"),
     path('update/<int:pk>',views.update, name = 'update'),
     path('myproject/',views.myproject, name = 'myproject'),

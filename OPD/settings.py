@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'company',
     'recruit',
     'bootstrap4',
+    'six',
 ]
 
 MIDDLEWARE = [

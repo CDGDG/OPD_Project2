@@ -6,6 +6,15 @@ from .models import Developer
 from .forms import JoinForm,LoginForm
 from django.contrib.auth.hashers import make_password
 
+#이메일 인증
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+# from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+# from django.utils.encoding import force_bytes, force_text
+# from .tokens import account_activation_token
+
+
 def home(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -34,19 +43,41 @@ def join(request):
                 developer.pic_original = developer.pic.name
             if developer.resume:
                 developer.resume_original = developer.resume.name
-            print(make_password(form.password))
-        
             developer.save()
-            
             for pk in form.language:
                 if not pk: continue
                 _language = Language.objects.get(pk=pk)
                 developer.language.add(_language)
 
-            return render(request,'home.html')
+        return render(request,'home.html')
     else:
         form = JoinForm()
     return render(request,'developer_join.html',{'form':form})
+
+def send_email(request):
+        email_id = request.GET.get('email_id')
+        email_option = request.GET.get('email_option')
+        emailnum = request.GET.get('emailnum')
+        context={}
+        current_site = get_current_site(request) 
+        message = render_to_string('developer_activate_email.html', {
+            'domain': current_site.domain,
+            'emailnum':emailnum,
+            # 'developer': developer,
+            # 'uid': urlsafe_base64_encode(force_bytes(developer.pk)).encode().decode(),
+            # 'token': account_activation_token.make_token(developer),
+        })
+        mail_title = "Our Project Diary 이메일 인증"
+        mail_to = email_id+"@"+email_option
+        email = EmailMessage(mail_title, message, to=[mail_to])
+        try: 
+            email.send()
+        except:
+            context['fail'] = True
+        if email_id == "" or email_option =="":
+            context['blank'] = True
+        return JsonResponse(context)
+
 
 def check_id(request):
     userid = request.GET.get('userid')

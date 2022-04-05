@@ -21,7 +21,11 @@
                         <option value="gmail.com">gmail.com</option>
                         <option value="daum.net">daum.net</option>
                     </select>
-                    <input type="button" value="이메일 인증">
+                    <input type="button" value="이메일 인증" id="send_email">
+                    <div id="check_{{field.name}}"></div>
+                    <input type="text" placeholder="인증번호를 입력해 주세요" id="emailnum" name="emailnum" class="form-control" style="display:none">
+                    <input type="button" value="인증하기" id="check_emailnum" name="check_emailnum" style="display:none">
+                    <div id="check_email_result"></div>
                 {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
@@ -63,7 +67,6 @@ $(document).ready(function(){
                 if(response.blank){
                     $('#dupleId_result').html('<p>아이디를 입력해주세요</p>')
                     id_button = false
-                    return;
                 }else{
                     if(response.data == 'not exist'){
                         $('#dupleId_result').html('<p style="color:green">사용가능한 아이디입니다</p>')
@@ -93,7 +96,6 @@ $(document).ready(function(){
                 if(response.blank){
                     $('#dupleNick_result').html('<p>닉네임을 입력해주세요</p>')
                     nick_button = false
-                    return;
                 }else{
                     if(response.data == 'not exist'){
                         $('#dupleNick_result').html('<p style="color:green">사용가능한 닉네임입니다</p>')
@@ -111,11 +113,52 @@ $(document).ready(function(){
             }
         })
     })
+
+    $('#send_email').click(function(){
+        var joinfrm = document.forms['joinfrm']
+        var email_id = joinfrm['email_id'].value.trim()
+        var email_option = joinfrm['email_option'].value.trim()
+        var num_list = []
+        for(var i=0;i<4;i++){
+            num_list.push(Math.floor(Math.random() * 10)+"")
+        }
+        var emailnum = num_list.join("")
+        $.ajax({
+            url:"{% url 'Developer:send_email' %}",
+            data : {'email_id':email_id,'email_option':email_option,'emailnum':emailnum},
+            datatype:'json',
+            success:function(response){
+                if(response.fail){
+                    $('#check_email_option').html('<p style="color:red">이메일 인증에 실패 했습니다 다시 시도해주세요</p>')
+                }
+                if(response.blank){
+                    $('#check_email_option').html('<p style="color:red">이메일을 입력해주세요</p>')
+                }else{
+                    $('#check_email_option').html('<p style="color:green">인증번호를 입력해주세요</p>')
+                    $('#emailnum').css('display','block')
+                    $('#check_emailnum').css('display','block')
+                    $('#check_emailnum').click(function(){
+                        if(joinfrm['emailnum'].value.trim() == ""){
+                            $('#check_email_result').html('<p style="color:red">인증번호를 입력해주세요</p>')
+                        }else if(joinfrm['emailnum'].value.trim() != emailnum){
+                            $('#check_email_result').html('<p style="color:red">인증번호를 확인해주세요</p>')
+                        }else{
+                            $('#check_email_result').html('<p style="color:green">인증되었습니다</p>')
+                            
+                        }
+                    })
+                }
+            }
+        })
+    })
+
+
     
     $('#email_select').change(function(){
         $("#email_option").val($('#email_select').val());
     })
-    
+
+
     $('#join').click(function(){
         var joinfrm = document.forms['joinfrm']
 		var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
@@ -144,6 +187,11 @@ $(document).ready(function(){
             $('#check_nickname').html('<p style="color:red">닉네임 중복검사를 해주세요</p>')
             return false;
             
+        }
+        if(!send_email){
+            joinfrm['send_button'].focus();
+            $('#check_email_option').html('<p style="color:red">이메일 인증을 해주세요</p>')
+            return false;
         }
        
         
