@@ -14,10 +14,10 @@ header{
 }
 .dropdown-menu{   
     min-width: 20rem;
-    border: 1px solid pink;
+    border: 1px solid lightcoral;
     font-family: 'Jua';
     font-size: 1vw;
-    color: lightpink;
+    color: lightcoral;
 }
 header{
     border-bottom: 2px solid #ffb6c1;
@@ -29,4 +29,17 @@ header{
 }
 .nav-link:hover{
     background-color: #ffb6c1;
+}
+#loginbtn{
+    color: white;
+    background-color: lightcoral;
+}
+.login-select{
+    color: lightcoral;
+    border-color: lightcoral;
+}
+.btn-check:checked+.login-select{
+    color: white;
+    background-color: lightcoral;
+    border-color: lightcoral;
 }
