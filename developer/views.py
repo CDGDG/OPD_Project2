@@ -2,9 +2,11 @@ from datetime import datetime
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
+from project.models import Project
 from .models import Developer
 from .forms import DeveloperUpdateForm, JoinForm,LoginForm
 from django.contrib.auth.hashers import make_password, check_password
+from django.core.paginator import Paginator
 
 #이메일 인증
 from django.contrib.sites.shortcuts import get_current_site
@@ -53,10 +55,13 @@ def login(request):
     #         return redirect("/")
     # return render(request,"home.html")
 
+
 def join(request):
+    # 회원가입 처리
     if request.method=="POST":
         form = JoinForm(request.POST,request.FILES)
         if form.is_valid():
+            print("join하기")
             developer = Developer(
                     userid = form.userid,
                     password = make_password(form.password),
@@ -67,43 +72,49 @@ def join(request):
                     pic = request.FILES.get('pic'),
                     resume = request.FILES.get('resume'),
             )
-            if developer.pic:
+            if developer.pic: 
                 developer.pic_original = developer.pic.name
             if developer.resume:
                 developer.resume_original = developer.resume.name
-            developer.save()
-            for pk in form.language:
-                if not pk: continue
-                _language = Language.objects.get(pk=pk)
-                developer.language.add(_language)
 
+            developer.save()
+
+            for pk in form.language: # 선택한 언어 반복
+                if not pk: continue 
+                _language = Language.objects.get(pk=pk)
+                developer.language.add(_language) # many to many
+        else: 
+            print("join 실패")
         return redirect("/")
     else:
         form = JoinForm()
-    return render(request,'developer_join.html',{'form':form})
+        return render(request,'developer_join.html',{'form':form})
 
+# 이메일 인증
 def send_email(request):
         email_id = request.GET.get('email_id')
         email_option = request.GET.get('email_option')
-        emailnum = request.GET.get('emailnum')
+        emailnum = request.GET.get('emailnum') # 이메일 인증번호
         context={}
         current_site = get_current_site(request) 
-        message = render_to_string('developer_activate_email.html', {
+
+        # 사용자에게 전송될 이메일 내용
+        message = render_to_string('developer_activate_email.html', { 
             'domain': current_site.domain,
-            'emailnum':emailnum,
+            'emailnum':emailnum, # 이메일로 보내질 인증번호
             # 'developer': developer,
             # 'uid': urlsafe_base64_encode(force_bytes(developer.pk)).encode().decode(),
             # 'token': account_activation_token.make_token(developer),
         })
-        mail_title = "Our Project Diary 이메일 인증"
-        mail_to = email_id+"@"+email_option
+        mail_title = "Our Project Diary 이메일 인증" # 이메일 title
+        mail_to = email_id+"@"+email_option # 사용자 email
         email = EmailMessage(mail_title, message, to=[mail_to])
         try: 
             email.send()
         except:
-            context['fail'] = True
+            context['fail'] = True # 이메일 전송 실패 시 
         if email_id == "" or email_option =="":
-            context['blank'] = True
+            context['blank'] = True  # 이메일을 다 입력하지 않았을 때
         return JsonResponse(context)
 
 
@@ -111,11 +122,11 @@ def check_id(request):
     userid = request.GET.get('userid')
     context={}
     try:
-        Developer.objects.get(userid=userid)
+        Developer.objects.get(userid=userid) 
     except:
-        context['data'] = "not exist"
+        context['data'] = "not exist" # 아이디 중복 없음
     if userid=="":
-        context['blank'] = True
+        context['blank'] = True # 아이디를 다 입력하지 않았을 때
 
     return JsonResponse(context)
 
@@ -126,7 +137,7 @@ def check_nick(request):
     try:
         Developer.objects.get(nickname=nickname)
     except:
-        context['data'] = "not exist"
+        context['data'] = "not exist" 
     if nickname=="":
         context['blank'] = True
 
@@ -149,7 +160,8 @@ def info(request):
     try:
         developer = Developer.objects.get(pk = request.session.get('developer_id'))
         registnum = developer.registnum
-        
+
+        # 주민번호로 생년월일 , 성별  
         birth = {}
         if int(registnum[:2]) < 21 and int(registnum[6]) in (3, 4) :
             birth['year']= 2000 + int(registnum[:2])
@@ -164,6 +176,7 @@ def info(request):
             gender = 'male'
         else :
             gender = 'female'
+
     except Developer.DoesNotExist:
          raise Http404('내 정보를 찾을 수 없습니다')
     
@@ -189,9 +202,13 @@ def update(request):
 
 
 def myproject(request):
-    # myprojects = Developer.
+    # if not request.session.get('developr'):
+    # return render(request,'home.html')
+    # all_myproject = Project.objects.get(developer=request.session.get('developer_id'))
+    # page = int(request.GET.get('p', 1))
+    # paginator = Paginator(all_myproject, 5) # 한 페이지당 5개씩 보여주는 Paginator 생성
+    # myproject = paginator.get_page(page)
+    return render(request, 'developer_myproject.html')
 
-
-    return render(request,'developer_myproject.html')
 def follow(request):
     return render(request,'developer_follow.html')
