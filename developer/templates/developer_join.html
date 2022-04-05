@@ -152,8 +152,11 @@ $(document).ready(function(){
         })
     })
 
+    $('#id_userid').change(function(){
+        id_button = false
+    })
 
-    
+
     $('#email_select').change(function(){
         $("#email_option").val($('#email_select').val());
     })
@@ -163,8 +166,8 @@ $(document).ready(function(){
         var joinfrm = document.forms['joinfrm']
 		var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 		var reg_id = /^[a-z]+[a-z0-9]{5,19}$/g; 
-        console.log(joinfrm['email_option'])
         
+        if()
 
         if(!reg_id.test(joinfrm['userid'].value.trim())){
             joinfrm['userid'].focus();
