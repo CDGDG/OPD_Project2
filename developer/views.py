@@ -1,7 +1,9 @@
+from datetime import datetime
 import email
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
+import developer
 from .models import Developer
 from .forms import JoinForm,LoginForm
 from django.contrib.auth.hashers import make_password, check_password
@@ -42,7 +44,7 @@ def login(request):
                 context['blank'] = True
             return JsonResponse(context)
     else:
-        return render(request, "developer_join.html")
+        return redirect("/")
 
     
     # if request.method == "POST":
@@ -77,7 +79,7 @@ def join(request):
                 _language = Language.objects.get(pk=pk)
                 developer.language.add(_language)
 
-        return render(request,'home.html')
+        return redirect("/")
     else:
         form = JoinForm()
     return render(request,'developer_join.html',{'form':form})
@@ -143,13 +145,31 @@ def logout(request):
     return redirect('/') 
 
 
-
-
 def info(request):
-    if not request.session.get('developr'):
-        return render(request,'home.html')
-        
-    return render(request,'developer_info.html')
+    # if not request.session.get('developr'):
+    #     return render(request,'home.html')
+    try:
+        developer = Developer.objects.get(pk = request.session.get('developer_id'))
+        registnum = developer.registnum
+        birth = {}
+        if int(registnum[:2]) < 21 and int(registnum[6]) in (3, 4) :
+            birth['year']= 2000 + int(registnum[:2])
+        else:
+            birth['year'] = 1900 + int(registnum[:2])
+
+        birth['age'] = datetime.today().year - birth['year'] + 1
+        birth['month'] = registnum[2:4]
+        birth['day'] = registnum[4:6]
+
+        if int(registnum[6]) == 1 or int(registnum[6]) == 3 :
+            gender = 'male'
+        else :
+            gender = 'female'
+    except Developer.DoesNotExist:
+         raise Http404('내 정보를 찾을 수 없습니다')
+    
+    return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender})
+
 def update(request):
     return render(request,'developer_update.html')
 def myproject(request):

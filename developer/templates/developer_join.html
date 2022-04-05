@@ -165,6 +165,7 @@ $(document).ready(function(){
 		var reg_id = /^[a-z]+[a-z0-9]{5,19}$/g; 
         console.log(joinfrm['email_option'])
         
+
         if(!reg_id.test(joinfrm['userid'].value.trim())){
             joinfrm['userid'].focus();
             $('#check_userid').html('<p style="color:red">유효한 아이디가 아닙니다</p>')
@@ -201,6 +202,10 @@ $(document).ready(function(){
     
     
 })
-
+    document.addEventListener('keydown', function(event) {
+        if (event.keyCode === 13) {
+        event.preventDefault();
+        };
+    }, true);
 </script>
 {% endblock script %}

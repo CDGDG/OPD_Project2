@@ -1,7 +1,6 @@
 from django import forms
 from admin.models import Language
 from django.contrib.auth.hashers import check_password
-
 from developer.models import Developer
 
 class JoinForm(forms.Form):

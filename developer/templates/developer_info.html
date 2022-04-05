@@ -1,4 +1,22 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-    
-{% endblock content %}
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="form-group">
+            <h4>{{developer.nickname}}</h4>
+            <label for="프로필 사진">프로필 사진</label><br>
+            <img src="{{developer.pic.url}}" alt="사진 없져용ㅠㅠ"><br>
+            <label for="userid">아이디</label> : {{developer.userid}}<br>
+            <label for="email">이메일</label> : {{developer.email}}<br>
+            <label for="regdate">가입일</label> : {{developer.regdate|date:"Y년 m월 d일"}}<br>
+            <label for="birthday">생년월일</label> : {{birth.year}}년 {{birth.month}}월 {{birth.day}}일<br>
+            <label for="age">나이</label> : {{birth.age}}<br>
+            <label for="gender">성별</label> : {{gender}}<br>            
+        </div>
+        <div class="mt-3">
+            <a class="btn btn-primary" href='{% url "Developer:update" developer.pk %}'>수정하기</a>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
