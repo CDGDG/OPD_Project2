@@ -12,6 +12,13 @@ header{
 .header-text:hover, .login-icon:hover{
     background-color: #1a1e21;
 }
+.dropdown-menu{   
+    min-width: 20rem;
+    border: 1px solid pink;
+    font-family: 'Jua';
+    font-size: 1vw;
+    color: lightpink;
+}
 header{
     border-bottom: 2px solid #ffb6c1;
 }

@@ -56,8 +56,6 @@ def create(request):
                 recru_lang.save()
 
             return redirect(f'/project/detail/{project.pk}/')
-        else:
-            print(request.FILES)
 
     form = Projectform()
     return render(request, 'project_create.html', {'form': form})
@@ -72,9 +70,13 @@ def detail(request, pk):
 def update(request, pk):
     project = get_object_or_404(Project, pk=pk)
     if request.method=="POST":
-        form = ProjectUpdateForm(request.POST, instance=project)
+        form = ProjectUpdateForm(request.POST,request.FILES, instance=project)
         if form.is_valid():
             project = form.save(commit=False)
+            if request.FILES.get('thumbnail'):
+                project.thumbnail = request.FILES.get('thumbnail')
+                project.thumbnail_original = request.FILES['thumbnail'].name
+
             project.save()
             return redirect(f"/project/detail/{pk}/")
         else:
