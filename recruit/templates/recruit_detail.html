@@ -1,7 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
+<!-- Modal -->
+<div class="modal fade" id="recruit-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">{{recruit.project.title}} 신청</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="{% url 'Recruit:apply' recruit.pk %}" method="POST" name="applyform">
+                {% csrf_token %}
+                <label for="id_contents">메세지</label>
+                <textarea class="form-control" name="contents" id="id_contents" cols="30" rows="5" placeholder="메세지를 입력해주세요." style="resize:none;"></textarea>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="document.applyform.submit()">신청하기</button>
+        </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mt-5">
-    <div class="col-12">
+    <div class="col me-4">
         <div class="form-group">
             <label for="title">프로젝트 제목</label>
             <input type="text" class="form-control" id="title" value="{{recruit.project.title}}" readonly/>
@@ -15,24 +38,84 @@
 
             <a class="btn btn-primary" href='{% url "Recruit:update" recruit.pk %}'>수정하기</a>
 
-            {% comment %} <button type="button" class="btn btn-outline-dark" onclick="chkDelete()">삭제하기</button> {% endcomment %}
-            {% comment %} <form action="{% url 'Project:delete' %}" name="delete" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="pk" value="{{project.pk}}">
-            </form>
-            <script>
-                function chkDelete(){
-                    // 삭제 여부 확인
-                    var r = confirm("삭제하시겠습니까?")
-                    if(r){
-                        document.forms.delete.submit();
-                    }
-                }
-            </script> {% endcomment %}
-            
             <a class="btn btn-primary" href='{% url "Recruit:list" %}'>돌아가기</a>
+
+            <a class="btn btn-primary" href='{% url "Recruit:apply" recruit.pk %}' data-bs-toggle="modal" data-bs-target="#recruit-modal">신청하기</a>
         </div>
-        
+    </div>
+    {% comment %} 신청 목록 {% endcomment %}
+    <div class="col col-4">
+        <h3>신청 목록</h3>
+        <hr>
+        <div class="mt-3" id='kinglist'>
+            {% for re in recruits %}
+            <div class="mb-3 row px-1" id='list{{re.pk}}'>
+                <button class="btn btn-secondary col me-2 py-3" type="button" data-bs-toggle="collapse" data-bs-target="#recruit{{re.pk}}" aria-expanded="false" aria-controls="recruit{{re.pk}}">
+                    {{re.developer.nickname}}
+                </button>
+                <button class="btn btn-primary col col-lg-2 me-1" onclick="accept({{re.pk}})">수락</button>
+                <button class="btn btn-danger col col-lg-2" onclick="refuse({{re.pk}})">거절</button>
+                <div class="collapse p-0 pt-1" id="recruit{{re.pk}}">
+                    <div class="card card-body">
+                        {% if re.contents %}
+                        {{re.contents}}
+                        {% else %}
+                        내용이 없습니다.
+                        {% endif %}
+                        <a class="btn btn-primary col-12 mt-4" href="#">정보 보기</a>
+                    </div>
+                </div>
+            </div>
+            {%empty%}
+            <h5>신청 목록이 없습니다.</h5>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}
+{% block script %}
+    <script>
+        if("{{apply}}"=="true"){
+            alert("신청 완료")
+        }
+
+        function refuse(pk){
+            if(pk){
+                $.ajax({
+                    url: "{% url 'Recruit:delete' %}",
+                    type: "POST",
+                    data: {'recruit_pk': pk,'csrfmiddlewaretoken': '{{csrf_token}}'},
+                    dataType: 'json',
+                    success: function(response){
+                        $('#list'+pk).fadeOut('normal', function(){
+                            $(this).remove()
+                            if($("div[id^='list']").length==0){
+                                $("#kinglist").html('<h5>신청 목록이 없습니다.</h5>')
+                            }
+                        })
+                    }
+                })
+            }
+        }
+
+        function accept(pk){
+            if(pk){
+                $.ajax({
+                    url: "{% url 'Recruit:accept' %}",
+                    type: "POST",
+                    data: {'recruit_pk': pk, 'csrfmiddlewaretoken': '{{csrf_token}}'},
+                    dataType: 'json',
+                    success: function(response){
+                        $('#list'+pk).animate({height:'toggle'}, 300, function(){
+                            $(this).remove()
+                            if($("div[id^='list']").length==0){
+                                $("#kinglist").html('<h5>신청 목록이 없습니다.</h5>')
+                            }
+                        })
+                    }
+                })
+            }
+        }
+
+    </script>
+{% endblock  %}

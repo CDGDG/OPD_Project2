@@ -1,7 +1,10 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from recruit.forms import RecruitUpdateForm
 
-from recruit.models import Recruit
+from recruit.models import Recruit, RecruitOk
+from developer.models import Developer
+from project.models import Project
 from django.core.paginator import Paginator
 
 def list(request):
@@ -16,7 +19,9 @@ def list(request):
 
 def detail(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk)
-    return render(request, 'recruit_detail.html', {'recruit': recruit})
+    apply = request.GET.get("apply", False)
+    recruits = RecruitOk.objects.filter(project=recruit.project)
+    return render(request, 'recruit_detail.html', {'recruit': recruit, 'apply': apply, 'recruits': recruits})
 
 def update(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk)
@@ -31,3 +36,34 @@ def update(request, pk):
     form = RecruitUpdateForm(instance=recruit)
     return render(request, 'recruit_update.html', {'form': form, 'pk': pk})
 
+def apply(request, pk):
+    recruit = get_object_or_404(Recruit, pk=pk)
+    if request.method=="POST":
+        project = recruit.project
+        developer = get_object_or_404(Developer, pk=request.session['developer_id'])
+        contents = request.POST.get('contents', '')
+        recruitok = RecruitOk(
+            project = project,
+            developer = developer,
+            contents = contents
+        )
+        recruitok.save()
+    return redirect(f"/recruit/detail/{pk}/?apply=true")
+
+def delete(request):
+    if request.method=="POST":
+        pk = request.POST.get('recruit_pk')
+        if pk:
+            recruit = get_object_or_404(RecruitOk, pk=pk)
+            recruit.delete()
+            return JsonResponse({'data':'success'})
+    return redirect("/recruit/list/")
+
+def accept(request):
+    if request.method=="POST":
+        pk = request.POST.get('recruit_pk')
+        if pk:
+            recruit = get_object_or_404(RecruitOk, pk=pk)
+            recruit.project.member.add(recruit.developer)
+            recruit.delete()
+            return JsonResponse({'data':'success'})

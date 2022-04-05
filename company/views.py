@@ -1,8 +1,8 @@
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from admin.models import Language
-from .forms import CompanyJoinForm
+from .forms import CompanyJoinForm, CompanyUpdateForm
 from .models import Company
 from django.core.paginator import Paginator
 
@@ -11,7 +11,7 @@ def list(request):
 
     # 페이징
     page = int(request.GET.get('p', 1))
-    paginator = Paginator(all_companys, 5)  # 한 페이지당 5개씩 보여주는 paginator 생성
+    paginator = Paginator(all_companys, 10)  # 한 페이지당 5개씩 보여주는 paginator 생성
     companys = paginator.get_page(page)
     for company in companys:
         if company.category == 'big':
@@ -42,7 +42,46 @@ def detail(request, pk):
     return render(request, 'company_detail.html', {'company': company})
 
 def update(request, pk):
-    return render(request, 'update.html', {'pk':pk})
+    if request.method == "GET":
+        company = Company.objects.get(pk=pk)
+        company.address = company.address.replace(" "," ")
+        tellist = company.tel.split('-')
+        form = CompanyUpdateForm(instance=company)
+        print(company.address)
+        print(company.address_detail)
+        return render(request, 'company_update.html', {'form':form, 'company': company, 'tel1': tellist[0], 'tel2': tellist[1], 'tel3': tellist[2]})
+        
+    elif request.method == "POST":
+        company = Company.objects.get(pk=pk)
+
+        form = CompanyUpdateForm(request.POST, request.FILES, instance=company)
+        if form.is_valid():
+
+            company.address_detail = request.POST['address_detail']
+            company = form.save(commit=False)
+            # 수정
+            # company.name = form.cleaned_data['name']
+            # company.tel = form.cleaned_data['tel']
+            # company.email = form.cleaned_data['email']
+            # company.address = form.cleaned_data['address']
+            
+            # company.people = form.cleaned_data['people']
+            # company.url = form.cleaned_data['url']
+            # company.summary = form.cleaned_data['summary']
+            # company.category = form.cleaned_data['category']
+            # company.pic = request.FILES['pic']
+            # company.pic_original = request.FILES['pic'].name
+            company.save()  # UPDATE
+
+            for id in form.cleaned_data['language']:    # 선택한 언어 반복
+                if not pk: continue
+                _language = Language.objects.get(id = id) # 선택한 language의 pk로 language 정보 가져오기
+                company.language.add(_language) # many to many 추가
+
+            return redirect(f'/company/detail/{pk}/')
+
+        tellist = form.cleaned_data['tel'].split('-')
+        return render(request, 'company_update.html', {'form': form, 'company': company, 'tel1': tellist[0], 'tel2': tellist[1], 'tel3': tellist[2]})
 
 def delete(request, pk):
     return render(request, 'deleteOk.html', {'pk':pk})
@@ -51,6 +90,7 @@ def join(request):
     # GET 방식.  회원가입 폼
     if request.method == "GET":
         form = CompanyJoinForm()
+        
         return render(request, 'company_join.html', {'form': form})
     # POST 방식.  회원가입 처리
     elif request.method == "POST":
@@ -81,12 +121,26 @@ def join(request):
                 if not pk: continue
                 _language = Language.objects.get(pk = pk) # 선택한 language의 pk로 language 정보 가져오기
                 company.language.add(_language) # many to many 추가
+            
+            return redirect('/home/')
+        tellist = form.cleaned_data['tel'].split('-')
+        print(tellist)
+        return render(request,'company_join.html', {'form': form, 'tel1': tellist[0], 'tel2': tellist[1], 'tel3': tellist[2]})
 
-            return redirect('/')
-
-        return redirect('/company/join/')
 
 
 def login(request):
     return render(request, 'login.html')
 
+
+def check_id(request):
+    companyid = request.GET.get('companyid')
+    context={}
+    try:
+        Company.objects.get(companyid=companyid)
+    except:
+        context['data'] = "not exist"
+    if companyid=="":
+        context['blank'] = True
+
+    return JsonResponse(context)
