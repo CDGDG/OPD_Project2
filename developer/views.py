@@ -2,9 +2,9 @@ from datetime import datetime
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
-from project.models import Project
+from company.models import Company
 from .models import Developer
-from .forms import DeveloperUpdateForm, JoinForm,LoginForm
+from .forms import JoinForm,LoginForm
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator
 
@@ -21,23 +21,36 @@ def login(request):
         form = LoginForm(request.POST)
         context={}
         if form.is_valid():
+            select = request.POST.get('select', 'developer')
             userid = form.userid
             password = form.password
 
-            if userid and password:
+            if select and userid and password:
                 try:
-                    developer = Developer.objects.get(userid=userid)
-                    if not check_password(password,developer.password):
-                        # 비밀번호가 틀렸습니다.
-                        context['data'] = "wrong password"
-                    else:
-                        print(userid + "로그인 성공" + developer.nickname)
-                        request.session['developer_id'] = developer.id
-                        request.session['developer_nickname'] = developer.nickname
-                        if developer.pic:
-                            request.session['developer_pic_url'] = developer.pic.url
-                        context['data'] = 'success login'
-                except Developer.DoesNotExist:
+                    if select=="developer":
+                        developer = Developer.objects.get(userid=userid)
+                        if not check_password(password,developer.password):
+                            # 비밀번호가 틀렸습니다.
+                            context['data'] = "wrong password"
+                        else:
+                            request.session['id'] = developer.id
+                            request.session['name'] = developer.nickname
+                            if developer.pic:
+                                request.session['pic_url'] = developer.pic.url
+                    elif select=="company":
+                        company = Company.objects.get(companyid = userid)
+                        if not check_password(password, company.password):
+                            # 비밀번호가 틀렸습니다.
+                            context['data'] = 'wrong password'
+                        else:
+                            request.session['id'] = company.id
+                            request.session['name'] = company.name
+                            if company.pic:
+                                request.session['pic_url'] = company.pic.url
+                            
+                    context['data'] = 'success login'
+                    request.session['who'] = select
+                except (Developer.DoesNotExist, Company.DoesNotExist):
                     # 아이디가 없습니다
                     context['data'] = "wrong id"
             else:
@@ -146,11 +159,12 @@ def check_nick(request):
 
 
 def logout(request):
-    if request.session.get('developer_id'):
-        del(request.session['developer_id']) 
-        del(request.session['developer_nickname'])
-        if request.session.get('developer_pic_url'):
-            del(request.session['developer_pic_url']) 
+    if request.session.get('id'):
+        del(request.session['who'])
+        del(request.session['id']) 
+        del(request.session['name'])
+        if request.session.get('pic_url'):
+            del(request.session['pic_url']) 
     return redirect('/') 
 
 
@@ -158,7 +172,7 @@ def info(request):
     # if not request.session.get('developr'):
     #     return render(request,'home.html')
     try:
-        developer = Developer.objects.get(pk = request.session.get('developer_id'))
+        developer = Developer.objects.get(pk = request.session.get('id'))
         registnum = developer.registnum
 
         # 주민번호로 생년월일 , 성별  
@@ -183,24 +197,7 @@ def info(request):
     return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender})
 
 def update(request):
-      # if not request.session.get('developr'):
-    #     return render(request,'home.html')
-    developer = Developer.objects.get(pk = request.session.get('developer_id'))
-    if request.method == "POST":
-        form = DeveloperUpdateForm(request.POST,request.FILES,instance=developer)
-        if form.is_valid():
-            developer = form.save(commit=False)
-            if developer.pic:
-                developer.pic_original = developer.pic.name
-            if developer.resume:
-                developer.resume_original = developer.resume.name
-            developer.save()
-            return redirect("/developer/info/")
-    else:
-        form = DeveloperUpdateForm(instance=developer)
-    return render(request,'developer_update.html',{'form':form})
-
-
+    return render(request,'developer_update.html')
 def myproject(request):
     # if not request.session.get('developr'):
     # return render(request,'home.html')

@@ -1,3 +1,4 @@
+from cProfile import label
 from functools import reduce
 from django import forms
 from admin.models import Language
@@ -17,7 +18,7 @@ class Projectform(forms.ModelForm):
 
     language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어 선택')
 
-    thumbnail = forms.ImageField(widget=ImagePreviewWidget, allow_empty_file= True)
+    thumbnail = forms.ImageField(widget=ImagePreviewWidget, allow_empty_file= True, label="썸네일")
 
     def clean(self):   
         # 우선 부모 Form 의 clean() 수행 --> 값이 들어있지 않으면 error 처리 

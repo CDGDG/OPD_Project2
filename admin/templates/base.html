@@ -30,12 +30,12 @@
             </ul>
     
             <div class="dropdown text-end">
-              <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle text-white" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="true">
-                <img src="{% if request.session.developer_pic_url %}{{request.session.developer_pic_url}}{% elif request.session.developer_id %}/media/user_icon.png/{% else %}/media/login_icon.png/{% endif %}" alt="login" width="64" height="64" class="login-icon rounded-circle border border-white border-2">
+              <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle text-white" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="true" data-bs-auto-close="outside">
+                <img src="{% if request.session.pic_url %}{{request.session.pic_url}}{% elif request.session.id %}/media/user_icon.png/{% else %}/media/login_icon.png/{% endif %}" alt="login" width="64" height="64" class="login-icon rounded-circle border border-white border-2">
               </a>
-              {% if request.session.developer_id %}
+              {% if request.session.id %}
               <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" id="dropdownUserToggle">
-                <li><p>{{request.session.developer_nickname}} 님</p></li>
+                <li><p>{{request.session.name}} 님</p></li>
                 <li><a class="dropdown-item pb-2" href="#">내 정보</a></li>
                 <li><a class="dropdown-item pb-2" href="#">내 프로젝트</a></li>
                 <li><a class="dropdown-item pb-2" href="#">팔로우</a></li>
@@ -44,14 +44,24 @@
               </ul>
               {% else %}
               <div class="dropdown-menu">
-                <form class="px-4 py-3" method="POST" action="" enctype="multipart/form">
+                <form class="px-4 py-3" method="POST" action="">
                   {% csrf_token %}
-                  <div class="form-group">
+                  <div class="form-group row">
+                    <div class="col-6">
+                      <input type="radio" class="btn-check" name="selectWho" id="developer_check" value="developer" autocomplete="off" checked>
+                      <label class="btn login-select col-12" for="developer_check">개발자</label>
+                    </div>
+                  <div class="col-6">
+                    <input type="radio" class="btn-check" name="selectWho" id="company_check" value="company" autocomplete="off">
+                    <label class="btn login-select col-12" for="company_check">기업</label>
+                  </div>
+                  </div>
+                  <div class="form-group mt-2">
                     <label for="header_id_userid">아이디</label>
                     <input type="text" class="form-control" id="header_id_userid" placeholder="아이디" name="userid">
                     <span class="text-danger" id="id-text"></span>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group mt-2">
                     <label for="header_id_password">비밀번호</label>
                     <input type="password" class="form-control" id="header_id_password" placeholder="비밀번호" name="password">
                     <span class="text-danger" id='password-text'></span>
@@ -62,7 +72,7 @@
                       Remember me
                     </label>
                   </div> {% endcomment %}
-                  <input type="button" id='loginbtn' class="btn btn-primary col-12" value="로그인">
+                  <input type="button" id='loginbtn' class="btn col-12 mt-2" value="로그인">
                 </form>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{% url 'Developer:join' %}">회원가입</a>
@@ -85,13 +95,14 @@
 <script>
   $(document).ready(function(){
     login_check = function(){
+      select = $("input[name='selectWho']:checked").val()
       userid = $("#header_id_userid").val()
       password = $("#header_id_password").val()
       if (userid && password){
         $.ajax({
         url: "{% url 'Developer:login' %}",
         type: "POST",
-        data: {'userid':userid, 'password':password, 'csrfmiddlewaretoken': '{{csrf_token}}'},
+        data: {'select':select, 'userid':userid, 'password':password, 'csrfmiddlewaretoken': '{{csrf_token}}'},
         dataType:"json",
         success: function(response){
           if(response.blank){
