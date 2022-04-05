@@ -1,7 +1,8 @@
+from datetime import timezone
+from xml.etree.ElementTree import Comment
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-
-import board
+from .models import Boardimg
 from .models import Board
 from django.core.paginator import Paginator
 from .forms import Boardform
@@ -17,42 +18,50 @@ def board_list(request):
     return render(request, 'board_list.html', {'boards': boards})
 
 def board_create(request):
-
-    if request.method == "POST":
-        form = Boardform(request.POST)
+    if request.method == 'POST':
+        form = Boardform(request.POST, request.FILES)
         if form.is_valid():
-            developer_id = request.session.get('developer')
-            developer = Developer.objects.get(pk=developer_id)
-
-            board = Board()
-            board.title = form.cleaned_data['title']
-            board.contents = form.cleaned_data['contents']
-            board.developer = developer
+            board = Board(
+                title = form.title,
+                developer = form.developer,
+                contents = form.contents,
+            )
             board.save()
 
-            # tags = form.cleaned_data['tags'].split(",")
-            # for tag in tags:
+            boardimg = Boardimg(
+                img = request.FILES['img'],
+                img_original = request.FILES['img'].name,
+                board = board
+            )
+            boardimg.save()
 
-            #     if not tag: continue
+            comment = Comment(
+                developer = board.developer + '작성자',
+                contents = board.contents + '댓글 내용입니다',
+                board = board
+            )
+            comment.save()
 
-            #     _tag, created = Tag.objects.get_or_create(name=tag)
+            return redirect(f'/board/detail/{board.pk}/')
+        else:
+            print(request.FILES)
 
-            #     board.tags.add(_tag)
+    form = Boardform()
+    developerid = request.session.get('developer_id')
+    nickname = Developer.objects.get(pk=developerid).nickname
 
-            return redirect('/board/list/')
-    else:
-        form = Boardform()
-
-    return render(request, 'board_create.html', {'form': form})
-
+    return render(request, 'board_create.html', {'form': form, 'nickname': nickname})
 
 def board_detail(request, pk):
-    try:
-        board = Board.objects.get(pk=pk)
-    except Board.DoesNotExist:
-        raise Http404('게시글을 찾을수 없습니다')
-
-    return render(request, 'board_detail.html', {'board': board})
+    board_detail = get_object_or_404(Board, pk=pk)
+    comments = Comment.objects.filter(board = pk)
+    if request.method == "POST":
+        comment = Comment()
+        comment.board = board_detail
+        comment.contents = request.POST['contents']
+        comment.regdate = timezone.now()
+        comment.save()
+    return render(request, 'board_detail.html', {'board': board_detail, 'comments': comments})
     
 def board_update(request, pk):
     # board = get_object_or_404(Board, pk=pk)
