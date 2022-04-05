@@ -43,7 +43,7 @@
                 {% endif %}
                 {% endfor %}
                 <div class="mt-3">
-                <button type="submit" class="btn btn-primary mt-3" id="join">회원가입</button>
+                <input type="button" class="btn btn-primary mt-3" id="join" value="회원가입">
                 </div>
             </div>
         </form>
@@ -151,28 +151,27 @@ $(document).ready(function(){
             }
         })
     })
-
     $('#id_userid').change(function(){
         id_button = false
     })
-
-
+    $('#id_nickname').change(function(){
+        nick_button = false
+    })
     $('#email_select').change(function(){
         $("#email_option").val($('#email_select').val());
     })
-
-
     $('#join').click(function(){
         var joinfrm = document.forms['joinfrm']
 		var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 		var reg_id = /^[a-z]+[a-z0-9]{5,19}$/g; 
         
-        if()
+        if(joinfrm['userid'].value.trim()==""){
+            joinfrm['userid'].focus();
+            $('#check_userid').html('<p style="color:red">아이디를 입력해주세요</p>')
+            return false;
+        }
 
         if(!reg_id.test(joinfrm['userid'].value.trim())){
-            joinfrm['userid'].focus();
-            $('#check_userid').html('<p style="color:red">유효한 아이디가 아닙니다</p>')
-            return false;
         }
         
         if(!reg_pass.test(joinfrm['password'].value.trim())){
@@ -193,22 +192,20 @@ $(document).ready(function(){
             
         }
         if(!send_email){
-            joinfrm['send_button'].focus();
+            joinfrm['send_email'].focus();
             $('#check_email_option').html('<p style="color:red">이메일 인증을 해주세요</p>')
             return false;
         }
        
-        
         joinfrm.submit();
     }) 
 
-    
-    
 })
-    document.addEventListener('keydown', function(event) {
-        if (event.keyCode === 13) {
-        event.preventDefault();
-        };
-    }, true);
+
+document.addEventListener('keydown', function(event) {
+    if (event.keyCode === 13) {
+    event.preventDefault();
+    };
+}, true);
 </script>
 {% endblock script %}

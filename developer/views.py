@@ -1,11 +1,9 @@
 from datetime import datetime
-import email
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
-import developer
 from .models import Developer
-from .forms import JoinForm,LoginForm
+from .forms import DeveloperUpdateForm, JoinForm,LoginForm
 from django.contrib.auth.hashers import make_password, check_password
 
 #이메일 인증
@@ -151,6 +149,7 @@ def info(request):
     try:
         developer = Developer.objects.get(pk = request.session.get('developer_id'))
         registnum = developer.registnum
+        
         birth = {}
         if int(registnum[:2]) < 21 and int(registnum[6]) in (3, 4) :
             birth['year']= 2000 + int(registnum[:2])
@@ -171,8 +170,28 @@ def info(request):
     return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender})
 
 def update(request):
-    return render(request,'developer_update.html')
+      # if not request.session.get('developr'):
+    #     return render(request,'home.html')
+    developer = Developer.objects.get(pk = request.session.get('developer_id'))
+    if request.method == "POST":
+        form = DeveloperUpdateForm(request.POST,request.FILES,instance=developer)
+        if form.is_valid():
+            developer = form.save(commit=False)
+            if developer.pic:
+                developer.pic_original = developer.pic.name
+            if developer.resume:
+                developer.resume_original = developer.resume.name
+            developer.save()
+            return redirect("/developer/info/")
+    else:
+        form = DeveloperUpdateForm(instance=developer)
+    return render(request,'developer_update.html',{'form':form})
+
+
 def myproject(request):
+    # myprojects = Developer.
+
+
     return render(request,'developer_myproject.html')
 def follow(request):
     return render(request,'developer_follow.html')
