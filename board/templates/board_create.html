@@ -1,34 +1,35 @@
 {% extends "base.html" %}
 {% block title %}게시판 작성{% endblock %}
 {% block content %}
-<div class="row mt-5">
-    <div class="col-12">
-        <h1 class="text-center"><a href="{% url 'Board:list' %}">게시판</a></h1>
-        <hr>
-        <form method="POST" action=".">
-            {% csrf_token %}
+{% load bootstrap4 %}
+    <form action="{% url 'Board:create' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="{{ field.field.widget.input_type }}" class="form-control" 
+                        id="{{ field.id_for_label }}" placeholder="{{ field.label }}" name="{{ field.name }}" value="{{ nickname }}">
+        <div class="mt-3">
+            <a class="btn btn-primary mt-3" href="{% url 'Board:list' %}">목록</a>
+            <button type="submit" class="btn btn-primary mt-3">작성하기</button>
+        </div>
+    </form>
+{% endblock %}
 
-            {% for field in form %} {# form 의 각 필드 별로 for 순환 #}
-            {# field 변수 안에는 필요한 정보들이 있다. #}
-            <div class="form-group mt-3">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {% ifequal field.name 'contents' %}
-                <textarea class="form-control" name="{{ field.name }}" placeholder="{{ field.label}}"></textarea>
-                {% else %}
-                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
-                    placeholder="{{ field.label }}" name="{{ field.name }}" />
-                {% endifequal %}
-            </div>
-            {% if field.errors %}
-            <span class="text-danger">{{ field.errors }}</span>
-            {% endif %}
-            {% endfor %}
+{% block script %}
+<script>
+    function readImage(input) {
+        if (input.target.files && input.target.files[0]) {
+            const reader = new FileReader();
 
-            <div class="mt-3">
-                <a class="btn btn-primary mt-3" href="{% url 'Board:list' %}">목록</a>
-                <button type="submit" class="btn btn-primary mt-3">작성하기</button>
-            </div>
-        </form>
-    </div>
-</div>
+            reader.onload = (e) => {
+                $('#img_preview').attr('src',e.target.result)
+            }
+            reader.readAsDataURL(input.target.files[0])
+        }
+    }
+    $(document).ready(function(){
+        $('#id_img').change(function(e){
+            readImage(e)
+        })
+    })
+</script>
 {% endblock %}

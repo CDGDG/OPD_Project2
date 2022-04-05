@@ -1,33 +1,24 @@
-from functools import reduce
+from xml.etree.ElementTree import Comment
 from django import forms
 
 from board.models import Board
 
-class Boardform(forms.Form):
-    #제목
-    title = forms.CharField(
-        error_messages={
-            'required' : '제목을 입력해주세요'
-        },
-        max_length=20, label='제목'
-    )
+class Boardform(forms.ModelForm):
+    class Meta:
+        model = Board
+        fields = ['title', 'developer', 'contents']
 
-    # 작성자
-    developer = forms.CharField(
-        error_messages={
-            "required": '작성자를 입력해주세요'
-        },
-        max_length=10, label='작성자'
-    )
-
-    # 내용
-    contents = forms.CharField(
-        error_messages={
-            'required' : '내용을 입력해주세요'
-        },
-        widget=forms.Textarea, label="내용"
-    )
+        
 
     # 파일
     img = forms.FileField(label='파일')
+
+    def clean(self):
+        cleand_data = super().clean()
+
+        print(cleand_data.items())
+
+        self.title = cleand_data.get('title')
+        self.developer = cleand_data.get('developer')
+        self.contents = cleand_data.get('contents')
 
