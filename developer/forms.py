@@ -16,7 +16,7 @@ class JoinForm(forms.Form):
         },
         widget=forms.PasswordInput,max_length=500,label='비밀번호'
     )
-    check_passwored = forms.CharField(
+    re_password = forms.CharField(
         error_messages={
             'required' : '비밀번호를 입력해주세요'
         },
@@ -36,9 +36,9 @@ class JoinForm(forms.Form):
     )
     phonenum = forms.CharField(
         error_messages={
-            'required' : '핸드폰번호를 입력해주세요'
+            'required' : '휴대폰번호를 입력해주세요'
         },
-        max_length=11,label='핸드폰번호'
+        max_length=20,label='휴대폰번호'
     )
     email_id = forms.CharField(
         error_messages={
@@ -75,7 +75,8 @@ class JoinForm(forms.Form):
         self.email_option = cleaned_data.get('email_option')
         self.language = cleaned_data.get('language')
 
-        
+
+        print("=========================================",cleaned_data)
 
 class LoginForm(forms.Form):
     userid = forms.CharField(

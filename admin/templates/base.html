@@ -35,12 +35,20 @@
               </a>
               {% if request.session.id %}
               <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" id="dropdownUserToggle">
-                <li><p>{{request.session.name}} 님</p></li>
-                <li><a class="dropdown-item pb-2" href="#">내 정보</a></li>
-                <li><a class="dropdown-item pb-2" href="#">내 프로젝트</a></li>
-                <li><a class="dropdown-item pb-2" href="#">팔로우</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item pb-2" href="{% url 'Developer:logout' %}">로그아웃</a></li>
+                {% if request.session.who == 'developer' %}
+                  <li><p>{{request.session.name}} 님</p></li>
+                  <li><a class="dropdown-item pb-2" href="#">내 정보</a></li>
+                  <li><a class="dropdown-item pb-2" href="#">내 프로젝트</a></li>
+                  <li><a class="dropdown-item pb-2" href="#">팔로우</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item pb-2" href="{% url 'Admin:logout' %}">로그아웃</a></li>
+                {% elif request.session.who == 'company' %}
+                  <li><p>{{request.session.name}} 님</p></li>
+                  <li><a class="dropdown-item pb-2" href="#">내 정보</a></li>
+                  <li><a class="dropdown-item pb-2" href="#">팔로우</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item pb-2" href="{% url 'Admin:logout' %}">로그아웃</a></li>
+                {% endif %}
               </ul>
               {% else %}
               <div class="dropdown-menu">
@@ -100,7 +108,7 @@
       password = $("#header_id_password").val()
       if (userid && password){
         $.ajax({
-        url: "{% url 'Developer:login' %}",
+        url: "{% url 'Admin:login' %}",
         type: "POST",
         data: {'select':select, 'userid':userid, 'password':password, 'csrfmiddlewaretoken': '{{csrf_token}}'},
         dataType:"json",

@@ -6,6 +6,7 @@
             {% csrf_token %}
             {% for field in form %}
             <div class="form-group">
+                {% comment %} 언어 선택 {% endcomment %}
                 {% if field.name == 'language' %}
                 <label>{{field.label}}</label>
                 <ul class='form-control' style='list-style-type: none;'>
@@ -13,31 +14,67 @@
                     <li>{{f}}</li>
                     {% endfor %}
                 </ul>
+                <div id="check_{{field.name}}"></div>
+                {% comment %} 휴대폰번호 {% endcomment %}
+                {% elif field.name == 'phonenum'%}
+                    <input type="hidden" name="{{ field.name }}"/>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label><br>
+                    <input type="text" class="form-control mt-1" style="width:5%; display:inline-block" id="{{ field.id_for_label }}1"
+                    placeholder="000" name="{{ field.name }}1" maxlength="3"/> -
+                    <input type="text" class="form-control" style="width:5%; display:inline-block" id="{{ field.id_for_label }}2"
+                    placeholder="0000" name="{{ field.name }}2" maxlength="4"/> -
+                    <input type="text" class="form-control" style="width:5%; display:inline-block" id="{{ field.id_for_label }}3"
+                    placeholder="0000" name="{{ field.name }}3" maxlength="4"/>
+                    <div id="check_{{field.name}}"></div>
+                {% comment %} 이메일 {% endcomment %}
                 {% elif field.name == 'email_option'%}
-                    @<input type="{{field.field.widget.input_type}}" id="email_option" name="{{field.name}}" class="form-control">
-                    <select id="email_select">
-                        <option value="">직접입력</option>
-                        <option value="naver.com">naver.com</option>
+                @<input type="{{field.field.widget.input_type}}" id="email_option" name="{{field.name}}" class="form-control">
+                <select id="email_select">
+                    <option value="">직접입력</option>
+                    <option value="naver.com">naver.com</option>
                         <option value="gmail.com">gmail.com</option>
                         <option value="daum.net">daum.net</option>
                     </select>
-                    <input type="button" value="이메일 인증" id="send_email">
+                    <input type="button" value="이메일 인증" id="send_email" name ='send_email'>
                     <div id="check_{{field.name}}"></div>
                     <input type="text" placeholder="인증번호를 입력해 주세요" id="emailnum" name="emailnum" class="form-control" style="display:none">
                     <input type="button" value="인증하기" id="check_emailnum" name="check_emailnum" style="display:none">
                     <div id="check_email_result"></div>
+                {% comment %} 주민등록번호 {% endcomment %}
+                {% elif field.name == 'registnum'%}
+                    <input type="hidden" name="{{ field.name }}"/>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label><br>
+                    <input type="text" class="form-control mt-1" style="width:15%; display:inline-block" id="{{ field.id_for_label }}1"
+                    placeholder="주민번호 앞자리" name="{{ field.name }}1" maxlength="6"/> -
+                    <input type="text" class="form-control" style="width:15%; display:inline-block" id="{{ field.id_for_label }}2"
+                    placeholder="주민번호 뒷자리" name="{{ field.name }}2"  maxlength="7"/>
+                    <div id="check_{{field.name}}"></div>
+                {% comment %} 비밀번호 {% endcomment %}
+                {% elif field.name == 'password'%}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                placeholder="{{ field.label }}" name="{{ field.name }}" />  
+                <p>최소 8자 이상이고 최소 1개 이상의 숫자, 특수문자, 영문 대소문자가 포함되어야 합니다.</p>
+                <div id="check_{{field.name}}"></div>
+                {% comment %} 아이디 {% endcomment %}
+                {% elif field.name == 'userid'%}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                placeholder="{{ field.label }}" name="{{ field.name }}" />
+                <p>영문자로 시작하고 최소 5개 이상의 숫자나 영문자가 포함되어야 합니다.</p>
+                <div id="check_{{field.name}}"></div>
+                {% comment %} 아이디 중복검사 {% endcomment %}
+                <input type="button" id="duple_userid" value="중복검사"><div id="dupleId_result"></div>
                 {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
                     placeholder="{{ field.label }}" name="{{ field.name }}" />
                     <div id="check_{{field.name}}"></div>
-                    {% if field.name == "userid"%}
-                    <input type="button" id="duple_userid" value="중복검사"><div id="dupleId_result"></div>
                     {% endif %}
+                    {% comment %} 닉네임 중복검사 {% endcomment %}
                     {% if field.name == "nickname"%}
                     <input type="button" id="duple_nickname" value="중복검사"><div id="dupleNick_result"></div>
                     {% endif %}
-                {% endif %}
                 {% if field.errors %}
                 <span class="text-danger">{{ field.errors }}</span>
                 {% endif %}
@@ -53,9 +90,11 @@
 
 {% block script %}
 <script>
+// 아이디 중복검사
 $(document).ready(function(){
-    var id_button = false;
+    var id_button = false; 
     var nick_button = false;
+    var send_email = false;
     $('#duple_userid').click(function(){
         var userid=$('#id_userid').val()
         $.ajax({
@@ -66,7 +105,6 @@ $(document).ready(function(){
             success : function(response){
                 if(response.blank){
                     $('#dupleId_result').html('<p>아이디를 입력해주세요</p>')
-                    id_button = false
                 }else{
                     if(response.data == 'not exist'){
                         $('#dupleId_result').html('<p style="color:green">사용가능한 아이디입니다</p>')
@@ -74,7 +112,6 @@ $(document).ready(function(){
                         return;
                     }else{
                         $('#dupleId_result').html('<p style="color:red">중복된 아이디입니다</p>')
-                        id_button = false
                         return;
                         
                     }
@@ -85,6 +122,7 @@ $(document).ready(function(){
             
         })
     })
+    //닉네임 중복검사
     $('#duple_nickname').click(function(){
         var nickname=$('#id_nickname').val()
         $.ajax({
@@ -95,7 +133,6 @@ $(document).ready(function(){
             success : function(response){
                 if(response.blank){
                     $('#dupleNick_result').html('<p>닉네임을 입력해주세요</p>')
-                    nick_button = false
                 }else{
                     if(response.data == 'not exist'){
                         $('#dupleNick_result').html('<p style="color:green">사용가능한 닉네임입니다</p>')
@@ -103,7 +140,6 @@ $(document).ready(function(){
                         return;
                     }else{
                         $('#dupleNick_result').html('<p style="color:red">중복된 닉네임입니다</p>')
-                        nick_button=false;
                         return;
                         
                     }
@@ -113,16 +149,17 @@ $(document).ready(function(){
             }
         })
     })
-
+    //이메일 인증
     $('#send_email').click(function(){
         var joinfrm = document.forms['joinfrm']
         var email_id = joinfrm['email_id'].value.trim()
         var email_option = joinfrm['email_option'].value.trim()
+        
+        //이메일 인증번호
         var num_list = []
-        for(var i=0;i<4;i++){
-            num_list.push(Math.floor(Math.random() * 10)+"")
-        }
+        for(var i=0;i<4;i++){num_list.push(Math.floor(Math.random() * 10)+"")}
         var emailnum = num_list.join("")
+        
         $.ajax({
             url:"{% url 'Developer:send_email' %}",
             data : {'email_id':email_id,'email_option':email_option,'emailnum':emailnum},
@@ -135,15 +172,18 @@ $(document).ready(function(){
                     $('#check_email_option').html('<p style="color:red">이메일을 입력해주세요</p>')
                 }else{
                     $('#check_email_option').html('<p style="color:green">인증번호를 입력해주세요</p>')
-                    $('#emailnum').css('display','block')
-                    $('#check_emailnum').css('display','block')
+                    $('#emailnum').css('display','block') 
+                    $('#check_emailnum').css('display','block') //이메일 인증번호 입력란
                     $('#check_emailnum').click(function(){
                         if(joinfrm['emailnum'].value.trim() == ""){
                             $('#check_email_result').html('<p style="color:red">인증번호를 입력해주세요</p>')
+                            
                         }else if(joinfrm['emailnum'].value.trim() != emailnum){
-                            $('#check_email_result').html('<p style="color:red">인증번호를 확인해주세요</p>')
+                            $('#check_email_result').html('<p style="color:red">인증번호를 다시 확인해주세요</p>') //인증번호가 맞지 않을 때
+                            
                         }else{
                             $('#check_email_result').html('<p style="color:green">인증되었습니다</p>')
+                            send_email=true;
                             
                         }
                     })
@@ -151,9 +191,18 @@ $(document).ready(function(){
             }
         })
     })
-
-    $('#id_userid').change(function(){
-        id_button = false
+    // 값 변경시 다시 유효성 검사
+    $('#id_userid').change(function(){ 
+        id_button = false;
+    })
+    $('#id_nickname').change(function(){
+        nick_button = false;
+    })
+    $('#email_id').change(function(){
+        send_email = false;
+    })
+    $('#email_option').change(function(){
+        send_email = false;
     })
 
 
@@ -166,49 +215,117 @@ $(document).ready(function(){
         var joinfrm = document.forms['joinfrm']
 		var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 		var reg_id = /^[a-z]+[a-z0-9]{5,19}$/g; 
+        var check_cnt = $('input[name=language]:checkbox:checked').length;
         
-        if()
-
+        // 회원가입 유효성 검사
+        if(joinfrm['userid'].value.trim()==""){
+            joinfrm['userid'].focus();
+            $('#check_userid').html('<p style="color:red">아이디를 입력해주세요</p>');
+            return false;
+        }
+        
         if(!reg_id.test(joinfrm['userid'].value.trim())){
             joinfrm['userid'].focus();
-            $('#check_userid').html('<p style="color:red">유효한 아이디가 아닙니다</p>')
+            $('#check_userid').html('<p style="color:red">유효한 아이디가 아닙니다</p>');
             return false;
+        }
+        if(!id_button){
+            joinfrm['userid'].focus();
+            $('#check_userid').html('<p style="color:red">아이디 중복검사를 해주세요</p>');
+            return false;
+        }
+        if(joinfrm['password'].value.trim()==""){
+            joinfrm['password'].focus();
+            $('#check_password').html('<p style="color:red">비밀번호를 입력해주세요</p>');
+            return false;
+            
         }
         
         if(!reg_pass.test(joinfrm['password'].value.trim())){
             joinfrm['password'].focus();
-            $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>')
+            $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>');
             return false;
         }
         
-        if(!id_button){
-            joinfrm['userid'].focus();
-            $('#check_userid').html('<p style="color:red">아이디 중복검사를 해주세요</p>')
+        if(joinfrm['password'].value.trim() != joinfrm['re_password'].value.trim()){
+            joinfrm['re_password'].focus();
+            $('#check_re_password').html('<p style="color:red">비밀번호가 다릅니다</p>');
             return false;
         }
+        
+        if(joinfrm['nickname'].value.trim()==""){
+            joinfrm['nickname'].focus();
+            $('#check_nickname').html('<p style="color:red">닉네임을 입력해주세요</p>');
+            return false;
+        }
+        
+        if(joinfrm['nickname'].value.trim.length < 3){
+            joinfrm['nickname'].focus();
+            $('#check_nickname').html('<p style="color:red">닉네임을 세자리 이상입력해주세요</p>');
+            return false;
+
+        }
+
         if(!nick_button){
-            joinfrm['nick_button'].focus();
-            $('#check_nickname').html('<p style="color:red">닉네임 중복검사를 해주세요</p>')
+            joinfrm['nickname'].focus();
+            $('#check_nickname').html('<p style="color:red">닉네임 중복검사를 해주세요</p>');
             return false;
             
         }
+        if($('#id_registnum1').val() == "" || $('#id_registnum2').val() == ""){
+            $('#id_registnum1').focus();
+            $('#check_registnum').html('<p style="color:red">주민등록번호를 모두 입력해주세요</p>');
+            return false;
+        }else{
+            joinfrm['registnum'].value= $('#id_registnum1').val()+$('#id_registnum2').val();
+        }
+
+
+
+        if($('#id_phonenum1').val() == "" || $('#id_phonenum2').val() == "" || $('#id_phonenum3').val() == ""){
+            $('#id_phonenum1').focus();
+            $('#check_phonenum').html('<p style="color:red">휴대폰번호를 모두 입력해주세요</p>');
+            return false;
+            
+        }else{
+            joinfrm['phonenum'].value = $('#id_phonenum1').val()+"-"+$('#id_phonenum2').val()+"-"+$('#id_phonenum3').val();
+        }
+        
+        if($('#email_id').val() == "" || $('#email_option').val() == ""){
+            $('#email_id').focus();
+            $('#check_email_id').html('<p style="color:red">이메일을 모두 입력해주세요</p>');
+            return false;
+
+        }
+
         if(!send_email){
-            joinfrm['send_button'].focus();
-            $('#check_email_option').html('<p style="color:red">이메일 인증을 해주세요</p>')
+            joinfrm['send_email'].focus();
+            $('#check_email_option').html('<p style="color:red">이메일 인증을 해주세요</p>');
+            return false;
+        }
+        
+        if(check_cnt<1){
+            $('#check_language').focus();
+            $('#check_language').html('<p style="color:red">한개 이상의 언어를 선택해주세요 ')
             return false;
         }
        
-        
+        console.log(check_cnt)
+
+        console.log(joinfrm['phonenum'].value);
+        console.log(joinfrm['registnum'].value);
         joinfrm.submit();
     }) 
 
     
     
 })
-    document.addEventListener('keydown', function(event) {
-        if (event.keyCode === 13) {
-        event.preventDefault();
-        };
-    }, true);
+
+//enter -> submit 방지
+document.addEventListener('keydown', function(event) {
+    if (event.keyCode === 13) {
+    event.preventDefault();
+    };
+}, true);
 </script>
 {% endblock script %}

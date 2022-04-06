@@ -1,39 +1,43 @@
 {% extends "base.html" %}
+{% load bootstrap4 %}
 
-{% block title %}기업 회원가입{% endblock  %}
+{% block title %}기업 정보수정{% endblock  %}
 
 {% block content %}
 <div class="row mt-5">
     <div class="col-12">
         <form method="POST" id='updateForm' action="." enctype="multipart/form-data">
             {% csrf_token %}  
+            
             {% for field in form %}   {#  form 의 각 필드 별로 for 순환 #}
             {#  field 변수 안에는 필요한 정보들이 있다. #}
             <div class="form-group mt-3">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                 {% if field.name == 'tel' %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <br><input type="hidden" name="{{ field.name }}"/>
-                    <input type="text" class="form-control mt-1" style="width:5%; display:inline-block" id="{{ field.id_for_label }}"
+                    <input type="text" class="form-control mt-1" style="width:5%; display:inline-block" id="{{ field.id_for_label }}1"
                     placeholder="000" name="{{ field.name }}1" value='{{ tel1 }}' maxlength="4"/> -
-                    <input type="text" class="form-control" style="width:5%; display:inline-block" id="{{ field.id_for_label }}"
+                    <input type="text" class="form-control" style="width:5%; display:inline-block" id="{{ field.id_for_label }}2"
                     placeholder="0000" name="{{ field.name }}2" value='{{ tel2 }}' maxlength="4"/> -
-                    <input type="text" class="form-control" style="width:5%; display:inline-block" id="{{ field.id_for_label }}"
+                    <input type="text" class="form-control" style="width:5%; display:inline-block" id="{{ field.id_for_label }}3"
                     placeholder="0000" name="{{ field.name }}3" value='{{ tel3 }}' maxlength="4"/>
-                
+                    
                 {% elif field.name == 'address' %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <input type="text" id="sample6_postcode" style="display:inline-block; width:10%" class="form-control" onclick="sample6_execDaumPostcode()" placeholder="우편번호" readonly>
                     <input type="button" class="btn btn-primary mb-1" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
                     <input type="text" class="form-control mb-1" id="sample6_address" name="{{ field.name }}" placeholder="주소" value="{{ company.address }}" readonly>
                     <input type="text" class="form-control mb-1" id="sample6_detailAddress" name="address_detail" placeholder="상세주소" value="{{ company.address_detail }}">
                     <input type="text" class="form-control" id="sample6_extraAddress" name="address_detail2" placeholder="참고항목" readonly>
                 {% elif field.name == 'language' %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <ul class='form-control' style='list-style-type: none;'>
                         {% for f in field %}
                         <li>{{f}}</li>
                         {% endfor %}
                     </ul>
                 {% else %}
-                    {{field}}
+                    {% bootstrap_field field %}
                 {% endif %}
             </div>
             {% if field.errors %}

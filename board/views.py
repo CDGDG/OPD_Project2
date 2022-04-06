@@ -1,7 +1,8 @@
-from datetime import timezone
 from xml.etree.ElementTree import Comment
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+
+from admin.models import Language
 from .models import Boardimg
 from .models import Board
 from django.core.paginator import Paginator
@@ -28,6 +29,10 @@ def board_create(request):
             )
             board.save()
 
+            for _language in form.language:
+                if not _language: continue
+                board.language.add(Language.objects.get(pk=_language))
+
             boardimg = Boardimg(
                 img = request.FILES['img'],
                 img_original = request.FILES['img'].name,
@@ -35,12 +40,14 @@ def board_create(request):
             )
             boardimg.save()
 
+
             comment = Comment(
                 developer = board.developer + '작성자',
                 contents = board.contents + '댓글 내용입니다',
                 board = board
             )
             comment.save()
+
 
             return redirect(f'/board/detail/{board.pk}/')
         else:
@@ -53,15 +60,12 @@ def board_create(request):
     return render(request, 'board_create.html', {'form': form, 'nickname': nickname})
 
 def board_detail(request, pk):
-    board_detail = get_object_or_404(Board, pk=pk)
-    comments = Comment.objects.filter(board = pk)
-    if request.method == "POST":
-        comment = Comment()
-        comment.board = board_detail
-        comment.contents = request.POST['contents']
-        comment.regdate = timezone.now()
-        comment.save()
-    return render(request, 'board_detail.html', {'board': board_detail, 'comments': comments})
+    try:
+        board = Board.objects.get(pk=pk)
+    except Board.DoesNotExist:
+        raise Http404('게시글을 찾을수 없습니다')
+
+    return render(request, 'board_detail.html', {'board': board})
     
 def board_update(request, pk):
     # board = get_object_or_404(Board, pk=pk)

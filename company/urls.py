@@ -7,8 +7,7 @@ urlpatterns = [
     path('list/', views.list, name='list'),
     path('detail/<int:pk>/', views.detail, name='detail'),
     path('update/<int:pk>/', views.update, name='update'),
-    path('delete/<int:pk>/', views.delete, name='delete'),
+    path('delete/', views.delete, name='delete'),
     path('join/', views.join, name='join'),
-    path('login/', views.login, name='login'),
     path('check_id/',views.check_id, name='check_id'),
 ]
