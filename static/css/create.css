@@ -1,0 +1,44 @@
+*{
+    box-sizing: border-box;
+}
+
+.form-group{
+    position: relative;
+    margin-bottom: 2%;
+}
+label{
+    position: absolute;
+    transition: color .6s, background-color .6s, width .3s, padding .3s !important;
+}
+.label-color{
+    background-color: lightcoral;
+    color: white;
+}
+input[type='text']{
+    padding-left: 16%;
+    transition: padding .3s !important;
+}
+input[type='file']{
+    display: none;
+}
+.focusLabel{
+    background-color: salmon !important;
+    width: 15%;
+}
+.nofocusLabel{
+    background-color: lightcoral !important;
+    width: 100%;
+}
+.okLabel{
+    background-color: lightcoral !important;
+    width: 30%;
+}
+textarea{
+    resize: none;
+}
+.labelP5{
+    padding: 5%;
+}
+.labelP10{
+    padding: 10%;
+}

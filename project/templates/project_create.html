@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}게시판 생성 {% endblock %}
+{% block title %}프로젝트 생성 {% endblock %}
 {% block content %}
 {% load bootstrap4 %}
-    <form action="{% url 'Project:create' %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {%bootstrap_form form%}
-        <button class="btn btn-primary mt-3">프로젝트 생성</button>
-    </form>
+<link rel="stylesheet" href="/static/css/create.css">
+<script src="/static/js/create.js"></script>
+<form action="{% url 'Project:create' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button class="btn btn-primary mt-3">프로젝트 생성</button>
+</form>
+
 {% endblock  %}
 
 {% block script %}
@@ -14,16 +17,17 @@
     function readImage(input) {
         if (input.target.files && input.target.files[0]) {
             const reader = new FileReader();
-            
+
             reader.onload = (e) => {
-                $('#thumbnail_preview').attr('src',e.target.result)
+                console.log(e.target.result)
+                $('input[type="file"]').siblings('label').css({'background-image': 'url('+e.target.result+')'})
             }
             reader.readAsDataURL(input.target.files[0]);
         }
     }
     // 이벤트 리스너
-    $(document).ready(function(){
-        $('#id_thumbnail').change(function(e){
+    $(document).ready(function () {
+        $('#id_thumbnail').change(function (e) {
             readImage(e)
         })
     })
