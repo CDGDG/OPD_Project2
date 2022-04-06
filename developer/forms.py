@@ -76,7 +76,7 @@ class JoinForm(forms.Form):
         self.language = cleaned_data.get('language')
 
 
-        
+        print("=========================================",cleaned_data)
 
 class LoginForm(forms.Form):
     userid = forms.CharField(
