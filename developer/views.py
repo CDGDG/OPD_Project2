@@ -72,6 +72,8 @@ def login(request):
 def join(request):
     # 회원가입 처리
     if request.method=="POST":
+        print(request.POST.get('registnum'))
+        print(request.POST.get('phonenum'))
         form = JoinForm(request.POST,request.FILES)
         if form.is_valid():
             print("join하기")
