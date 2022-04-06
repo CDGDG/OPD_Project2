@@ -36,6 +36,9 @@ def detail(request, pk):
             company.category = '중소기업'
         elif company.category == 'start':
             company.category = '스타트업'
+        
+        who = request.session.get('who')
+        id = request.session.get('id')
 
     except Company.DoesNotExist:
         raise Http404('존재하지 않는 기업입니다') # django에서 기본적으로 제공하는 에러 페이지
@@ -80,11 +83,19 @@ def update(request, pk):
 
             return redirect(f'/company/detail/{pk}/')
 
+        
         tellist = form.cleaned_data['tel'].split('-')
         return render(request, 'company_update.html', {'form': form, 'company': company, 'tel1': tellist[0], 'tel2': tellist[1], 'tel3': tellist[2]})
 
-def delete(request, pk):
-    return render(request, 'deleteOk.html', {'pk':pk})
+def delete(request):
+    if request.method == "POST":
+        pk = request.POST.get('pk')
+        company = Company.objects.get(pk = pk)
+        company.delete()  # DELETE
+
+        # 세션 삭제
+
+    return redirect('/')
 
 def join(request):
     # GET 방식.  회원가입 폼
@@ -122,15 +133,17 @@ def join(request):
                 _language = Language.objects.get(pk = pk) # 선택한 language의 pk로 language 정보 가져오기
                 company.language.add(_language) # many to many 추가
             
-            return redirect('/home/')
-        tellist = form.cleaned_data['tel'].split('-')
+            return redirect('/')
+
+        if request.POST['tel'] :
+            tellist = form.cleaned_data['tel'].split('-')
+        else:
+            tellist = ['', '', '']
         print(tellist)
         return render(request,'company_join.html', {'form': form, 'tel1': tellist[0], 'tel2': tellist[1], 'tel3': tellist[2]})
 
 
 
-def login(request):
-    return render(request, 'login.html')
 
 
 def check_id(request):

@@ -5,14 +5,18 @@ from company.models import Company
 from django.contrib.auth.hashers import make_password, check_password
 
 
-class CompanyJoinForm(forms.Form):
+class CompanyJoinForm(forms.ModelForm):
 
-    companyid = forms.CharField(
-        error_messages={
-            'required': '아이디를 입력해주세요.'
-        },
-        max_length=20, label='아이디', initial=''
-    )
+    class Meta:
+        model = Company
+        fields = ['companyid', 'password', 're_password', 'name', 'pic', 'tel', 'email', 'address', 'people', 'url', 'summary', 'category', 'language']
+
+    # companyid = forms.CharField(
+    #     error_messages={
+    #         'required': '아이디를 입력해주세요.'
+    #     },
+    #     max_length=20, label='아이디', initial=''
+    # )
 
     
     password = forms.CharField(
@@ -29,47 +33,47 @@ class CompanyJoinForm(forms.Form):
         max_length=500, label='비밀번호 확인', widget=forms.PasswordInput, initial=''
     )
 
-    name = forms.CharField(
-        error_messages={
-            'required': '회사 이름을 입력해주세요.'
-        },
-        max_length=15, label='회사 이름', initial=''
-    )
+    # name = forms.CharField(
+    #     error_messages={
+    #         'required': '회사 이름을 입력해주세요.'
+    #     },
+    #     max_length=15, label='회사 이름', initial=''
+    # )
 
     pic = forms.FileField(label='회사 사진')
 
-    tel = forms.CharField(
-        error_messages={
-            'required': '전화번호를 입력해주세요.'
-        },
-        max_length=20, label='회사 전화번호', initial=''
-    )
+    # tel = forms.CharField(
+    #     error_messages={
+    #         'required': '전화번호를 입력해주세요.'
+    #     },
+    #     max_length=20, label='회사 전화번호', initial=''
+    # )
 
-    email = forms.EmailField(
-        error_messages={
-            'required': '이메일을 입력해주세요.'
-        },
-        label='이메일', initial=''
-    )
+    # email = forms.EmailField(
+    #     error_messages={
+    #         'required': '이메일을 입력해주세요.'
+    #     },
+    #     label='이메일', initial=''
+    # )
 
-    address = forms.CharField(
-        error_messages={
-            'required': '주소를 입력해주세요.'
-        },
-        label='주소', initial=''
-    )
+    # address = forms.CharField(
+    #     error_messages={
+    #         'required': '주소를 입력해주세요.'
+    #     },
+    #     label='주소', initial=''
+    # )
 
-    people = forms.IntegerField(
-        label='직원 수', initial=''
-    )
+    # people = forms.IntegerField(
+    #     label='직원 수', initial=''
+    # )
 
     url = forms.URLField(
         label='회사 홈페이지 URL', initial=''
     )
 
-    summary = forms.CharField(
-        label='회사소개', widget=forms.Textarea, initial=''
-    )
+    # summary = forms.CharField(
+    #     label='회사소개', widget=forms.Textarea, initial=''
+    # )
 
     category = forms.ChoiceField(
         choices=(('', '회사 규모'),('big','대기업'),('littlebig','중견기업'),('small','중소기업'),('start','스타트업')),
@@ -100,18 +104,6 @@ class CompanyJoinForm(forms.Form):
         if password != re_password:
             self.add_error('re_password', '비밀번호가 서로 다릅니다.')
 
-        # if username and password :
-        #     try:
-        #         user = User.objects.get(username=username)
-        #     except User.DoesNotExist: # 예외처리
-        #         self.add_error('username', '아이디가 없습니다.')
-        #         return
-
-        #     if not check_password(password, user.password):
-        #         # Form 의 특정 field 에 error 추가
-        #         self.add_error('password', '비밀번호가 틀렸습니다.')
-        #     else:
-        #         self.user_id = user.id  # 로그인 성공하면 Form의 user_id 를 만들어 id 값 담기
 
 
 class CompanyUpdateForm(forms.ModelForm):
@@ -137,7 +129,6 @@ class CompanyUpdateForm(forms.ModelForm):
 
     LANGUAGE_OPTIONS = reduce(lambda result, lang: result.append((lang.id, lang.language)) or result,Language.objects.all(), [])
     language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어 선택')
-
 
 
 
