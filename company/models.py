@@ -28,3 +28,16 @@ class Company(models.Model):
 
     def __str__(self):
         return f'id{self.id}:{self.name}-{self.category}'
+
+
+class CompanyFollow(models.Model):
+    company = models.ForeignKey('company.Company', on_delete=models.CASCADE,related_name='%(class)s_companyfollow_company')
+    follower = models.ForeignKey('developer.Developer',on_delete=models.CASCADE,related_name='%(class)s_companyfollow_follower')
+
+    class Meta:
+        db_table='opd_company_follow'
+        verbose_name='팔로우'
+        verbose_name_plural = '팔로우(들)'
+ 
+    def __str__(self):
+        return str(self.company)

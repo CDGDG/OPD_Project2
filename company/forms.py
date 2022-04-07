@@ -105,6 +105,10 @@ class CompanyJoinForm(forms.ModelForm):
 
         if password != re_password:
             self.add_error('re_password', '비밀번호가 서로 다릅니다.')
+        
+        print(tel.split('-'))
+        if tel.split('-')[0] == '' or tel.split('-')[1] == '' or tel.split('-')[2] == '':
+            self.add_error('tel', '전화번호를 형식에 맞게 입력해주세요.')
 
 
 
@@ -132,26 +136,40 @@ class CompanyUpdateForm(forms.ModelForm):
     LANGUAGE_OPTIONS = reduce(lambda result, lang: result.append((lang.id, lang.language)) or result,Language.objects.all(), [])
     language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어 선택')
 
+    def clean(self):
+        # 우선 부모 Form의 clean() 수행  -->  값이 들어있지 않으면 error 처리
+        cleaned_data = super().clean()
 
-class CompanySearchForm(forms.ModelForm):
-    class Meta:
-        model = Company
-        fields = ['menu', 'search']
-        widgets = {
-            'menu': forms.TextInput(attrs={
-                'class': "form-control",
-                }),
-            'search': forms.TextInput(attrs={
-                'class': "form-control",
-                }),
-            }
+        tel = cleaned_data.get('tel')
 
-    menu = forms.ChoiceField(
-        choices=(('all','전체'),('name','이름'),('tel','전화번호'),('email','이메일'),('address','주소'),('summary','소개')),
-        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 10%'})
-    )
-    search = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 60%'})
-    )
+        print(tel.split('-'))
+        if tel.split('-')[0] == '' or tel.split('-')[1] == '' or tel.split('-')[2] == '':
+            self.add_error('tel', '전화번호를 형식에 맞게 입력해주세요.')
+
+
+
+
+
+
+# class CompanySearchForm(forms.ModelForm):
+#     class Meta:
+#         model = Company
+#         fields = ['menu', 'search']
+#         widgets = {
+#             'menu': forms.TextInput(attrs={
+#                 'class': "form-control",
+#                 }),
+#             'search': forms.TextInput(attrs={
+#                 'class': "form-control",
+#                 }),
+#             }
+
+#     menu = forms.ChoiceField(
+#         choices=(('all','전체'),('name','이름'),('tel','전화번호'),('email','이메일'),('address','주소'),('summary','소개')),
+#         widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 10%'})
+#     )
+#     search = forms.CharField(
+#         widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 60%'})
+#     )
 
 
