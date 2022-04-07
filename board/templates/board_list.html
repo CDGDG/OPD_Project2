@@ -16,7 +16,7 @@
                 </tr>
             </thead>
             <tbody class="text-dark">
-                {%for board in boards %}
+                {% for board in boards %}
                 <tr onclick="location.href='/board/detail/{{ board.id }}/'">
                     <td>{{ board.id }}</td>
                     <td>{{ board.title }}</td>
