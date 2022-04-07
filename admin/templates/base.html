@@ -37,7 +37,7 @@
               <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" id="dropdownUserToggle">
                 {% if request.session.who == 'developer' %}
                   <li><p>{{request.session.name}} 님</p></li>
-                  <li><a class="dropdown-item pb-2" href="#">내 정보</a></li>
+                  <li><a class="dropdown-item pb-2" href="{% url 'Developer:info' request.session.id %}">내 정보</a></li>
                   <li><a class="dropdown-item pb-2" href="#">내 프로젝트</a></li>
                   <li><a class="dropdown-item pb-2" href="#">팔로우</a></li>
                   <li><hr class="dropdown-divider"></li>
@@ -83,7 +83,8 @@
                   <input type="button" id='loginbtn' class="btn col-12 mt-2" value="로그인">
                 </form>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'Developer:join' %}">회원가입</a>
+                <a class="dropdown-item" href="{% url 'Developer:join' %}">개발자 회원가입</a>
+                <a class="dropdown-item" href="{% url 'Company:join' %}">기업 회원가입</a>
                 <a class="dropdown-item" href="#">Forgot password?</a>
               </div>
               {% endif %}

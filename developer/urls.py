@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from django.conf.urls.static import static
+from django.conf import settings
 
 app_name = "Developer"
 
@@ -11,8 +12,15 @@ urlpatterns = [
     path('send_email/',views.send_email, name='send_email'),
     path('login/', views.login, name='login'),
     path('logout/',views.logout,name="logout"),
-    path('info/',views.info,name = 'info'),
-    path('update/<int:pk>',views.update, name = 'update'),
+    path('info/<int:pk>/',views.info,name = 'info'),
+    path('download/<int:pk>/',views.download, name ='resume_download'),
+    path('update/',views.update, name = 'update'),
     path('myproject/',views.myproject, name = 'myproject'),
     path('follow/',views.follow, name = 'follow'),
 ]
+
+#MEDIA 경로 추가
+urlpatterns += static(
+    settings.MEDIA_URL,
+    document_root = settings.MEDIA_ROOT
+)

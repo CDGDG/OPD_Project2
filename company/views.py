@@ -2,18 +2,21 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from admin.models import Language
-from .forms import CompanyJoinForm, CompanyUpdateForm
+from .forms import CompanyJoinForm, CompanyUpdateForm, CompanySearchForm
 from .models import Company
 from django.core.paginator import Paginator
 
 def list(request):
     all_companys = Company.objects.all().order_by('-id')
 
-    # 페이징
-    page = int(request.GET.get('p', 1))
-    paginator = Paginator(all_companys, 10)  # 한 페이지당 5개씩 보여주는 paginator 생성
-    companys = paginator.get_page(page)
-    for company in companys:
+    print(all_companys)
+
+    search = request.GET.get('s','')
+    menu = request.GET.get('m', 'all')
+
+    searchcompanys = []
+
+    for company in all_companys:
         if company.category == 'big':
             company.category = '대기업'
         elif company.category == 'littlebig':
@@ -23,7 +26,57 @@ def list(request):
         elif company.category == 'start':
             company.category = '스타트업'
 
-    return render(request, 'company_list.html', {'companys': companys})
+        if menu == 'name':
+            print(company)
+            if search in company.name:
+                searchcompanys.append(company)
+        elif menu == 'tel':
+            if search in company.tel:
+                searchcompanys.append(company)
+        elif menu == 'email':
+            if search in company.email:
+                searchcompanys.append(company)
+        elif menu == 'address':
+            if search in company.address:
+                searchcompanys.append(company)
+        elif menu == 'summary':
+            if search in company.summary:
+                searchcompanys.append(company)
+        elif menu == 'all':
+            if search in company.name:
+                searchcompanys.append(company)
+            elif search in company.tel:
+                searchcompanys.append(company)
+            elif search in company.email:
+                searchcompanys.append(company)
+            elif search in company.address:
+                searchcompanys.append(company)
+            elif search in company.summary:
+                searchcompanys.append(company)
+        else :
+            searchcompanys.append(company)
+    
+    print(searchcompanys)
+
+
+    # 페이징
+    page = int(request.GET.get('p', 1))
+    paginator = Paginator(searchcompanys, 10)  # 한 페이지당 10개씩 보여주는 paginator 생성
+    companys = paginator.get_page(page)
+
+    print(companys)
+
+    # form = CompanySearchForm()
+
+    print('s : ',search)
+    print('m : ',menu)
+    if search :
+        print('sssssssssssssssss')
+    if menu:
+        print('mmmmmmmmmmmmmmm')
+
+
+    return render(request, 'company_list.html', {'companys': companys, 'search': search, 'menu': menu})
 
 def detail(request, pk):
     try:
@@ -94,6 +147,12 @@ def delete(request):
         company.delete()  # DELETE
 
         # 세션 삭제
+    if request.session.get('id'):   
+        del(request.session['who'])
+        del(request.session['id']) 
+        del(request.session['name'])
+        if request.session.get('pic_url'):
+            del(request.session['pic_url']) 
 
     return redirect('/')
 

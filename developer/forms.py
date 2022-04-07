@@ -2,6 +2,7 @@ from django import forms
 from admin.models import Language
 from django.contrib.auth.hashers import check_password
 from developer.models import Developer
+from developer.widgets import PicPreviewWidget, ResumePreviewWidget
 
 class JoinForm(forms.Form):
     userid = forms.CharField(
@@ -99,3 +100,17 @@ class LoginForm(forms.Form):
         self.userid = cleaned_data.get('userid')
         self.password = cleaned_data.get('password')
             
+
+class UpdateForm(forms.ModelForm):
+    CHOICES = []
+    for lang in Language.objects.all():
+        CHOICES.append((lang.pk,lang.language))
+
+    language = forms.MultipleChoiceField(label="언어 선택",widget=forms.CheckboxSelectMultiple, choices=CHOICES)
+
+    pic = forms.ImageField(widget=PicPreviewWidget, allow_empty_file= True)
+    resume = forms.FileField(widget=ResumePreviewWidget, allow_empty_file= True)
+
+    class Meta:
+        model = Developer
+        fields = ['language','pic','resume']

@@ -1,4 +1,5 @@
 from functools import reduce
+from turtle import width
 from django import forms
 from admin.models import Language
 from company.models import Company
@@ -10,6 +11,7 @@ class CompanyJoinForm(forms.ModelForm):
     class Meta:
         model = Company
         fields = ['companyid', 'password', 're_password', 'name', 'pic', 'tel', 'email', 'address', 'people', 'url', 'summary', 'category', 'language']
+        
 
     # companyid = forms.CharField(
     #     error_messages={
@@ -131,6 +133,25 @@ class CompanyUpdateForm(forms.ModelForm):
     language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어 선택')
 
 
+class CompanySearchForm(forms.ModelForm):
+    class Meta:
+        model = Company
+        fields = ['menu', 'search']
+        widgets = {
+            'menu': forms.TextInput(attrs={
+                'class': "form-control",
+                }),
+            'search': forms.TextInput(attrs={
+                'class': "form-control",
+                }),
+            }
 
+    menu = forms.ChoiceField(
+        choices=(('all','전체'),('name','이름'),('tel','전화번호'),('email','이메일'),('address','주소'),('summary','소개')),
+        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 10%'})
+    )
+    search = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 60%'})
+    )
 
 

@@ -46,7 +46,7 @@
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label><br>
                     <input type="text" class="form-control mt-1" style="width:15%; display:inline-block" id="{{ field.id_for_label }}1"
                     placeholder="주민번호 앞자리" name="{{ field.name }}1" maxlength="6"/> -
-                    <input type="text" class="form-control" style="width:15%; display:inline-block" id="{{ field.id_for_label }}2"
+                    <input type="password" class="form-control" style="width:15%; display:inline-block" id="{{ field.id_for_label }}2"
                     placeholder="주민번호 뒷자리" name="{{ field.name }}2"  maxlength="7"/>
                     <div id="check_{{field.name}}"></div>
                 {% comment %} 비밀번호 {% endcomment %}
