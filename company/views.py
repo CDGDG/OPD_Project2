@@ -268,7 +268,7 @@ def follow(request):
 
 
     page = int(request.GET.get('p', 1))
-    paginator = Paginator(searchfollows, 1)  # 한 페이지당 10개씩 보여주는 paginator 생성
+    paginator = Paginator(searchfollows, 10)  # 한 페이지당 10개씩 보여주는 paginator 생성
     follows = paginator.get_page(page)
 
     return render(request, 'company_follow.html', {'follows': follows, 'search': search, 'menu': menu})
