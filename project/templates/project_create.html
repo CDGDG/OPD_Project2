@@ -4,32 +4,15 @@
 {% load bootstrap4 %}
 <link rel="stylesheet" href="/static/css/create.css">
 <script src="/static/js/create.js"></script>
-<form action="{% url 'Project:create' %}" method="POST" enctype="multipart/form-data">
+<form action="{% url 'Project:create' %}" method="POST" enctype="multipart/form-data" id='form_id' name='projectform' class="row">
     {% csrf_token %}
     {% bootstrap_form form %}
-    <button class="btn btn-primary mt-3">프로젝트 생성</button>
+    <input type="button" class="btn btn-primary form-control mt-3 py-4" id="create" value="프로젝트 생성">
 </form>
+<br><br><br>
 
 {% endblock  %}
 
 {% block script %}
-<script>
-    function readImage(input) {
-        if (input.target.files && input.target.files[0]) {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                console.log(e.target.result)
-                $('input[type="file"]').siblings('label').css({'background-image': 'url('+e.target.result+')'})
-            }
-            reader.readAsDataURL(input.target.files[0]);
-        }
-    }
-    // 이벤트 리스너
-    $(document).ready(function () {
-        $('#id_thumbnail').change(function (e) {
-            readImage(e)
-        })
-    })
-</script>
+<script src="/static/js/project_create.js"></script>
 {% endblock  %}

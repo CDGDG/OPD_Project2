@@ -259,7 +259,7 @@ $(document).ready(function(){
             return false;
         }
         
-        if(joinfrm['nickname'].value.trim.length < 3){
+        if(joinfrm['nickname'].value.trim().length < 3){
             joinfrm['nickname'].focus();
             $('#check_nickname').html('<p style="color:red">닉네임을 세자리 이상입력해주세요</p>');
             return false;

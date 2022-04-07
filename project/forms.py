@@ -13,18 +13,16 @@ class Projectform(forms.ModelForm):
     # 언어
     LANGUAGE_OPTIONS = reduce(lambda result, lang: result.append((lang.id, lang.language)) or result,Language.objects.all(), [])
 
-    language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어 선택')
+    language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어*')
 
-    thumbnail = forms.ImageField(allow_empty_file= True, label="썸네일")
+    thumbnail = forms.ImageField(allow_empty_file= True, label="썸네일", required=False)
 
-    startdate = forms.DateTimeField(widget=forms.DateInput(format=('%Y년 %m월 %d일'), attrs={'class': 'form-control', 'type':"date"}), label="시작일")
+    startdate = forms.DateTimeField(widget=forms.DateInput(format=('%Y년 %m월 %d일'), attrs={'class': 'form-control', 'type':"date"}), label="시작일", required=False)
 
     def clean(self):   
         # 우선 부모 Form 의 clean() 수행 --> 값이 들어있지 않으면 error 처리 
         cleand_data = super().clean()
-
-        print(cleand_data.items())
-
+        
         self.title = cleand_data.get('title')
         self.summary = cleand_data.get('summary')
         self.contents = cleand_data.get('contents')
