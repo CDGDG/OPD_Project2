@@ -114,3 +114,8 @@ class UpdateForm(forms.ModelForm):
     class Meta:
         model = Developer
         fields = ['language','pic','resume']
+
+    def __init__(self, *args, **kwargs):
+        super(UpdateForm, self).__init__(*args, **kwargs)
+        language = self.instance.language
+        self.initial['language'] = [lang.id for lang in language.all()]

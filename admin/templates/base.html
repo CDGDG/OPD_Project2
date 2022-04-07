@@ -38,8 +38,8 @@
                 {% if request.session.who == 'developer' %}
                   <li><p>{{request.session.name}} 님</p></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Developer:info' request.session.id %}">내 정보</a></li>
-                  <li><a class="dropdown-item pb-2" href="#">내 프로젝트</a></li>
-                  <li><a class="dropdown-item pb-2" href="#">팔로우</a></li>
+                  <li><a class="dropdown-item pb-2" href="{% url 'Developer:myproject' request.session.id %}">내 프로젝트</a></li>
+                  <li><a class="dropdown-item pb-2" href="{% url 'Developer:follow' %}">팔로우</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Admin:logout' %}">로그아웃</a></li>
                 {% elif request.session.who == 'company' %}
