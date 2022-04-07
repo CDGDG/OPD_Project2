@@ -7,13 +7,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">modal-header</h4>
+                <h4 class="modal-title">현재 비밀번호 확인</h4>
             </div>
             <div class="modal-body">    
-                <p>modal</p>
+                <p>현재 비밀번호를 입력해주세요</p>
+                <input type="password" class="form-control mt-1" id="current_password" placeholder="비밀번호를 입력해주세요">
+                <div id="check"></div>
             </div>
             <div class="modal-footer"> 
-                <button class="btn btn-primary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary" id ="check_password">확인</button>
+                <button class="btn btn-primary" data-bs-dismiss="modal">취소</button>
             </div>
         </div>
     </div>
@@ -43,12 +46,38 @@
             {% endif %}
         </div>
         <div class="mt-3">
-            <button class="btn-modal" data-toggle="modal" data-target="#passwordModal" id = "">수정하기</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwordModal">수정하기</button>
         </div>
         
     </div>
 </div>
 {% endblock %}
 {% block script %}
+    <script>
+        $(document).ready(function(){
+            $('#check_password').click(function(){
+                    var password = $("#current_password").val();
+                    var check = "check"
+                    console.log(password)
+                    $.ajax({
+                        url:"{% url 'Developer:checkPassword' %}",
+                        type:"POST",
+                        data : {'csrfmiddlewaretoken': '{{csrf_token}}','password':password,'check':check},
+                        datatype:'json',
+                        success:function(response){
+                            if(response.blank){
+                                $('#check').html('<p style="color:red">비밀번호를 입력해주세요</p>')
+                                return;
+                            }else if(response.data == "fail"){
+                                $('#check').html('<p style="color:red">비밀번호가 틀립니다</p>')
+                                return;
+                            }else{
+                                location.href = "{% url 'Developer:update' %}"
+                            }
+                        }
+                    })
+            })
 
+        })
+    </script>
 {% endblock script %}

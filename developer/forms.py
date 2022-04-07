@@ -108,8 +108,8 @@ class UpdateForm(forms.ModelForm):
 
     language = forms.MultipleChoiceField(label="언어 선택",widget=forms.CheckboxSelectMultiple, choices=CHOICES)
 
-    pic = forms.ImageField(widget=PicPreviewWidget, allow_empty_file= True)
-    resume = forms.FileField(widget=ResumePreviewWidget, allow_empty_file= True)
+    pic = forms.ImageField(widget=PicPreviewWidget, allow_empty_file= True, required=False)
+    resume = forms.FileField(widget=ResumePreviewWidget, allow_empty_file= True,required=False)
 
     class Meta:
         model = Developer

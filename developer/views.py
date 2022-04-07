@@ -3,6 +3,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
 from company.models import Company
+import developer
 from .models import Developer
 from .forms import JoinForm,LoginForm, UpdateForm
 from django.contrib.auth.hashers import make_password, check_password
@@ -166,6 +167,24 @@ def check_nick(request):
     return JsonResponse(context)
 
 
+def checkPassword(request):
+    developer = Developer.objects.get(pk = request.session.get('id'))
+    password = request.POST.get('password')
+    check = request.POST.get('check')
+    context = {}
+    if check == "check":
+        if password == "":
+            context['blank'] = True
+        elif not check_password(password,developer.password):
+            context['data'] = 'fail'
+    else:
+        if password == "":
+            context['blank'] = True
+        elif check_password(password,developer.password):
+            context['data'] = 'fail'
+
+    return JsonResponse(context)
+
 
 def logout(request):
     if request.session.get('id'):
@@ -202,7 +221,7 @@ def info(request,pk):
 
     except Developer.DoesNotExist:
          raise Http404('내 정보를 찾을 수 없습니다')
-    return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,})
+    return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password})
 
 def download(request,pk):
     file = Developer.objects.get(pk=pk)
@@ -231,8 +250,9 @@ def update(request):
     if request.method == "POST":
         form = UpdateForm(request.POST,request.FILES,instance=developer)
         if form.is_valid():
+            print("=====================",request.POST.get('password'))
             developer = form.save(commit=False)
-            developer.password = request.POST.get('password')
+            developer.password = make_password(request.POST.get('password'))
             if request.FILES.get('pic'): 
                 developer.pic = request.FILES.get('pic')
                 developer.pic_original = developer.pic.name
