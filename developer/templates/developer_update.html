@@ -1,3 +1,99 @@
 {% extends 'base.html' %}
+{% block title %}수정{% endblock  %}
 {% block content %}
 {% endblock content %}
+{% load bootstrap4 %}
+<h2>수정</h2>
+<hr>
+<form action="{% url 'Developer:update'%}" method="POST" enctype="multipart/form-data" name="updatefrm">
+    {% csrf_token %}
+    <p>비밀번호 수정하기</p>
+    <input type="password" class="form-control mt-1" name="password" id="password">
+    <div id="check_password"></div>
+    최소 8자 이상이고 최소 1개 이상의 숫자, 특수문자, 영문 대소문자가 포함되어야 합니다.<br>
+    <p>비밀번호 확인</p>
+    <input type="password" class="form-control mt-1" name="re_password">
+    <div id="check_re_password"></div>
+    {% bootstrap_form form %}
+    <div id="check_language"></div>
+    <input type="button" class="btn btn-outline-dark" id="update" value="수정완료">
+    <button type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</button>
+</form>
+{% endblock content %}
+{% block script %}
+<script>
+    function readPic(input) {
+        if (input.target.files && input.target.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                $('#pic_preview').attr('src',e.target.result)
+            }
+            reader.readAsDataURL(input.target.files[0]);
+        }
+    }
+    function readResume(input) {
+        if (input.target.files && input.target.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                $('#resume_preview').attr('src',e.target.result)
+            }
+            reader.readAsDataURL(input.target.files[0]);
+        }
+    }
+    // 이벤트 리스너
+    $(document).ready(function(){
+        $('#id_pic').change(function(e){
+            readPic(e)
+        })
+        $('#id_resume').change(function(e){
+            readResume(e)
+        })
+
+
+        $('#update').click(function(){
+            var updatefrm = document.forms['updatefrm']
+            var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+            var check_cnt = $('input[name=language]:checkbox:checked').length;
+
+            if(updatefrm['password'].value.trim()==""){
+                updatefrm['password'].focus();
+                $('#check_password').html('<p style="color:red">비밀번호를 입력해주세요</p>');
+                return false;
+                
+            }
+            
+            if(!reg_pass.test(updatefrm['password'].value.trim())){
+                updatefrm['password'].focus();
+                $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>');
+                return false;
+            }
+            
+            if(updatefrm['re_password'].value.trim()==""){
+                updatefrm['re_password'].focus();
+                $('#check_re_password').html('<p style="color:red">비밀번호 확인을 입력해주세요</p>');
+                return false;
+                
+            }
+            if(updatefrm['password'].value.trim() != updatefrm['re_password'].value.trim()){
+                updatefrm['re_password'].focus();
+                $('#check_re_password').html('<p style="color:red">비밀번호가 다릅니다</p>');
+                return false;
+            }
+
+            if(check_cnt<1){
+                $('#id_language').focus();
+                $('#id_language').append('<p style="color:red">한개 이상의 언어를 선택해주세요 ')
+                return false;
+            }
+
+            updatefrm.submit()
+        })
+
+
+
+
+    })
+</script>
+{% endblock  %}

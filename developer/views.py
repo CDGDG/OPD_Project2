@@ -4,9 +4,16 @@ from django.shortcuts import redirect, render
 from admin.models import Language
 from company.models import Company
 from .models import Developer
-from .forms import JoinForm,LoginForm
+from .forms import JoinForm,LoginForm, UpdateForm
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator
+
+#파일 다운로드
+import os
+import mimetypes
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from django.http import FileResponse
 
 #이메일 인증
 from django.contrib.sites.shortcuts import get_current_site
@@ -170,11 +177,11 @@ def logout(request):
     return redirect('/') 
 
 
-def info(request):
-    # if not request.session.get('developr'):
+def info(request,pk):
+    # if not request.session.get('id'):
     #     return render(request,'home.html')
     try:
-        developer = Developer.objects.get(pk = request.session.get('id'))
+        developer = Developer.objects.get(pk = pk)
         registnum = developer.registnum
 
         # 주민번호로 생년월일 , 성별  
@@ -195,11 +202,50 @@ def info(request):
 
     except Developer.DoesNotExist:
          raise Http404('내 정보를 찾을 수 없습니다')
-    
-    return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender})
+    return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,})
+
+def download(request,pk):
+    file = Developer.objects.get(pk=pk)
+
+    resume_original = file.resume_original
+
+    root_path = os.path.join(settings.MEDIA_ROOT)# MEDIA root 경로
+    file_name = file.resume.name # 물리적으로 저장되어 있는 파일명
+    full_path = os.path.join(root_path,file_name)
+    mimetype = mimetypes.guess_type(full_path)
+
+    # 확인안되는 mimetype 의 경우. 기본적으로 'application/octet-stream' 으로 세팅
+    if not mimetypes: mimetype = 'application/octet-stream'  
+    file_size = os.path.getsize(full_path)
+
+    fs = FileSystemStorage(root_path)
+    response = FileResponse(fs.open(file_name, 'rb'), content_type=mimetype)
+
+    response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'%s''%"{resume_original}"' # 최초 업로드 당시 파일명 그대로 다운로드/ 한글 파일명 인코딩 후 다운로드
+    response['Content-Length'] = file_size  
+
+    return response
 
 def update(request):
-    return render(request,'developer_update.html')
+    developer = Developer.objects.get(pk = request.session.get('id'))
+    if request.method == "POST":
+        form = UpdateForm(request.POST,request.FILES,instance=developer)
+        if form.is_valid():
+            developer = form.save(commit=False)
+            developer.password = request.POST.get('password')
+            if request.FILES.get('pic'): 
+                developer.pic = request.FILES.get('pic')
+                developer.pic_original = developer.pic.name
+            if request.FILES.get('resume'): 
+                developer.resume = request.FILES.get('resume')
+                developer.resume_original = developer.resume.name
+            developer.save()
+            print(developer.pk)
+        return redirect(f'/developer/info/{developer.pk}/')
+    else:
+        form = UpdateForm(instance=developer)
+        return render(request,'developer_update.html',{'form':form})
+
 def myproject(request):
     # if not request.session.get('developr'):
     # return render(request,'home.html')
