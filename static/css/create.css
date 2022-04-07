@@ -1,39 +1,37 @@
-*{
-    box-sizing: border-box;
-}
 
-.form-group{
+#form_id .form-group{
     position: relative;
     margin-bottom: 2%;
+    padding: 0;
 }
-label{
+#form_id label{
     position: absolute;
     transition: color .6s, background-color .6s, width .3s, padding .3s !important;
 }
-.label-color{
+#form_id .label-color{
     background-color: lightcoral;
     color: white;
 }
-input[type='text']{
+#form_id input[type='text']{
     padding-left: 16%;
     transition: padding .3s !important;
 }
-input[type='file']{
+#form_id input[type='file']{
     display: none;
 }
-.focusLabel{
+#form_id .focusLabel{
     background-color: salmon !important;
     width: 15%;
 }
-.nofocusLabel{
+#form_id .nofocusLabel{
     background-color: lightcoral !important;
     width: 100%;
 }
-.okLabel{
+#form_id .okLabel{
     background-color: lightcoral !important;
     width: 30%;
 }
-textarea{
+#form_id textarea{
     resize: none;
 }
 .labelP5{

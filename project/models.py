@@ -1,17 +1,19 @@
 from django.db import models
 
 class Project(models.Model):
-    title = models.CharField(max_length=50, verbose_name='프로젝트 타이틀')
-    summary = models.CharField(max_length=100, verbose_name='프로젝트 요약')
-    contents = models.TextField(verbose_name='프로젝트 내용')
+    title = models.CharField(max_length=50, verbose_name='프로젝트 타이틀*')
+    summary = models.CharField(max_length=100, verbose_name='프로젝트 요약*')
+    contents = models.TextField(verbose_name='프로젝트 내용*')
     startdate = models.DateTimeField(null=True)
     enddate = models.DateTimeField(null=True)
     viewcnt = models.IntegerField(default=0)
     private = models.BooleanField(default=False, verbose_name='공개')
-    thumbnail = models.FileField(upload_to='project_thumbnail/')
-    thumbnail_original = models.TextField(null=False)
+    thumbnail = models.FileField(upload_to='project_thumbnail/', null=True)
+    thumbnail_original = models.TextField(null=True)
 
-    member = models.ManyToManyField('developer.Developer')
+    leader = models.ForeignKey('developer.Developer', on_delete=models.CASCADE, verbose_name='팀장', related_name='%(class)s_leader')
+
+    member = models.ManyToManyField('developer.Developer',related_name='%(class)s_member')
     language = models.ManyToManyField('admin.Language')
 
     class Meta:

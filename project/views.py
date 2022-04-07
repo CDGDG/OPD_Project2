@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
 
 from admin.models import Language
+from developer.models import Developer
 from recruit.models import Recruit, Recruit_Language
 
 from .models import Project
@@ -25,14 +26,16 @@ def create(request):
         form = Projectform(request.POST, request.FILES)
         if form.is_valid():
             project = Project(
+                leader = get_object_or_404(Developer, id=request.session['id']),
                 title = form.title,
                 summary = form.summary,
                 contents = form.contents,
                 startdate = form.startdate,
                 private = form.private,
-                thumbnail = request.FILES['thumbnail'],  # 파일
-                thumbnail_original = request.FILES['thumbnail'].name  # 파일 원본 이름
+                thumbnail = request.FILES.get('thumbnail'),  # 파일
             )
+            if project.thumbnail:
+                project.thumbnail_original = project.thumbnail.name  # 파일 원본 이름
             project.save()  # many to many 넣어주기 전에 project의 pk가 필요하므로 미리 save
 
             for _language in form.language:    # 선택한 언어 반복
