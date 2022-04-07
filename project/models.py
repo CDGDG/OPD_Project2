@@ -7,7 +7,7 @@ class Project(models.Model):
     startdate = models.DateTimeField(null=True)
     enddate = models.DateTimeField(null=True)
     viewcnt = models.IntegerField(default=0)
-    private = models.BooleanField(default=False)
+    private = models.BooleanField(default=False, verbose_name='공개')
     thumbnail = models.FileField(upload_to='project_thumbnail/')
     thumbnail_original = models.TextField(null=False)
 

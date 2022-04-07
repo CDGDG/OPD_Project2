@@ -1,4 +1,4 @@
-{% extends "base.html %}
+{% extends "base.html" %}
 {% block title %}게시판 세부내용 {% endblock %}
 {% block content %}
 <div class="row mt-5">
@@ -17,10 +17,9 @@
 
             <a class="btn btn-primary" href='{% url "Board:update" board.pk %}'>수정하기</a>
             <button type="button" class="btn btn-outline-dark" onclick="chkDelete()">삭제하기</button>
-            댓글 :
             <form action="{% url 'Board:delete' %" name="delete" method="POST">
                 {% csrf_token %}
-                <input name = "contents" type="text" value="">
+                
                 <input type="hidden" name="pk" value="{{board.pk}}">
             </form>
             <script>
