@@ -10,4 +10,5 @@ urlpatterns = [
     path('delete/', views.delete, name='delete'),
     path('join/', views.join, name='join'),
     path('check_id/',views.check_id, name='check_id'),
+    path('follow/', views.follow, name='follow'),
 ]

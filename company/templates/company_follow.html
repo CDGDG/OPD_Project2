@@ -7,20 +7,20 @@
             <thead class="thead-light">
                 <tr>
                     <th>#</th>
-                    <th>회사명</th>
-                    <th>회사규모</th>
+                    <th>닉네임</th>
                     <th>전화번호</th>
                     <th>이메일</th>
+                    <th>가입날짜</th>
                 </tr>
             </thead>
             <tbody class="text-dark">
-                {% for company in companys %}
-                <tr onclick="location.href='{% url 'Company:detail' company.id %}'">
-                    <td>{{ company.id }}</td>
-                    <td>{{ company.name }}</td>
-                    <td>{{ company.category }}</td>
-                    <td>{{ company.tel }}</td>
-                    <td>{{ company.email }}</td>
+                {% for follow in follows %}
+                <tr onclick="location.href='{% url 'Developer:info' follow.id %}'">
+                    <td>{{ follow.id }}</td>
+                    <td>{{ follow.nickname }}</td>
+                    <td>{{ follow.phonenum }}</td>
+                    <td>{{ follow.email }}</td>
+                    <td>{{ follow.regdate|date:"Y-m-d H:i:s" }}</td>
                     {% comment %} <td>{{ board.registered_dttm|date:"Y-m-d H:i:s"}}</td> {% endcomment %}
                 </tr>
                 {% endfor %}
@@ -29,14 +29,13 @@
     </div>
 </div>
 
-<!-- pagination -->
 <div class="row mt-2">
     <div class="col-12">
         <nav>
             <ul class="pagination justify-content-center">
-                {% if companys.has_previous %}
+                {% if follows.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?p={{ companys.previous_page_number }}&s={{ search }}&m={{ menu }}">이전으로</a>
+                    <a class="page-link" href="?p={{ follows.previous_page_number }}&s={{ search }}&m={{ menu }}">이전으로</a>
                 </li>
                 {% else %}
                 <li class="page-item">
@@ -44,11 +43,11 @@
                 </li>
                 {% endif %}
                 <li class="page-item active">
-                    <a class="page-link" href="#">{{ companys.number }} / {{ companys.paginator.num_pages }}</a>
+                    <a class="page-link" href="#">{{ follows.number }} / {{ follows.paginator.num_pages }}</a>
                 </li>    
-                {% if companys.has_next %}
+                {% if follows.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="?p={{ companys.next_page_number }}&s={{ search }}&m={{ menu }}">다음으로</a>
+                    <a class="page-link" href="?p={{ follows.next_page_number }}&s={{ search }}&m={{ menu }}">다음으로</a>
                 </li>
                 {% else %}
                 <li class="page-item">
@@ -59,41 +58,27 @@
         </nav>
     </div>
 </div>
-<!-- pagination -->
 
 <div class="row">
     <div class="col-12">
+        <form method="POST" id='searchForm' action=".">
             <div class="form-group mt-3">
-                {% comment %} {% for field in form %}
-                    <div class="form-group">
-                        {% bootstrap_field field %}
-                    </div>
-                {% endfor %}
-
-                {{ form }} {% endcomment %}
 
                 <select name="menu" id="menu" class='form-control mx-3' style='width:9%; display:inline-block'>
                     <option value="all" selected>전체</option>
-                    <option value="name">이름</option>
-                    <option value="tel">전화번호</option>
+                    <option value="nickname">닉네임</option>
+                    <option value="phonenum">전화번호</option>
                     <option value="email">이메일</option>
-                    <option value="address">주소</option>
-                    <option value="summary">소개</option>
                 </select>
 
                 <input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
 
                 <input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
             </div>
+        </form>
     </div>
 </div>
 
-
-<div class="row">
-    <div class="col-12">
-        {% comment %} <a class="btn btn-primary" href="{% url 'Board:write' %}">글쓰기</a> {% endcomment %}
-    </div>
-</div>
 {% endblock %}
 
 
@@ -109,7 +94,7 @@
         var menu = document.getElementById('menu')
         console.log(menu.options[menu.selectedIndex].value);
         console.log(searchtxt.value)
-        location.href="{% url 'Company:list' %}?s="+searchtxt.value+"&m="+menu.options[menu.selectedIndex].value
+        location.href="{% url 'Company:follow' %}?s="+searchtxt.value+"&m="+menu.options[menu.selectedIndex].value
     }
 </script>
 {% endblock  %}

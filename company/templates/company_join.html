@@ -20,6 +20,9 @@
                     placeholder="0000" name="{{ field.name }}2" value='{{ tel2 }}' maxlength="4"/> -
                     <input type="text" class="form-control" style="width:5%; display:inline-block" id="{{ field.id_for_label }}3"
                     placeholder="0000" name="{{ field.name }}3" value='{{ tel3 }}' maxlength="4"/>
+                    {% if field.errors %}
+                        <span class="text-danger">{{ field.errors }}</span>
+                    {% endif %}
                 {% elif field.name == 'address' %}
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <input type="text" id="sample6_postcode" style="display:inline-block; width:10%" class="form-control" onclick="sample6_execDaumPostcode()" placeholder="우편번호" readonly>
@@ -27,6 +30,9 @@
                     <input type="text" class="form-control mb-1" id="sample6_address" name="{{ field.name }}" placeholder="주소" readonly>
                     <input type="text" class="form-control mb-1" id="sample6_detailAddress" name="address_detail" placeholder="상세주소">
                     <input type="text" class="form-control" id="sample6_extraAddress" name="address_detail2" placeholder="참고항목" readonly>
+                    {% if field.errors %}
+                        <span class="text-danger">{{ field.errors }}</span>
+                    {% endif %}
                 {% elif field.name == 'language' %}
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <ul class='form-control' style='list-style-type: none;'>
@@ -34,6 +40,9 @@
                         <li>{{f}}</li>
                         {% endfor %}
                     </ul>
+                    {% if field.errors %}
+                        <span class="text-danger">{{ field.errors }}</span>
+                    {% endif %}
                 {% else %}
                     {% bootstrap_field field %}
                     {% if field.name == "companyid"%}
@@ -41,9 +50,7 @@
                     {% endif %}
                 {% endif %}
             </div>
-            {% if field.errors %}
-            <span class="text-danger">{{ field.errors }}</span>
-            {% endif %}
+            
             {% endfor %}
 
             <div class="mt-3">
@@ -67,15 +74,11 @@
 
         document.getElementsByName('tel')[0].value = tel1 + '-' + tel2 + '-' + tel3
         
-        if (document.getElementsByName('tel')[0].value == '--') {
-            document.getElementsByName('tel')[0].value = ''
-        }
-
-        document.getElementsByName('address_detail')[0].value += " "+document.getElementsByName('address_detail2')[0].value
-
+        
         let result = document.getElementById('dupleId_result')
         console.log(result.innerHTML)
         if (result.innerHTML == '<p style="color:green">사용가능한 아이디입니다</p>') {
+            document.getElementsByName('address_detail')[0].value += " "+document.getElementsByName('address_detail2')[0].value
             frm.submit();
         }else {
             document.getElementById("duple_companyid").focus();
