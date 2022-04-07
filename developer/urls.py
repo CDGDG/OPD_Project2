@@ -11,12 +11,10 @@ urlpatterns = [
     path('check_nick/',views.check_nick, name='check_nick'),
     path('check/password/',views.checkPassword,name="checkPassword"),
     path('send_email/',views.send_email, name='send_email'),
-    path('login/', views.login, name='login'),
-    path('logout/',views.logout,name="logout"),
     path('info/<int:pk>/',views.info,name = 'info'),
     path('download/<int:pk>/',views.download, name ='resume_download'),
     path('update/',views.update, name = 'update'),
-    path('myproject/',views.myproject, name = 'myproject'),
+    path('myproject/<int:pk>/',views.myproject, name = 'myproject'),
     path('follow/',views.follow, name = 'follow'),
 ]
 

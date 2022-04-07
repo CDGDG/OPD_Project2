@@ -1,4 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
-    follow
+    {% if follow %}
+    {% for f in follow %}
+    <table>
+    <tr onclick='location.href="/developer/info/{{f.follower.id}}/"'>
+        <td>{{f.follower}}</td>
+        <td>{% if f.follower.pic %}
+            <img src="{{f.follower.pic.url}}" alt="사진 없음"><br>
+            {% else %}
+            <img src="/media/user_icon.png/" alt="사진 없음"><br>
+            {% endif %}
+        </td>
+    </tr>
+    </table>
+    {% endfor %}
+    {% else %}
+    {{request.session.name}}님의 팔로워가 없습니다. ㅠㅠ
+ 
+    {% endif %}
 {% endblock content %}

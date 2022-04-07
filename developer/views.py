@@ -2,12 +2,10 @@ from datetime import datetime
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
-from company.models import Company
-import developer
-from .models import Developer
-from .forms import JoinForm,LoginForm, UpdateForm
+from project.models import Project
+from .models import Developer, Follow
+from .forms import JoinForm,UpdateForm
 from django.contrib.auth.hashers import make_password, check_password
-from django.core.paginator import Paginator
 
 #파일 다운로드
 import os
@@ -24,64 +22,9 @@ from django.core.mail import EmailMessage
 # from django.utils.encoding import force_bytes, force_text
 # from .tokens import account_activation_token
 
-def login(request):
-    if request.method=="POST":
-        form = LoginForm(request.POST)
-        context={}
-        if form.is_valid():
-            select = request.POST.get('select', 'developer')
-            userid = form.userid
-            password = form.password
-
-            if select and userid and password:
-                try:
-                    if select=="developer":
-                        developer = Developer.objects.get(userid=userid)
-                        if not check_password(password,developer.password):
-                            # 비밀번호가 틀렸습니다.
-                            context['data'] = "wrong password"
-                        else:
-                            request.session['id'] = developer.id
-                            request.session['name'] = developer.nickname
-                            if developer.pic:
-                                request.session['pic_url'] = developer.pic.url
-                    elif select=="company":
-                        company = Company.objects.get(companyid = userid)
-                        if not check_password(password, company.password):
-                            # 비밀번호가 틀렸습니다.
-                            context['data'] = 'wrong password'
-                        else:
-                            request.session['id'] = company.id
-                            request.session['name'] = company.name
-                            if company.pic:
-                                request.session['pic_url'] = company.pic.url
-                            
-                    context['data'] = 'success login'
-                    request.session['who'] = select
-                except (Developer.DoesNotExist, Company.DoesNotExist):
-                    # 아이디가 없습니다
-                    context['data'] = "wrong id"
-            else:
-                context['blank'] = True
-            return JsonResponse(context)
-    else:
-        return redirect("/")
-
-    
-    # if request.method == "POST":
-    #     form = LoginForm(request.POST)
-    #     if form.is_valid():
-    #         print("로그인 성공")
-    #         request.session['developer'] = form.developer_pk
-    #         return redirect("/")
-    # return render(request,"home.html")
-
-
 def join(request):
     # 회원가입 처리
     if request.method=="POST":
-        print(request.POST.get('registnum'))
-        print(request.POST.get('phonenum'))
         form = JoinForm(request.POST,request.FILES)
         if form.is_valid():
             print("join하기")
@@ -185,20 +128,9 @@ def checkPassword(request):
 
     return JsonResponse(context)
 
-
-def logout(request):
-    if request.session.get('id'):
-        del(request.session['who'])
-        del(request.session['id']) 
-        del(request.session['name'])
-        if request.session.get('pic_url'):
-            del(request.session['pic_url']) 
-    return redirect('/') 
-
-
 def info(request,pk):
-    # if not request.session.get('id'):
-    #     return render(request,'home.html')
+    if not request.session.get('id'):
+        return render(request,'home.html')
     try:
         developer = Developer.objects.get(pk = pk)
         registnum = developer.registnum
@@ -246,6 +178,8 @@ def download(request,pk):
     return response
 
 def update(request):
+    if not request.session.get('id'):
+        return render(request,'home.html')
     developer = Developer.objects.get(pk = request.session.get('id'))
     if request.method == "POST":
         form = UpdateForm(request.POST,request.FILES,instance=developer)
@@ -266,14 +200,16 @@ def update(request):
         form = UpdateForm(instance=developer)
         return render(request,'developer_update.html',{'form':form})
 
-def myproject(request):
-    # if not request.session.get('developr'):
-    # return render(request,'home.html')
-    # all_myproject = Project.objects.get(developer=request.session.get('developer_id'))
-    # page = int(request.GET.get('p', 1))
-    # paginator = Paginator(all_myproject, 5) # 한 페이지당 5개씩 보여주는 Paginator 생성
-    # myproject = paginator.get_page(page)
-    return render(request, 'developer_myproject.html')
+def myproject(request,pk):
+    if not request.session.get('id'):
+        return render(request,'home.html')
+    developer = Developer.objects.get(pk=pk)
+    projects = Project.objects.filter(leader = developer)
+
+    return render(request, 'developer_myproject.html',{'projects':projects,'developer':developer})
 
 def follow(request):
-    return render(request,'developer_follow.html')
+    developer = Developer.objects.get(pk=request.session.get('id'))
+    follow = Follow.objects.filter(developer = developer)
+    
+    return render(request,'developer_follow.html',{'follow':follow})
