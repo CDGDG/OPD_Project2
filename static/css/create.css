@@ -1,11 +1,25 @@
+#form_id{
+    border-color: lightcoral !important;
+}
 
 #form_id .form-group{
     position: relative;
     margin-bottom: 2%;
     padding: 0;
 }
+#form_id h2{
+    font-family: "Dongle";
+    color: lightcoral;
+    font-size: 3vw;
+}
+.formbtn{
+    font-family: "Jua";
+}
 #form_id label{
     position: absolute;
+    font-family: 'Jua';
+    font-size: 1vw;
+    height: 100%;
     transition: color .6s, background-color .6s, width .3s, padding .3s !important;
 }
 #form_id .label-color{
@@ -16,7 +30,7 @@
     padding-left: 16%;
     transition: padding .3s !important;
 }
-#form_id input[type='file']{
+#form_id input[type='file'].form-control-file{
     display: none;
 }
 #form_id .focusLabel{
@@ -35,8 +49,8 @@
     resize: none;
 }
 .labelP5{
-    padding: 5%;
+    padding: 2vw;
 }
 .labelP10{
-    padding: 10%;
+    padding: 4vw;
 }

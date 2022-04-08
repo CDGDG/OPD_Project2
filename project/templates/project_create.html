@@ -4,10 +4,11 @@
 {% load bootstrap4 %}
 <link rel="stylesheet" href="/static/css/create.css">
 <script src="/static/js/create.js"></script>
-<form action="{% url 'Project:create' %}" method="POST" enctype="multipart/form-data" id='form_id' name='projectform' class="row">
+<form action="{% url 'Project:create' %}" method="POST" enctype="multipart/form-data" id='form_id' name='projectform'>
+    <h2 class="mb-4">프로젝트 생성</h2>
     {% csrf_token %}
     {% bootstrap_form form %}
-    <input type="button" class="btn btn-primary form-control mt-3 py-4" id="create" value="프로젝트 생성">
+    <input type="button" class="btn btn-primary form-control mt-3 py-4 formbtn" id="create" value="프로젝트 생성">
 </form>
 <br><br><br>
 

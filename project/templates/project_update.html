@@ -2,41 +2,78 @@
 {% block title %}수정{% endblock  %}
 {% block content %}
 {% load bootstrap4 %}
-<h2>수정</h2>
-<hr>
-<div class="mb-3 mt-3 clearfix">
-    {% comment %} <span class="float-start me-2">id: {{board.id}}</span>
-    <span class="float-end ms-4">작성일: {{board.reg_date|date:"Y-m-s H:i:s"}}</span>
-    <span class="float-end">조회수: {{board.view_cnt}}</span> {% endcomment %}
-</div>
-
-<form action="{% url 'Project:update' pk %}" method="POST" enctype="multipart/form-data">
+<link rel="stylesheet" href="/static/css/create.css">
+<script src="/static/js/create.js"></script>
+<form action="{% url 'Project:update' pk %}" method="POST" enctype="multipart/form-data" id="form_id" name='projectform' class="update">
     {% csrf_token %}
     {% bootstrap_form form %}
-    
-    <button type="submit" class="btn btn-outline-dark">수정완료</button>
-    <button type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</button>
-    <a class="btn btn-outline-dark" href="{% url 'Project:list' %}">목록</a>
-    
+    {# 프로젝트 문서 #}
+    <div id="docs" class='p-0'></div>
+    <input type="hidden" name='docnum' id='docnum'>
+    <input type="button" class="form-control text-center formbtn py-2 mb-2 btn btn-success text-white" id="add_doc" value="문서 추가">
+    <button type="button" class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn" onclick="history.back()">이전으로</button>
+    <a class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn" href="{% url 'Project:list' %}">목록</a>
+    <input type="button" class="btn btn-primary form-control col mt-3 py-4 formbtn" id="update" value="수정">
 </form>
+<br><br><br>
 {% endblock content %}
 {% block script %}
+<script src="/static/js/project_update.js"></script>
 <script>
     function readImage(input) {
         if (input.target.files && input.target.files[0]) {
             const reader = new FileReader();
-            
             reader.onload = (e) => {
-                $('#thumbnail_preview').attr('src',e.target.result)
+                $('input[type="file"]').siblings('label').css({'background-image': 'url('+e.target.result+')'})
             }
             reader.readAsDataURL(input.target.files[0]);
         }
     }
-    // 이벤트 리스너
+    
     $(document).ready(function(){
-        $('#id_thumbnail').change(function(e){
+        // 썸네일 미리보기 띄우기
+        $('#id_thumbnail').change(function (e) {
             readImage(e)
-        })
+        }).siblings('label').css({'background-image': "url(/media/{{thumbnail}})"})
+
+        // 문서 띄우기
+        let docs = [
+            {% for doc in docs %}
+                {
+                    id: '{{doc.id}}',
+                    category: '{{doc.category}}',
+                    docfile: '{{doc.docfile}}',
+                },
+            {% endfor %}
+        ]
+        for(let doc of docs){
+            let newdiv = $('<div></div>').addClass('form-control mb-2').css({'width': '100%'})
+            // 문서 유형 input
+            newdiv.append($('<input/>', {type: 'text', class: 'form-control d-inline-block', placeholder: '문서 유형', value: doc.category, readonly: true})
+                .css({'width': '41%', 'padding-left':'.375rem'}));
+            // 문서 파일 input
+            newdiv.append($('<input/>', {type: 'text', class: 'form-control d-inline-block my-0 px-2', value: doc.docfile, readonly: true})
+                .css({'width': '50%', 'margin-left': '0.5%', 'margin-right': '0.5%'}));
+            // 삭제 button
+            newdiv.append($('<input/>', {type: 'button', class: 'btn btn-danger col', value: '삭제'}).css({'width': '8%', 'vertical-align':'baseline'})
+                .click(function(){ // 원래 문서 삭제버튼 클릭 시 해당 문서 삭제버튼
+                    if(confirm('문서 삭제는 바로 처리됩니다.\n정말 삭제하시겠습니까?'))
+                    $.ajax({
+                        url: "{% url 'Project:deleteDocument' %}",
+                        type: "POST",
+                        data: {id: doc.id, 'csrfmiddlewaretoken': '{{csrf_token}}'},
+                        dataType: 'json',
+                        success: function(response){
+                            if(response.data == 'success'){
+                                newdiv.slideUp("fast", function(){$(this).remove()})
+                            }else{
+                                alert('문서 삭제를 실패했습니다. \n다시 시도해주세요.')
+                            }
+                        }
+                    })
+                }))
+            $('#docs').append(newdiv);
+        }
     })
 </script>
 {% endblock  %}

@@ -1,6 +1,5 @@
 from functools import reduce
-from turtle import title
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
 
@@ -8,7 +7,7 @@ from admin.models import Language
 from developer.models import Developer
 from recruit.models import Recruit, Recruit_Language
 
-from .models import Project
+from .models import Document, Project
 from .forms import ProjectUpdateForm, Projectform
 
 def list(request):
@@ -72,6 +71,7 @@ def detail(request, pk):
 
 def update(request, pk):
     project = get_object_or_404(Project, pk=pk)
+    documents = Document.objects.filter(project=project)
     if request.method=="POST":
         form = ProjectUpdateForm(request.POST,request.FILES, instance=project)
         if form.is_valid():
@@ -81,11 +81,25 @@ def update(request, pk):
                 project.thumbnail_original = request.FILES['thumbnail'].name
 
             project.save()
+            # 문서
+            docnum = request.POST.get('docnum')
+            for i in range(int(docnum)):
+                if request.FILES.get(f"doc{i}"):
+                    document = Document(
+                        project = project,
+                        category = request.POST.get(f'doctype{i}'),
+                        docfile = request.FILES.get(f"doc{i}"),
+                        docfile_original = request.FILES.get(f"doc{i}").name
+                    )
+                    document.save()
+
+
             return redirect(f"/project/detail/{pk}/")
         else:
             print('project:update - form 검증 False')
+    thumbnail, project.thumbnail = project.thumbnail, None
     form = ProjectUpdateForm(instance=project)
-    return render(request, 'project_update.html', {'form': form, 'pk': pk})
+    return render(request, 'project_update.html', {'form': form, 'thumbnail': thumbnail, 'docs': documents,'pk': pk})
 
 
 def delete(request):
@@ -93,3 +107,12 @@ def delete(request):
     project = get_object_or_404(Project, pk=pk)
     project.delete()
     return render(request, 'project_delete_ok.html')
+
+def deleteDocument(request):
+    pk = request.POST.get('id')
+    try:
+        document = Document.objects.get(pk=pk)
+    except Document.DoesNotExist:
+        return JsonResponse({'data': 'nodata'})
+    document.delete()
+    return JsonResponse({'data': 'success'})
