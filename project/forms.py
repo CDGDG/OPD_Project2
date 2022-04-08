@@ -1,9 +1,7 @@
-from cProfile import label
 from functools import reduce
 from django import forms
 from admin.models import Language
 from project.models import Project
-from project.widgets import ImagePreviewWidget
 
 class Projectform(forms.ModelForm):
     class Meta:
@@ -33,17 +31,21 @@ class Projectform(forms.ModelForm):
         
 class ProjectUpdateForm(forms.ModelForm):
     # 시작일
-    startdate = forms.DateTimeField(label='시작일')
+    startdate = forms.DateTimeField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':"date"}), label="시작일", required=False)
     # 종료일
-    enddate = forms.DateTimeField(label='시작일', required=False)
+    enddate = forms.DateTimeField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':"date"}), label="종료일", required=False)
     # 언어
     LANGUAGE_OPTIONS = reduce(lambda result, lang: result.append((lang.id, lang.language)) or result,Language.objects.all(), [])
 
     language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어 선택')
 
-    thumbnail = forms.ImageField(widget=ImagePreviewWidget, allow_empty_file= True)
+    thumbnail = forms.ImageField(allow_empty_file= True, label="썸네일", required=False)
 
     class Meta:
         model = Project
-        fields = ['title', 'summary', 'contents', 'startdate', 'enddate', 'private', 'thumbnail', 'language']
+        fields = ['title', 'summary', 'contents', 'thumbnail','startdate', 'enddate', 'private', 'language']
 
+    def __init__(self, *args, **kwargs):
+        super(ProjectUpdateForm, self).__init__(*args, **kwargs)
+        language = self.instance.language
+        self.initial['language'] = [lang.id for lang in language.all()]

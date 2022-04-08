@@ -15,6 +15,10 @@ $(document).ready(function () {
         readImage(e)
     })
 
+    $('#form_id input[type="checkbox"]').change(function(){
+        $(this).siblings('label').toggleClass('label-color').text($(this).siblings('label').text() == '비공개'? "공개" : "비공개")
+    })
+
     // 프로젝트 생성 검증
     $("#create").click(function(){
         let ok = true;

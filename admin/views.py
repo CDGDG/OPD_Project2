@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
 from .forms import LoginForm, NoticeWriteForm
+from django.urls import reverse_lazy
 from company.forms import Company
 from developer.forms import Developer
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import Http404, JsonResponse
 from .models import Admin, Notice
 from django.core.paginator import Paginator
+from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView
+
 
 def home(request):
     return render(request,"home.html")
@@ -175,3 +178,38 @@ def noticedetail(request, pk):
     except Notice.DoesNotExist:
         raise Http404('존재하지 않는 공지글입니다') # django에서 기본적으로 제공하는 에러 페이지
     return render(request, 'notice_detail.html', {'notice': notice})
+    return redirect('/') 
+
+
+def check_userid(request):
+    if request.method=="POST":
+        context={}
+        select = request.POST.get('select', 'developer')
+        userid = request.POST.get('userid')
+        if select and userid:
+            try:
+                if select=="developer":
+                    Developer.objects.get(userid=userid)
+                elif select=="company":
+                    Company.objects.get(companyid = userid)      
+                context['data'] = 'success'
+            except (Developer.DoesNotExist, Company.DoesNotExist):
+                # 아이디가 없습니다
+                context['data'] = "wrong id"
+        else:
+            context['blank'] = True
+        return JsonResponse(context)     
+    else:
+        return render(request,'forgot_password.html')
+
+
+class OPD_PasswordResetView(PasswordResetView):
+    success_url = reverse_lazy('password_reset_done') # 성공시 호출 url
+    template_name = "forgot_password/password_reset_form.html" # 자신의 password_reset.html 이동
+    email_template_name = "forgot_password/password_reset_email.html"
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+class OPD_PasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'forgot_password/password_reset_done.html'
+
