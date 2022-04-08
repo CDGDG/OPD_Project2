@@ -145,7 +145,11 @@ class CompanyUpdateForm(forms.ModelForm):
         print(tel.split('-'))
         if tel.split('-')[0] == '' or tel.split('-')[1] == '' or tel.split('-')[2] == '':
             self.add_error('tel', '전화번호를 형식에 맞게 입력해주세요.')
-
+    
+    def __init__(self, *args, **kwargs):
+        super(CompanyUpdateForm, self).__init__(*args, **kwargs)
+        language = self.instance.language
+        self.initial['language'] = [lang.id for lang in language.all()]
 
 
 
