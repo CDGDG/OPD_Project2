@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col-12">
+        <table class="table table-light table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>닉네임</th>
+                    <th>이메일</th>
+                    <th>사용 언어</th>
+                </tr>
+            </thead>
+            <tbody class="text-dark">
+                {% for developer in developer %}
+                <tr onclick="location.href='{% url 'Developer:info' developer.id %}'">
+                    <td>{{ developer.id }}</td>
+                    <td>{{ developer.nickname }}</td>
+                    <td>{{ developer.email }}</td>
+                    <td>{{developer.language.all|join:" , "}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- pagination -->
+<div class="row mt-2">
+    <div class="col-12">
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if developer.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?p={{ developer.previous_page_number }}&s={{ search }}&m={{ menu }}">이전으로</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link disabled" href="#">이전으로</a>
+                </li>
+                {% endif %}
+                <li class="page-item active">
+                    <a class="page-link" href="#">{{ developer.number }} / {{ developer.paginator.num_pages }}</a>
+                </li>    
+                {% if companys.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?p={{ developer.next_page_number }}&s={{ search }}&m={{ menu }}">다음으로</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link disabled" href="#">다음으로</a>
+                </li>
+                {% endif %}            
+            </ul>
+        </nav>
+    </div>
+</div>
+<!-- pagination -->
+
+<div class="row">
+    <div class="col-12">
+            <div class="form-group mt-3">
+
+                <select name="menu" id="menu" class='form-control mx-3' style='width:9%; display:inline-block'>
+                    <option value="all" selected>전체</option>
+                    <option value="nickname">닉네임</option>
+                    <option value="email">이메일</option>
+                    <option value="language">언어</option>
+                </select>
+
+                <input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
+
+                <input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
+            </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12">
+        {% comment %} <a class="btn btn-primary" href="{% url 'Board:write' %}">글쓰기</a> {% endcomment %}
+    </div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script>
+    $( document ).ready(function() {
+        $("#menu").val("{{ menu }}").prop("selected", true);
+    });
+</script>
+<script>
+    function search(){
+        var searchtxt = document.getElementById('searchtxt')
+        var menu = document.getElementById('menu')
+        console.log(menu.options[menu.selectedIndex].value);
+        console.log(searchtxt.value)
+        location.href="{% url 'Developer:list' %}?s="+searchtxt.value+"&m="+menu.options[menu.selectedIndex].value
+    }
+</script>
+{% endblock  %}

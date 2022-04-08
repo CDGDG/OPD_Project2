@@ -1,5 +1,4 @@
 from datetime import datetime
-from multiprocessing import context
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
@@ -8,6 +7,8 @@ from project.models import Project
 from .models import Developer, Follow
 from .forms import JoinForm,UpdateForm
 from django.contrib.auth.hashers import make_password, check_password
+from django.core.paginator import Paginator
+
 
 #파일 다운로드
 import os
@@ -84,7 +85,6 @@ def send_email(request):
         if email_id == "" or email_option =="":
             context['blank'] = True  # 이메일을 다 입력하지 않았을 때
         return JsonResponse(context)
-
 
 def check_id(request):
     userid = request.GET.get('userid')
@@ -239,4 +239,38 @@ def follow(request):
     return JsonResponse(context)
     
 
+def list(request):
+
+    all_developer = Developer.objects.all().order_by('id')
+
+    search = request.GET.get('s','')
+    menu = request.GET.get('m', 'all')
+    #메뉴
+    searchdeveloper = []
+    for developer in all_developer:
+        if menu == 'nickname':
+            if search in developer.nickname:
+                searchdeveloper.append(developer)
+        elif menu == 'email':
+            if search in developer.email:
+                searchdeveloper.append(developer)
+        elif menu == "language":
+            for lang in developer.language.all():
+                print("==========================",lang)
+                if search in lang.language:
+                    print("------------------",search)
+                    searchdeveloper.append(developer)
+        elif menu == 'all':
+            if search in developer.nickname:
+                searchdeveloper.append(developer)
+            elif search in developer.email:
+                searchdeveloper.append(developer)
+        else :
+            searchdeveloper.append(developer)
     
+    #페이징
+    page = int(request.GET.get('p', 1))
+    paginator = Paginator(searchdeveloper, 10)  # 한 페이지당 10개씩 보여주는 paginator 생성
+    developer = paginator.get_page(page)
+
+    return render(request,'developer_list.html',{'developer':developer,'search':search,'menu':menu})
