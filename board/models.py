@@ -3,11 +3,14 @@ from django.db import models
 
 class Board(models.Model):
     developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE, verbose_name='작성자')
-    language = models.ForeignKey('admin.Language', on_delete=models.CASCADE, verbose_name='언어', null=True)
+    language = models.ManyToManyField('admin.Language', verbose_name='언어')
     title = models.CharField(max_length=20, verbose_name='제목')
     contents = models.TextField(verbose_name='내용')
-    # regdate = models.DateTimeField(auto_now_add=True, verbose_name='등록시간')
+    regdate = models.DateTimeField(auto_now_add=True, verbose_name='등록시간')
     viewcnt = models.IntegerField(default=0, verbose_name='조회수')
+
+    def __str__(self):
+        return f'id{self.id}:{self.title}'
 
     class Meta:
         db_table = 'opd_board'
@@ -15,8 +18,6 @@ class Board(models.Model):
         verbose_name_plural = '게시판(들)'
 
 
-    def __str__(self):
-        return f'id{self.id}:{self.title}|{self.developer}'
 
 class Boardimg(models.Model):
     board = models.ForeignKey('board.Board', on_delete=models.CASCADE, verbose_name='게시판')

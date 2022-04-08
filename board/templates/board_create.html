@@ -9,23 +9,24 @@
                         id="{{ field.id_for_label }}" placeholder="{{ field.label }}" name="{{ field.name }}" value="{{ nickname }}">
         <div class="mt-3">
             <a class="btn btn-primary mt-3" href="{% url 'Board:list' %}">목록</a>
-            <button type="submit" class="btn btn-primary mt-3">작성하기</button>
+            <button class="btn btn-primary mt-3">작성하기</button>
         </div>
     </form>
 {% endblock %}
 
 {% block script %}
 <script>
-    function readImage(input) {
-        if (input.target.files && input.target.files[0]) {
-            const reader = new FileReader();
+    // function readImage(input) {
+    //     if (input.target.files && input.target.files[0]) {
+    //         const reader = new FileReader();
 
-            reader.onload = (e) => {
-                $('#img_preview').attr('src',e.target.result)
-            }
-            reader.readAsDataURL(input.target.files[0])
-        }
-    }
+    //         reader.onload = (e) => {
+    //             console.log(e.target.result)
+    //             $('input[type="file"]').siblings('label').css({'background-image': 'url('+e.target.result+')'})
+    //         }
+    //         reader.readAsDataURL(input.target.files[0])
+    //     }
+    // }
     $(document).ready(function(){
         $('#id_img').change(function(e){
             readImage(e)

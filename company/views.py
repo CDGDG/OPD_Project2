@@ -2,8 +2,8 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from admin.models import Language
-from .forms import CompanyJoinForm, CompanyUpdateForm, CompanySearchForm
-from .models import Company
+from .forms import CompanyJoinForm, CompanyUpdateForm
+from .models import Company, CompanyFollow
 from django.core.paginator import Paginator
 
 def list(request):
@@ -90,6 +90,10 @@ def detail(request, pk):
         elif company.category == 'start':
             company.category = '스타트업'
         
+        print('language - ',company.language)
+        print('language - ',company.language.all())
+        for language in company.language.all():
+            print(language.pk)
         who = request.session.get('who')
         id = request.session.get('id')
 
@@ -137,7 +141,7 @@ def update(request, pk):
             return redirect(f'/company/detail/{pk}/')
 
         
-        tellist = form.cleaned_data['tel'].split('-')
+        tellist = [request.POST['tel1'], request.POST['tel2'], request.POST['tel3']]
         return render(request, 'company_update.html', {'form': form, 'company': company, 'tel1': tellist[0], 'tel2': tellist[1], 'tel3': tellist[2]})
 
 def delete(request):
@@ -194,10 +198,12 @@ def join(request):
             
             return redirect('/')
 
-        if request.POST['tel'] :
-            tellist = form.cleaned_data['tel'].split('-')
-        else:
-            tellist = ['', '', '']
+        # if request.POST['tel'] :
+        # tellist = form.cleaned_data['tel'].split('-') if form.cleaned_data['tel'] else ['', '', '']
+        # else:
+            # tellist = ['', '', '']
+        tellist = [request.POST['tel1'], request.POST['tel2'], request.POST['tel3']]
+
         print(tellist)
         return render(request,'company_join.html', {'form': form, 'tel1': tellist[0], 'tel2': tellist[1], 'tel3': tellist[2]})
 
@@ -216,3 +222,54 @@ def check_id(request):
         context['blank'] = True
 
     return JsonResponse(context)
+
+
+def follow(request):
+    print(request.session.get('id'))
+    print(request.session['id'])
+    session_id = int(request.session.get('id'))
+    print(session_id)
+
+    all_follow = []
+    # print(CompanyFollow.objects.get(company = session_id))
+    for follow in CompanyFollow.objects.all().order_by('-id'):
+        print(follow.follower.nickname)
+        if follow.company.id == session_id:
+            print('zzzzzzzzzzzzz')
+            all_follow.append(follow.follower)
+        
+    search = request.GET.get('s','')
+    menu = request.GET.get('m', 'all')
+
+    searchfollows = []
+
+    for follow in all_follow:
+
+        if menu == 'nickname':
+            print(follow)
+            if search in follow.nickname:
+                searchfollows.append(follow)
+        elif menu == 'phonenum':
+            if search in follow.phonenum:
+                searchfollows.append(follow)
+        elif menu == 'email':
+            if search in follow.email:
+                searchfollows.append(follow)
+        elif menu == 'all':
+            if search in follow.nickname:
+                searchfollows.append(follow)
+            elif search in follow.phonenum:
+                searchfollows.append(follow)
+            elif search in follow.email:
+                searchfollows.append(follow)
+        else :
+            searchfollows.append(follow)
+
+
+
+    page = int(request.GET.get('p', 1))
+    paginator = Paginator(searchfollows, 10)  # 한 페이지당 10개씩 보여주는 paginator 생성
+    follows = paginator.get_page(page)
+
+    return render(request, 'company_follow.html', {'follows': follows, 'search': search, 'menu': menu})
+
