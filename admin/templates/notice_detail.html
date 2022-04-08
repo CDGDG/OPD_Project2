@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}공지사항 상세보기{% endblock %}
+{% block content %}
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" class="form-control" id="title" value="{{notice.title}}" readonly/>
+            <label for="contents">내용</label>
+            <textarea class="form-control" id="contents" readonly>{{notice.contents}}</textarea>
+        </div>
+        <div class="mt-3">
+
+            <a class="btn btn-primary" href='{% url "Admin:noticelist" %}'>목록</a>
+            {% if request.session.who == 'admin' %}
+                <a class="btn btn-outline-dark" onclick="chkDelete()">삭제하기</a>
+            {% endif %}
+
+            <form action="{% url 'Admin:noticedelete' %}" name="delete" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="pk" value="{{notice.pk}}">
+            </form>
+            <script>
+                function chkDelete(){
+                    //삭제 여부
+                    var r = confirm("삭제하시겠습니까?")
+                    if(r){
+                        document.forms.delete.submit();
+                    }
+                }
+            </script>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

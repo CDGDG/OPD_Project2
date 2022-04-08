@@ -1,4 +1,5 @@
 from django import forms
+from .models import Notice
 
 
 class LoginForm(forms.Form):
@@ -20,3 +21,9 @@ class LoginForm(forms.Form):
 
         self.userid = cleaned_data.get('userid')
         self.password = cleaned_data.get('password')
+
+
+class NoticeWriteForm(forms.ModelForm):
+    class Meta:
+        model = Notice
+        fields = ['title', 'contents']

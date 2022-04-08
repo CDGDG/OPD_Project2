@@ -18,16 +18,28 @@
   <header class="mb-3">
         <div class="container">
           <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start py-3">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none header-text py-2 px-4 me-4">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none header-text py-2 px-4 me-1">
               ["our", "project", "diary"]
             </a>
+            {% if request.session.who == 'admin' %}
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-              <li><a href="{% url 'Project:list' %}" class="nav-link py-3 px-2 mx-4 link-dark">프로젝트</a></li>
-              <li><a href="{% url 'Recruit:list' %}" class="nav-link py-3 px-2 mx-4 link-dark">프로젝트 모집</a></li>
-              <li><a href="{% url 'Company:list' %}" class="nav-link py-3 px-2 mx-4 link-dark">기업 찾기</a></li>
-              <li><a href="{% url 'Developer:list' %}" class="nav-link py-3 px-2 mx-4 link-dark">회원 찾기</a></li>
-              <li><a href="{% url 'Board:list' %}" class="nav-link py-3 px-4 mx-4 link-dark">게시판</a></li>
+              <li><a href="{% url 'Project:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">프로젝트 관리</a></li>
+              <li><a href="{% url 'Recruit:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">프로젝트 모집 관리</a></li>
+              <li><a href="{% url 'Company:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">기업 관리</a></li>
+              <li><a href="{% url 'Developer:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">회원 관리</a></li>
+              <li><a href="{% url 'Board:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">게시판</a></li>
+              <li><a href="{% url 'Admin:noticelist' %}" class="nav-link py-3 px-2 mx-3 link-dark">공지 사항</a></li>
             </ul>
+            {% else %}
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+              <li><a href="{% url 'Project:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">프로젝트</a></li>
+              <li><a href="{% url 'Recruit:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">프로젝트 모집</a></li>
+              <li><a href="{% url 'Company:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">기업 찾기</a></li>
+              <li><a href="{% url 'Company:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">회원 찾기</a></li>
+              <li><a href="{% url 'Board:list' %}" class="nav-link py-3 px-2 mx-3 link-dark">게시판</a></li>
+              <li><a href="{% url 'Admin:noticelist' %}" class="nav-link py-3 px-2 mx-3 link-dark">공지사항</a></li>
+            </ul>
+            {% endif %}
     
             <div class="dropdown text-end">
               <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle text-white" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="true" data-bs-auto-close="outside">
@@ -46,6 +58,10 @@
                   <li><p>{{request.session.name}} 님</p></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Company:detail' request.session.id %}">내 정보</a></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Company:follow' %}">팔로우</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item pb-2" href="{% url 'Admin:logout' %}">로그아웃</a></li>
+                {% elif request.session.who == 'admin' %}
+                  <li><p>{{request.session.name}} 님</p></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Admin:logout' %}">로그아웃</a></li>
                 {% endif %}

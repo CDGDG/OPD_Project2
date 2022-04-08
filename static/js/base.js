@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $("#dropdownUser").click(function(){
-      $("#dropdownUserToggle").slideToggle("fast");
-    })
+  $("#dropdownUser").click(function(){
+    $("#dropdownUserToggle").slideToggle("fast");
+  })
 })
