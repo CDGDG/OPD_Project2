@@ -1,7 +1,9 @@
 from datetime import datetime
+from multiprocessing import context
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
+import developer
 from project.models import Project
 from .models import Developer, Follow
 from .forms import JoinForm,UpdateForm
@@ -129,31 +131,36 @@ def checkPassword(request):
     return JsonResponse(context)
 
 def info(request,pk):
-    if not request.session.get('id'):
-        return render(request,'home.html')
     try:
         developer = Developer.objects.get(pk = pk)
-        registnum = developer.registnum
+    except Developer.DoesNotExist:
+         raise Http404('정보를 찾을 수 없습니다')
 
-        # 주민번호로 생년월일 , 성별  
-        birth = {}
-        if int(registnum[:2]) < 21 and int(registnum[6]) in (3, 4) :
-            birth['year']= 2000 + int(registnum[:2])
-        else:
-            birth['year'] = 1900 + int(registnum[:2])
-
-        birth['age'] = datetime.today().year - birth['year'] + 1
-        birth['month'] = registnum[2:4]
-        birth['day'] = registnum[4:6]
-
-        if int(registnum[6]) == 1 or int(registnum[6]) == 3 :
-            gender = 'male'
-        else :
+    registnum = developer.registnum
+    # 주민번호로 생년월일 , 성별  
+    birth = {}
+    if int(registnum[:2]) < 21 and int(registnum[6]) in (3, 4) :
+        birth['year']= 2000 + int(registnum[:2])
+    else:
+        birth['year'] = 1900 + int(registnum[:2])
+    birth['age'] = datetime.today().year - birth['year'] + 1
+    birth['month'] = registnum[2:4]
+    birth['day'] = registnum[4:6]
+    if int(registnum[6]) == 1 or int(registnum[6]) == 3 :
+        gender = 'male'
+    else :
             gender = 'female'
 
-    except Developer.DoesNotExist:
-         raise Http404('내 정보를 찾을 수 없습니다')
-    return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password})
+    if request.session.get('id') == pk:
+        return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password})
+    else:
+        if Follow.objects.filter(developer=request.session.get('id'),follower = pk):
+            follow_check = True
+        else:
+            follow_check = False
+        return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password,'follow_check':follow_check})
+
+
 
 def download(request,pk):
     file = Developer.objects.get(pk=pk)
@@ -184,7 +191,6 @@ def update(request):
     if request.method == "POST":
         form = UpdateForm(request.POST,request.FILES,instance=developer)
         if form.is_valid():
-            print("=====================",request.POST.get('password'))
             developer = form.save(commit=False)
             developer.password = make_password(request.POST.get('password'))
             if request.FILES.get('pic'): 
@@ -194,7 +200,6 @@ def update(request):
                 developer.resume = request.FILES.get('resume')
                 developer.resume_original = developer.resume.name
             developer.save()
-            print(developer.pk)
         return redirect(f'/developer/info/{developer.pk}/')
     else:
         form = UpdateForm(instance=developer)
@@ -208,8 +213,30 @@ def myproject(request,pk):
 
     return render(request, 'developer_myproject.html',{'projects':projects,'developer':developer})
 
-def follow(request):
+def myfollowers(request):
     developer = Developer.objects.get(pk=request.session.get('id'))
     follow = Follow.objects.filter(developer = developer)
     
     return render(request,'developer_follow.html',{'follow':follow})
+
+
+def follow(request):
+    context={}
+    follower = request.POST.get('developer_id')
+    developer_follower = Developer.objects.get(pk = follower)
+    developer = Developer.objects.get(pk = request.session.get('id'))
+    if request.POST.get('check_follow') == "팔로우":
+        print(follower)
+        print(developer)
+        follow = Follow(
+            developer = developer,
+            follower = developer_follower
+        )
+        follow.save()
+    else:
+        follow = Follow.objects.filter(developer=developer,follower=follower)
+        follow.delete()
+    return JsonResponse(context)
+    
+
+    
