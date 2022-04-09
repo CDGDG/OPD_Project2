@@ -201,6 +201,7 @@ $(document).ready(function(){
                     $('#emailnum').css('display','block') 
                     $('#check_emailnum').css('display','block') //이메일 인증번호 입력란
                     $('#check_emailnum').click(function(){
+                        $('#send_email').attr('value','다시 인증하기')
                         if(joinfrm['emailnum'].value.trim() == ""){
                             $('#check_email_result').html('<p style="color:red">인증번호를 입력해주세요</p>')
                             

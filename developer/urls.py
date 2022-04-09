@@ -17,6 +17,7 @@ urlpatterns = [
     path('myproject/<int:pk>/',views.myproject, name = 'myproject'),
     path('follow/',views.myfollowers, name = 'followers'),
     path('follower/',views.follow, name = 'follow'),
+    path('list/',views.list, name = 'list'),
 ]
 
 #MEDIA 경로 추가
