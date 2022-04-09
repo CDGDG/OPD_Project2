@@ -26,22 +26,22 @@
     background-color: lightcoral;
     color: white;
 }
-#form_id input[type='text']{
+#form_id input[type='text']:not(.noani){
     padding-left: 16%;
     transition: padding .3s !important;
 }
 #form_id input[type='file'].form-control-file{
     display: none;
 }
-#form_id .focusLabel{
+#form_id .focusLabel:not(.noani){
     background-color: salmon !important;
     width: 15%;
 }
-#form_id .nofocusLabel{
+#form_id .nofocusLabel:not(.noani){
     background-color: lightcoral !important;
     width: 100%;
 }
-#form_id .okLabel{
+#form_id .okLabel:not(.noani){
     background-color: lightcoral !important;
     width: 30%;
 }
@@ -53,4 +53,18 @@
 }
 .labelP10{
     padding: 4vw;
+}
+/* 툴팁 */
+.tooltip-inner{
+    padding: 1vw;
+    max-width: 100%;
+}
+/* 주민번호 */
+[id^=id_registnum]{
+    letter-spacing: 1vw;
+    padding-left: 1vw;
+    padding-right: 1vw;
+}
+[id^=id_registnum]:focus{
+    outline: none;
 }
