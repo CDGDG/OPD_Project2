@@ -45,6 +45,9 @@
     background-color: lightcoral !important;
     width: 30%;
 }
+#form_id .wrongLabel{
+    background-color: red !important;
+}
 #form_id textarea{
     resize: none;
 }
@@ -67,4 +70,7 @@
 }
 [id^=id_registnum]:focus{
     outline: none;
+}
+.checkDiv{
+    padding-left: 30%;
 }
