@@ -60,8 +60,9 @@
                   <li><a class="dropdown-item pb-2" href="{% url 'Company:follow' %}">팔로우</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Admin:logout' %}">로그아웃</a></li>
-                {% elif request.session.who == 'admin' %}
+                  {% elif request.session.who == 'admin' %}
                   <li><p>{{request.session.name}} 님</p></li>
+                  <li><a class="dropdown-item pb-2" href="{% url 'Admin:language' %}">언어 관리</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Admin:logout' %}">로그아웃</a></li>
                 {% endif %}

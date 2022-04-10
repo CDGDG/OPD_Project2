@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}언어 목록{% endblock %}
+{% block content %}
+<form action="{% url 'Admin:languagedelete' %}" method="GET">
+    <h2 class="mb-4">언어 목록</h2>
+    <ul>
+        {% for language in languages %}
+            <li>{{ language.language }}</li>
+        {% endfor %}
+    </ul>
+    
+    <input type="submit" class="btn btn-primary mt-3" value="삭제">
+    <a class="btn btn-primary mt-3" href='{% url 'Admin:languageadd' %}'>추가</a>
+</form>
+<br><br><br>
+
+{% endblock  %}

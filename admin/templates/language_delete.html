@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}언어 목록{% endblock %}
+{% block content %}
+{% load bootstrap4 %}
+<form action="{% url 'Admin:languagedelete' %}" method="POST" id='languagedelete'>
+    <h2 class="mb-4">언어 삭제</h2>
+    {% csrf_token %}
+    <ul class='form-control' style='list-style-type: none;'>
+        {% for field in form %}
+        <li>{% bootstrap_field field %}</li>
+        {% endfor %}
+    </ul>
+    <input type="button" class="btn btn-primary mt-3" value="삭제" onclick='chkDelete()'>
+    <input type="button" class="btn btn-primary mt-3" value="뒤로가기" onclick='window.history.back()'>
+</form>
+<br><br><br>
+
+{% endblock  %}
+
+{% block script %}
+<script>
+    function chkDelete(){
+        // 삭제 여부 확인
+        var r = confirm('삭제하시겠습니까?')
+        if(r){
+            document.forms['languagedelete'].submit();
+        }
+    }
+</script>
+{% endblock script %}
+

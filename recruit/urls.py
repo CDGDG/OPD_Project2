@@ -10,4 +10,5 @@ urlpatterns = [
     path('apply/<int:pk>/', views.apply, name='apply'),
     path('delete/', views.delete, name='delete'),
     path('accept/', views.accept, name='accept'),
+    path('deleterl/', views.deleteRecruit_Language, name="deleteRecruit_Language"),
 ]

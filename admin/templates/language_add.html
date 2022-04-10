@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+
+{% block title %}언어 추가{% endblock  %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col-12">
+        <form method="POST" id='addlanguageForm' action=".">
+            {% csrf_token %}
+            <div class="form-group mt-2">
+                <label for="language">추가할 언어</label>
+                <input type="text" class="form-control" id="language" placeholder="언어 작성" name="language">
+                <span class="text-danger" id="language-danger-text"></span>
+              </div>
+
+            <div class="mt-3">
+                <input type="button" id='addlanguagenbtn' class="btn col-12 mt-2" onclick='addlanguage()' value="추가하기">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    function addlanguage(){
+        let frm = document.forms.addlanguageForm
+        let languagetag = document.getElementsByName('language')[0]
+        
+        let result = document.getElementById('language-danger-text')
+
+        if (languagetag.value == '') {
+            result.innerHTML = '언어를 입력해주세요.'
+            
+            languagetag.focus();
+        }else {
+            
+            frm.submit();
+        }
+    }
+</script>
+{% endblock  %}
