@@ -190,6 +190,7 @@ def update(request):
         return render(request,'home.html')
     developer = Developer.objects.get(pk = request.session.get('id'))
     if request.method == "POST":
+        old_password = developer.password
         new_password = request.POST.get('password')
         form = UpdateForm(request.POST,request.FILES,instance=developer)
         if form.is_valid():
@@ -197,7 +198,7 @@ def update(request):
             if new_password: 
                 developer.password = make_password(new_password)
             else:
-                developer.password = developer.password
+                developer.password = old_password
             if request.FILES.get('pic'): 
                 developer.pic = request.FILES.get('pic')
                 developer.pic_original = developer.pic.name

@@ -182,10 +182,10 @@ $(document).ready(function(){
         }
         
         // 이메일
-        target = "#id_email"
-        if($('#email_id').val() == "" || $('#email_option').val() == ""){
+        target = "#email"
+        if($('#email').val() == "" ){
             // $('#email_id').focus();
-            $('#check_email_id').html('<p style="color:red">이메일을 모두 입력해주세요</p>');
+            $('#check_email').html('<p style="color:red">이메일을 입력해주세요</p>');
             // return false;
         }
 

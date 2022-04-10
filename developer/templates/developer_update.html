@@ -2,27 +2,27 @@
 {% block title %}수정{% endblock  %}
 {% block content %}
 <link rel="stylesheet" href="/static/css/create.css">
+<script src="/static/js/create.js"></script>
 {% load bootstrap4 %}
 <h2>수정</h2>
 <hr>
 <form action="{% url 'Developer:update'%}" method="POST" enctype="multipart/form-data" name="updatefrm" id="form_id">
     {% csrf_token %}
-    <p>비밀번호 수정하기</p>
-    <input type="password" class="form-control mt-1" name="password" id="password">
-    <div id="check_password"></div>
-    <div id="check2_password"></div>
-    최소 8자 이상이고 최소 1개 이상의 숫자, 특수문자, 영문 대소문자가 포함되어야 합니다.<br>
-    <p>비밀번호 확인</p>
-    <input type="password" class="form-control mt-1" name="re_password">
-    <div id="check_re_password"></div>
-    {% bootstrap_form form %}
-    <div id="check_language"></div>
+    {% for field in form %}
+    {% bootstrap_field field %}
+    <div id ="check_{{field.name}}"></div>
+    <script>
+        // 안내 메세지 툴팁
+        if("{{field.id_for_label}}"){
+            $("#{{field.id_for_label}}").focus(function(){$(this).tooltip('show')})
+        }
+    </script>
+    {% endfor %}
     <input type="button" class="btn btn-outline-dark" id="update" value="수정완료">
     <form action="{% url 'Developer:leave' %}" method="post" name="leavefrm">
         {% csrf_token %}
         <input type="button" class="btn btn-primary" id="leave" value="탈퇴하기"></input>
-    </form>
-    <a type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</a>
+        <a type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</a>
     </form>
 {% endblock content %}
 {% block script %}
@@ -32,7 +32,8 @@
             const reader = new FileReader();
             
             reader.onload = (e) => {
-                $('#pic_preview').attr('src',e.target.result)
+                //$('#pic_preview').attr('src',e.target.result)
+                $("[for=id_pic]").css({'background-image': 'url('+e.target.result+')'})
             }
             reader.readAsDataURL(input.target.files[0]);
         }
@@ -42,7 +43,8 @@
             const reader = new FileReader();
             
             reader.onload = (e) => {
-                $('#resume_preview').attr('src',e.target.result)
+                //$('#resume_preview').attr('src',e.target.result)
+                $("[for=id_resume]").css({'background-image': 'url('+e.target.result+')'})
             }
             reader.readAsDataURL(input.target.files[0]);
         }
@@ -61,56 +63,82 @@
             var updatefrm = document.forms['updatefrm']
             var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
             var check_cnt = $('input[name=language]:checkbox:checked').length;
-            var password = $('#password').val();
+            var password = $('#id_password').val();
             var check = "update";
-            if(password){
-            $.ajax({
-                url:"{% url 'Developer:checkPassword' %}",
-                type:"POST",
-                data : {'csrfmiddlewaretoken': '{{csrf_token}}','password':password,'check':check},
-                datatype:'json',
-                success:function(response){
-                    console.log(password)
-                    if(response.data == "fail"){
-                        updatefrm['password'].focus();
-                        $('#check_password').html('<p style="color:red">현재 비밀번호와 같습니다</p>')
-                        return false;
+
+            let first = null;
+            let target = "";
+
+            target = "#id_password"
+            if(password != ""){
+                $.ajax({
+                    url:"{% url 'Developer:checkPassword' %}",
+                    type:"POST",
+                    data : {'csrfmiddlewaretoken': '{{csrf_token}}','password':password,'check':check},
+                    datatype:'json',
+                    async: false,
+                    success:function(response){
+                        if(response.data == "fail"){
+                            //updatefrm['password'].focus();
+                            $(target).siblings('label').addClass('wrongLabel')
+                            $('#check_password').html('<p style="color:red">현재 사용중인 비밀번호입니다</p>');
+                            first = first?first:target;
+                            console.log(first)
+                            //return false;
+                        }else if(!reg_pass.test(updatefrm['password'].value.trim())){
+                            //updatefrm['password'].focus();
+                            $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
+                            $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>');
+                            //return false;
+                            first = first?first:target;
+                            
+                        } else{
+                            $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
+                        }
                     }
-                }
-
-            })
-            if(!reg_pass.test(updatefrm['password'].value.trim())){
-                updatefrm['password'].focus();
-                $('#check2_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>');
-                return false;
-
+                })
             }
             
+            target="#id_re_password"
             if(updatefrm['re_password'].value.trim()==""){
-                updatefrm['re_password'].focus();
+                //updatefrm['re_password'].focus();
+                $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
                 $('#check_re_password').html('<p style="color:red">비밀번호 확인을 입력해주세요</p>');
-                return false;
-                
-            }
-            if(updatefrm['password'].value.trim() != updatefrm['re_password'].value.trim()){
-                updatefrm['re_password'].focus();
+                //return false;
+                first = first?first:target
+            }else if(updatefrm['password'].value.trim() != updatefrm['re_password'].value.trim()){
+                //updatefrm['re_password'].focus();
+                $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
                 $('#check_re_password').html('<p style="color:red">비밀번호가 다릅니다</p>');
-                return false;
+                //return false;
+                first = first?first:target
+            }
+            else{
+                $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
+            }
+            
+            
+            target = "#id_language"
+            if(check_cnt<1){
+                //$('#id_language').focus();
+                $(target).siblings('label').addClass('wrongLabel')
+                $('#check_language').html('<p style="color:red">한개 이상의 언어를 선택해주세요</p> ')
+                //return false;
+                first = first?first:target
+            }
+            else{
+                $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
             }
 
-        }
-            
-            if(check_cnt<1){
-                $('#id_language').focus();
-                $('#id_language').append('<p style="color:red">한개 이상의 언어를 선택해주세요</p> ')
-                return false;
+            if(first){
+                $(first).focus()
+            }else{
+                var con = confirm("수정하시겠습니까?")
+                if(con){
+                    updatefrm.submit()
+                    alert("수정되었습니다")
+                }
             }
-            var con = confirm("수정하시겠습니까?")
-            if(con){
-                updatefrm.submit()
-                alert("수정되었습니다")
-            }
-            
         })
 
         $('#leave').click(function(){
@@ -122,4 +150,5 @@
         })
     
 </script>
+<script src="/static/js/developer/developer_join.js"></script>
 {% endblock  %}
