@@ -1,5 +1,6 @@
+from functools import reduce
 from django import forms
-from .models import Notice
+from .models import Notice, Language
 
 
 class LoginForm(forms.Form):
@@ -26,4 +27,20 @@ class LoginForm(forms.Form):
 class NoticeWriteForm(forms.ModelForm):
     class Meta:
         model = Notice
-        fields = ['title', 'contents']
+        fields = ['title', 'contents', 'file']
+        labels = {
+            "title": "제목",
+            "contents": "내용"
+        }
+    
+    file = forms.FileField(allow_empty_file= True, label='첨부파일', required=False)
+
+
+class LanguageForm(forms.ModelForm):
+    class Meta:
+        model = Language
+        fields = ['language']
+
+    LANGUAGE_OPTIONS = reduce(lambda result, lang: result.append((lang.id, lang.language)) or result,Language.objects.all(), [])
+
+    language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어')

@@ -1,13 +1,20 @@
+from functools import reduce
+import mimetypes
+import urllib
+import os
+from django.conf import settings
 from django.shortcuts import render, redirect
-from .forms import LoginForm, NoticeWriteForm
+from .forms import LoginForm, NoticeWriteForm, LanguageForm
 from django.urls import reverse_lazy
 from company.forms import Company
 from developer.forms import Developer
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import Http404, JsonResponse
-from .models import Admin, Notice
+from .models import Admin, Language, Notice, NoticeImg
 from django.core.paginator import Paginator
 from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView
+from django.core.files.storage import FileSystemStorage
+from django.http import FileResponse
 
 
 def home(request):
@@ -148,16 +155,25 @@ def noticewrite(request):
     if request.method == "GET":
         form = NoticeWriteForm()
         return render(request, 'notice_write.html', {'form': form})
-    if request.method == "POST":
+    elif request.method == "POST":
         form = NoticeWriteForm(request.POST, request.FILES)
         if form.is_valid():
             notice = Notice(
                 admin = Admin.objects.get(pk = request.session.get('id')),
                 title = form.cleaned_data['title'],
                 contents = form.cleaned_data['contents'],
-                viewcnt = 0
+                viewcnt = 0,
             )
             notice.save()
+
+            if request.FILES.get('file'):
+                noticeimg = NoticeImg(
+                    notice = notice,
+                    img = request.FILES.get('file'),
+                    img_original = request.FILES.get('file').name,
+                )
+                noticeimg.save()
+
         return render(request, 'notice_detail.html', {'notice': notice})
 
 
@@ -167,18 +183,75 @@ def noticedelete(request):
         notice = Notice.objects.get(pk = pk)
         notice.delete()  # DELETE
 
-
     return redirect('/admin/notice/list/')
+
 
 def noticedetail(request, pk):
     try:
         notice = Notice.objects.get(pk = pk)
         notice.viewcnt += 1
         notice.save()
+        try:
+            noticeimg = NoticeImg.objects.get(notice = pk)
+        except NoticeImg.DoesNotExist:
+            noticeimg = ''
+        
     except Notice.DoesNotExist:
         raise Http404('존재하지 않는 공지글입니다') # django에서 기본적으로 제공하는 에러 페이지
-    return render(request, 'notice_detail.html', {'notice': notice})
-    return redirect('/') 
+    return render(request, 'notice_detail.html', {'notice': notice, 'noticeimg': noticeimg})
+
+def filedownload(request, pk):
+    noticeimg = NoticeImg.objects.get(pk=pk)
+
+    # original_name = noticeimg.img_original  # 최초 업로드 당시 원본 파일명
+    original_name = urllib.parse.quote(noticeimg.img_original.encode('utf-8'))
+
+    root_path = os.path.join(settings.MEDIA_ROOT) # MEDIA root 경로
+    file_name = noticeimg.img.name  # 물리적으로 저장되어 있는 파일명
+    full_path = os.path.join(root_path, file_name)
+    mimetype = mimetypes.guess_type(full_path)[0]  # (maintype, subtype) tuple 형태 -> ('image/png', None)
+
+    # 확인 안되는 mimetype의 경우. 기본적으로 'application/octet-stream' 으로 세팅
+    if not mimetype: mimetype = 'application/octet-stream'
+    file_size = os.path.getsize(full_path)
+
+    fs = FileSystemStorage(root_path)
+    response = FileResponse(fs.open(file_name, 'rb'), content_type=mimetype)
+
+    response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'%s' % original_name # 최초 업로드 당시 파일명 그대로 다운로드
+    response['Content-Length'] = file_size
+    return response
+
+
+
+def language(request):
+    languages = Language.objects.all()
+    return render(request, 'language.html', {'languages': languages})
+
+def languageadd(request):
+    if request.method == 'GET':
+        return render(request, 'language_add.html')
+    elif request.method == 'POST':
+        language = Language(language = request.POST.get('language'))
+        language.save()
+        return redirect('/admin/language/')
+
+def languagedelete(request):
+    if request.method == "GET":
+        form = LanguageForm()
+        return render(request, 'language_delete.html', {'form': form})
+    elif request.method == "POST":
+        form = LanguageForm(request.POST)
+        if form.is_valid():
+            for id in form.cleaned_data['language']:    # 선택한 언어 반복
+                print(id)
+                language = Language.objects.get(id=id)
+                language.delete()
+            
+            return redirect('/admin/language/')
+        return render(request, 'language_delete.html', {'form': form})
+
+
 
 
 def check_userid(request):

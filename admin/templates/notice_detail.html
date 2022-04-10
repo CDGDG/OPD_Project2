@@ -8,6 +8,13 @@
             <input type="text" class="form-control" id="title" value="{{notice.title}}" readonly/>
             <label for="contents">내용</label>
             <textarea class="form-control" id="contents" readonly>{{notice.contents}}</textarea>
+            {% if noticeimg == '' %}
+                <label>첨부 파일</label>
+                <p class='form control'>첨무 파일이 없습니다.</p>
+            {% else %}
+                <label>첨부 파일</label>
+                <a class='form-control' href="{% url 'Admin:filedownload' noticeimg.pk %}">{{ noticeimg.img_original }}</a>
+            {% endif %}
         </div>
         <div class="mt-3">
 

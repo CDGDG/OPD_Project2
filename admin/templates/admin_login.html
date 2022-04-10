@@ -6,7 +6,7 @@
 {% block content %}
 <div class="row mt-5">
     <div class="col-12">
-        <form method="POST" id='adminLoginForm' action="." enctype="multipart/form-data">
+        <form method="POST" id='adminLoginForm' action=".">
             {% csrf_token %}
             {% comment %} 
             {% for field in form %}   {#  form 의 각 필드 별로 for 순환 #}

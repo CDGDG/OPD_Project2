@@ -30,7 +30,7 @@ header{
 .nav-link:hover{
     background-color: #ffb6c1;
 }
-#loginbtn, #admin_loginbtn{
+#loginbtn, #admin_loginbtn, #addlanguagenbtn{
     color: white;
     background-color: lightcoral;
 }

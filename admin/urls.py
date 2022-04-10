@@ -16,5 +16,9 @@ urlpatterns = [
     path('reset_password/', views.OPD_PasswordResetView.as_view(), name ='reset_password'),
     path('reset_password_done/', views.OPD_PasswordResetDoneView.as_view(), name ='password_reset_done'),
     # path('reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name ='password_reset_confirm'),
+    path('language/', views.language, name='language'),
+    path('language/add/', views.languageadd, name='languageadd'),
+    path('language/delete/', views.languagedelete, name='languagedelete'),
+    path('notice/filedownload/<int:pk>/', views.filedownload, name='filedownload'),
     
 ]
