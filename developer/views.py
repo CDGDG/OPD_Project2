@@ -38,7 +38,7 @@ def join(request):
                     nickname = form.nickname,
                     registnum = form.registnum,
                     phonenum = form.phonenum,
-                    email = form.email_id+"@"+form.email_option,
+                    email = form.email,
                     pic = request.FILES.get('pic'),
                     resume = request.FILES.get('resume'),
             )
@@ -62,8 +62,7 @@ def join(request):
 
 # 이메일 인증
 def send_email(request):
-        email_id = request.GET.get('email_id')
-        email_option = request.GET.get('email_option')
+        email = request.GET.get('email')
         emailnum = request.GET.get('emailnum') # 이메일 인증번호
         context={}
         current_site = get_current_site(request) 
@@ -77,13 +76,13 @@ def send_email(request):
             # 'token': account_activation_token.make_token(developer),
         })
         mail_title = "Our Project Diary 이메일 인증" # 이메일 title
-        mail_to = email_id+"@"+email_option # 사용자 email
+        mail_to = email # 사용자 email
         email = EmailMessage(mail_title, message, to=[mail_to])
         try: 
             email.send()
         except:
             context['fail'] = True # 이메일 전송 실패 시 
-        if email_id == "" or email_option =="":
+        if email == "":
             context['blank'] = True  # 이메일을 다 입력하지 않았을 때
         return JsonResponse(context)
 
@@ -118,16 +117,17 @@ def checkPassword(request):
     password = request.POST.get('password')
     check = request.POST.get('check')
     context = {}
+    # info에서 수정하기 버튼 클릭시 비밀번호 확인
     if check == "check":
         if password == "":
             context['blank'] = True
         elif not check_password(password,developer.password):
             context['data'] = 'fail'
+    # 수정할때 비밀번호확인
     else:
-        if password == "":
-            context['blank'] = True
-        elif check_password(password,developer.password):
-            context['data'] = 'fail'
+        if password:
+            if check_password(password,developer.password):
+                context['data'] = 'fail'
 
     return JsonResponse(context)
 
@@ -190,10 +190,14 @@ def update(request):
         return render(request,'home.html')
     developer = Developer.objects.get(pk = request.session.get('id'))
     if request.method == "POST":
+        new_password = request.POST.get('password')
         form = UpdateForm(request.POST,request.FILES,instance=developer)
         if form.is_valid():
             developer = form.save(commit=False)
-            developer.password = make_password(request.POST.get('password'))
+            if new_password: 
+                developer.password = make_password(new_password)
+            else:
+                developer.password = developer.password
             if request.FILES.get('pic'): 
                 developer.pic = request.FILES.get('pic')
                 developer.pic_original = developer.pic.name
@@ -278,6 +282,8 @@ def list(request):
 
 
 def leave(request):
-    developer = Developer.objects.get(pk = request.session.get('id'))
-    developer.delete()
-    return logout(request)
+    if request.method == "POST":
+        developer = Developer.objects.get(pk = request.session.get('id'))
+        developer.delete()
+        return logout(request)
+    return redirect("/")

@@ -216,6 +216,7 @@ $(document).ready(function(){
             $(first).focus()
         }else{
             joinfrm.submit();
+            alert("회원가입되었습니다. 감사합니다~")
         }
     })
 })
