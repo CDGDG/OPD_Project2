@@ -5,7 +5,9 @@ from django.core.paginator import Paginator
 
 from admin.models import Language
 from developer.models import Developer
+import project
 from recruit.models import Recruit, Recruit_Language
+from company.models import Company
 
 from .models import Document, Project
 from .forms import ProjectUpdateForm, Projectform
@@ -67,7 +69,20 @@ def detail(request, pk):
         project = Project.objects.get(pk=pk)
     except Project.DoesNotExist:
         raise Http404('프로젝트를 찾을 수 없습니다.')
-    return render(request, 'project_detail.html', {'project': project})
+    # 프로젝트 좋아요 여부
+    id = request.session.get('id')
+    if id:
+        is_like = None
+        try:
+            if request.session.get('who')=="developer":
+                is_like = Developer.objects.filter(id=id, likeproject=project).count()==1
+            elif request.session.get('who')=='company':
+                is_like = Company.objects.filter(id=id, likeproject=project).count()==1
+        except Developer.DoesNotExist or Company.DoesNotExist:
+            raise Http404('알 수 없는 사용자입니다.')
+        print(is_like)
+
+    return render(request, 'project_detail.html', {'project': project, 'is_like': is_like})
 
 def update(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -116,3 +131,25 @@ def deleteDocument(request):
         return JsonResponse({'data': 'nodata'})
     document.delete()
     return JsonResponse({'data': 'success'})
+
+def likeproject(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    who =  request.session.get('who')
+    id = request.session.get('id')
+    person = None
+    if who and id:
+        person = get_object_or_404(Developer if who=="developer" else Company, id=id)
+        person.likeproject.add(project)
+        return JsonResponse({'data': 'success'})
+    return JsonResponse({'data': 'fail'})
+
+def unlikeproject(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    who =  request.session.get('who')
+    id = request.session.get('id')
+    person = None
+    if who and id:
+        person = get_object_or_404(Developer if who=="developer" else Company, id=id)
+        person.likeproject.remove(project)
+        return JsonResponse({'data': 'success'})
+    return JsonResponse({'data': 'fail'})

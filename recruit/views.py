@@ -1,8 +1,11 @@
+from functools import reduce
+import json
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from admin.models import Language
 from recruit.forms import RecruitUpdateForm
 
-from recruit.models import Recruit, RecruitOk
+from recruit.models import Recruit, Recruit_Language, RecruitOk
 from developer.models import Developer
 from project.models import Project
 from django.core.paginator import Paginator
@@ -30,11 +33,25 @@ def update(request, pk):
         if form.is_valid():
             recruit = form.save(commit=False)
             recruit.save()
+
+            # 모집 언어
+            if request.POST.get('num'):
+                for i in range(int(request.POST.get('num'))):
+                    if request.POST.get(f'select{i}'):
+                        re_la = Recruit_Language(
+                            recruit= recruit,
+                            language= get_object_or_404(Language, id=request.POST.get(f"select{i}")),
+                            people= request.POST.get(f"people{i}")
+                        )
+                        re_la.save()
+
             return redirect(f"/recruit/detail/{pk}/")
         else:
             print('recruit:update - form 검증 False')
     form = RecruitUpdateForm(instance=recruit)
-    return render(request, 'recruit_update.html', {'form': form, 'pk': pk})
+    languages = reduce(lambda result, language: result.append(language) or result, Language.objects.all(), [])
+    re_la = Recruit_Language.objects.filter(recruit = recruit)
+    return render(request, 'recruit_update.html', {'form': form, 'pk': pk, 'languages': languages, 're_la': re_la})
 
 def apply(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk)
@@ -67,3 +84,11 @@ def accept(request):
             recruit.project.member.add(recruit.developer)
             recruit.delete()
             return JsonResponse({'data':'success'})
+
+def deleteRecruit_Language(request):
+    if request.method=="POST":
+        pk = request.POST.get('id')
+        if pk:
+            re_la = get_object_or_404(Recruit_Language, pk=pk)
+            re_la.delete()
+            return JsonResponse({'data': 'success'})
