@@ -22,7 +22,7 @@
                 <div id="check_{{field.name}}"></div>
                 {% comment %} 휴대폰번호 {% endcomment %}
                 {% elif field.name == 'phonenum'%}
-                    <input type="hidden" name="{{ field.name }}"/>
+                    <input type="hidden" name="{{ field.name }}" id="id_phonenum"/>
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     <input type="text" class="form-control noani" style="width:5%; display:inline-block" id="{{ field.id_for_label }}1"
                     placeholder="000" name="{{ field.name }}1" maxlength="3"/><span style="width: auto;margin: auto 0;color: lightcoral;font-weight: 900;"> - </span>
@@ -47,7 +47,7 @@
                     <div id="check_email_result"></div>
                 {% comment %} 주민등록번호 {% endcomment %}
                 {% elif field.name == 'registnum'%}
-                    <input type="hidden" name="{{ field.name }}"/>
+                    <input type="hidden" name="{{ field.name }}" id="id_registnum"/>
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     <div class="mt-1 row mx-0 justify-content-md-center registnumdiv" style="border: 1px solid #ced4da;border-radius: 0.25rem;padding: 0.375rem 0.75rem;">
                         <input type="text" class="d-inline-block col noani border-0 text-center" id="{{ field.id_for_label }}1"
