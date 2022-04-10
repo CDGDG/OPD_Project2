@@ -7,11 +7,15 @@
 <form action="{% url 'Recruit:update' pk %}" method="POST" id="form_id" class="update">
     {% csrf_token %}
     {% bootstrap_form form %}
+
+    {# 모집 언어 #}
+    <div id="docs" class='p-0'></div>
+    <input type="hidden" name='language' id='id_language'>
+    <input type="button" class="form-control text-center formbtn py-2 mb-4 btn btn-success text-white" id="add_language" value="언어 추가">
     
     <a class="btn btn-outline-dark col-2" href="{% url 'Recruit:list' %}">목록</a>
     <button type="button" class="btn btn-outline-dark col-2 mx-2" onclick="history.back()">이전으로</button>
     <button type="button" class="btn btn-primary col" id="update">수정완료</button>
-    
 </form>
 {% endblock content %}
 {% block script %}

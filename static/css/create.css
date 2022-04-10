@@ -34,19 +34,19 @@
     display: none;
 }
 #form_id .focusLabel:not(.noani){
-    background-color: salmon !important;
+    /* background-color: salmon !important; */
     width: 15%;
 }
 #form_id .nofocusLabel:not(.noani){
-    background-color: lightcoral !important;
+    /* background-color: lightcoral !important; */
     width: 100%;
 }
 #form_id .okLabel:not(.noani){
-    background-color: lightcoral !important;
+    /* background-color: lightcoral !important; */
     width: 30%;
 }
 #form_id .wrongLabel{
-    background-color: red !important;
+    background-color: #dc3545 !important;
 }
 #form_id textarea{
     resize: none;
@@ -72,5 +72,5 @@
     outline: none;
 }
 .checkDiv{
-    padding-left: 30%;
+    text-align: right;
 }
