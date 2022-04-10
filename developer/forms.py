@@ -42,19 +42,13 @@ class JoinForm(forms.Form):
         },
         max_length=20,label='휴대폰번호'
     )
-    email_id = forms.CharField(
+    email = forms.EmailField(
         error_messages={
             'required' : '이메일을 입력해주세요'
         },
         max_length=50, label='이메일'
     )
 
-    email_option = forms.CharField(
-            error_messages={
-                'required':'이메일을 입력해주세요'
-            }, 
-        max_length=50
-        )
     resume = forms.FileField(label='이력서', required=False)
     CHOICES = []
     for lang in Language.objects.all():
@@ -72,8 +66,7 @@ class JoinForm(forms.Form):
         self.nickname = cleaned_data.get('nickname')
         self.registnum = cleaned_data.get('registnum')
         self.phonenum = cleaned_data.get('phonenum')
-        self.email_id = cleaned_data.get('email_id')
-        self.email_option = cleaned_data.get('email_option')
+        self.email = cleaned_data.get('email')
         self.language = cleaned_data.get('language')
 
 
