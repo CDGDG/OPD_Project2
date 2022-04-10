@@ -2,6 +2,7 @@ from datetime import datetime
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from admin.models import Language
+from admin.views import logout
 import developer
 from project.models import Project
 from .models import Developer, Follow
@@ -274,3 +275,9 @@ def list(request):
     developer = paginator.get_page(page)
 
     return render(request,'developer_list.html',{'developer':developer,'search':search,'menu':menu})
+
+
+def leave(request):
+    developer = Developer.objects.get(pk = request.session.get('id'))
+    developer.delete()
+    return logout(request)

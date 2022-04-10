@@ -15,9 +15,10 @@ urlpatterns = [
     path('download/<int:pk>/',views.download, name ='resume_download'),
     path('update/',views.update, name = 'update'),
     path('myproject/<int:pk>/',views.myproject, name = 'myproject'),
-    path('follow/',views.myfollowers, name = 'followers'),
-    path('follower/',views.follow, name = 'follow'),
+    path('follow/',views.myfollowers, name = 'followers'),  # 내 팔로우 리스트
+    path('follower/',views.follow, name = 'follow'), # 팔로우 하기
     path('list/',views.list, name = 'list'),
+    path('leave/',views.leave, name = 'leave'),
 ]
 
 #MEDIA 경로 추가
