@@ -1,4 +1,4 @@
-from django.urls import path,reverse_lazy
+from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -20,5 +20,7 @@ urlpatterns = [
     path('language/add/', views.languageadd, name='languageadd'),
     path('language/delete/', views.languagedelete, name='languagedelete'),
     path('notice/filedownload/<int:pk>/', views.filedownload, name='filedownload'),
+    path('checkuserid/',views.check_userid, name="check_userid"),
+    path('resetpassword/',views.reset_password, name="resetpassword"),
     
 ]

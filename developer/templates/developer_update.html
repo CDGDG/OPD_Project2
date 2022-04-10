@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}수정{% endblock  %}
 {% block content %}
+<link rel="stylesheet" href="/static/css/create.css">
 {% load bootstrap4 %}
 <h2>수정</h2>
 <hr>
-<form action="{% url 'Developer:update'%}" method="POST" enctype="multipart/form-data" name="updatefrm">
+<form action="{% url 'Developer:update'%}" method="POST" enctype="multipart/form-data" name="updatefrm" id="form_id">
     {% csrf_token %}
     <p>비밀번호 수정하기</p>
     <input type="password" class="form-control mt-1" name="password" id="password">
@@ -17,6 +18,10 @@
     {% bootstrap_form form %}
     <div id="check_language"></div>
     <input type="button" class="btn btn-outline-dark" id="update" value="수정완료">
+    <form action="{% url 'Developer:leave' %}" method="post" name="leavefrm">
+        {% csrf_token %}
+        <input type="button" class="btn btn-primary" id="leave" value="탈퇴하기"></input>
+    </form>
     <a type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</a>
     </form>
 {% endblock content %}
@@ -50,7 +55,7 @@
         $('#id_resume').change(function(e){
             readResume(e)
         })
-
+    })
 
         $('#update').click(function(){
             var updatefrm = document.forms['updatefrm']
@@ -58,6 +63,7 @@
             var check_cnt = $('input[name=language]:checkbox:checked').length;
             var password = $('#password').val();
             var check = "update";
+            if(password){
             $.ajax({
                 url:"{% url 'Developer:checkPassword' %}",
                 type:"POST",
@@ -65,22 +71,19 @@
                 datatype:'json',
                 success:function(response){
                     console.log(password)
-                    if(response.blank){
-                        updatefrm['password'].focus();
-                        $('#check_password').html('<p style="color:red">비밀번호를 입력해주세요</p>')
-                        return false;
-                    }else if(response.data == "fail"){
+                    if(response.data == "fail"){
                         updatefrm['password'].focus();
                         $('#check_password').html('<p style="color:red">현재 비밀번호와 같습니다</p>')
                         return false;
-                    
-                    }else{
-
                     }
-                    if(!reg_pass.test(updatefrm['password'].value.trim())){
-                        updatefrm['password'].focus();
+                }
+
+            })
+            if(!reg_pass.test(updatefrm['password'].value.trim())){
+                updatefrm['password'].focus();
                 $('#check2_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>');
                 return false;
+
             }
             
             if(updatefrm['re_password'].value.trim()==""){
@@ -94,17 +97,29 @@
                 $('#check_re_password').html('<p style="color:red">비밀번호가 다릅니다</p>');
                 return false;
             }
+
+        }
             
             if(check_cnt<1){
                 $('#id_language').focus();
                 $('#id_language').append('<p style="color:red">한개 이상의 언어를 선택해주세요</p> ')
                 return false;
             }
-            
+            var con = confirm("수정하시겠습니까?")
+            if(con){
                 updatefrm.submit()
+                alert("수정되었습니다")
+            }
+            
+        })
+
+        $('#leave').click(function(){
+            var con = confirm("정말 탈퇴하시겠습니까?")
+            if(con){
+                document.forms['leavefrm'].submit();
+                alert("탈퇴되었습니다")
             }
         })
-    })
-})
+    
 </script>
 {% endblock  %}

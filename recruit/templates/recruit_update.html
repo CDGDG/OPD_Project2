@@ -7,13 +7,69 @@
 <form action="{% url 'Recruit:update' pk %}" method="POST" id="form_id" class="update">
     {% csrf_token %}
     {% bootstrap_form form %}
+
+    {# 모집 언어 #}
+    <div id="languages" class='p-0'></div>
+    <input type="hidden" name='language' id='id_language'>
+    <input type="hidden" name='num' id='language_num'>
+    <input type="button" class="form-control text-center formbtn py-2 mb-4 btn label-color text-white" id="add_language" value="언어 추가">
     
     <a class="btn btn-outline-dark col-2" href="{% url 'Recruit:list' %}">목록</a>
     <button type="button" class="btn btn-outline-dark col-2 mx-2" onclick="history.back()">이전으로</button>
     <button type="button" class="btn btn-primary col" id="update">수정완료</button>
-    
 </form>
 {% endblock content %}
 {% block script %}
+<script>
+$(document).ready(function(){
+
+    languages = [
+    {% for language in languages %}
+    {
+        id: '{{language.id}}',
+        language: '{{language.language}}',
+    },
+    {% endfor %}
+    ]
+    re_la = [
+    {% for rl in re_la %}
+    {
+        id: '{{rl.id}}',
+        people: '{{rl.people}}',
+        language: '{{rl.language}}',
+    },
+    {% endfor %}
+    ]
+    for(let rl of re_la){
+        let newdiv = $('<div></div>').addClass('form-control mb-2').css({'width': '100%'})
+        // 언어 선택
+        $('#languages').append(newdiv);
+        newdiv.append($(`<input type="text" value="${rl.language}" class="form-control d-inline-block w-50 noani" readonly/>`))
+        // 인원수
+        newdiv.append($('<input/>', {type: 'number', class: 'form-control d-inline-block', placeholder: '모집 인원 수', readonly: true, value: rl.people})
+            .css({'width': '28%', 'padding-left':'.375rem', 'margin-left': '1%', 'margin-right': '1%'}))
+        // 삭제 button
+        newdiv.append($('<input/>', {type: 'button', class: 'btn btn-danger col', value: '삭제'}).css({'width': '20%', 'vertical-align':'baseline'})
+        .click(function(){ // 원래 문서 삭제버튼 클릭 시 해당 문서 삭제버튼
+            if(confirm('기존 언어 삭제는 바로 처리됩니다.\n정말 삭제하시겠습니까?')){
+                $.ajax({
+                    url: "{% url 'Recruit:deleteRecruit_Language' %}",
+                    type: "POST",
+                    data: {id: rl.id, 'csrfmiddlewaretoken': '{{csrf_token}}'},
+                    dataType: 'json',
+                    success: function(response){
+                        if(response.data == 'success'){
+                            newdiv.slideUp("fast", function(){$(this).remove()})
+                        }else{
+                            alert('언어 삭제를 실패했습니다. \n다시 시도해주세요.')
+                        }
+                    }
+                })
+            }
+        }))
+        $('#languages').append(newdiv);
+    }
+})
+</script>
 <script src="/static/js/recruit/recruit_update.js"></script>
 {% endblock script %}

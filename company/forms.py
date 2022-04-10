@@ -10,7 +10,7 @@ class CompanyJoinForm(forms.ModelForm):
 
     class Meta:
         model = Company
-        fields = ['companyid', 'password', 're_password', 'name', 'pic', 'tel', 'email', 'address', 'people', 'url', 'summary', 'category', 'language']
+        fields = ['companyid', 'password', 're_password', 'name', 'category', 'summary', 'pic', 'tel', 'email', 'address', 'people', 'url', 'language']
         
 
     # companyid = forms.CharField(
