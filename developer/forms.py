@@ -5,6 +5,7 @@ from developer.models import Developer
 from developer.widgets import PicPreviewWidget, ResumePreviewWidget
 
 class JoinForm(forms.Form):
+    pic = forms.ImageField(label='프로필사진', required=False)
     userid = forms.CharField(
         error_messages={
             'required' : '아이디를 입력해주세요'
@@ -54,7 +55,6 @@ class JoinForm(forms.Form):
             }, 
         max_length=50
         )
-    pic = forms.ImageField(label='프로필사진', required=False)
     resume = forms.FileField(label='이력서', required=False)
     CHOICES = []
     for lang in Language.objects.all():
