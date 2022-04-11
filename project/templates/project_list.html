@@ -71,9 +71,19 @@
         </nav>
     </div>
 </div>
-
-<a href="{% url 'Project:create' %}" class="btn btn-primary">생성</a>
+<button id="create" class="btn btn-primary">생성</button>
 {% endblock  %}
 {% block script %}
-<link rel="stylesheet" href="/static/css/list.css">
-{% endblock  %}
+<script>
+$(document).ready(function(){
+    $('#create').click(function(){
+        var userid = '{{request.session.id}}';
+        if(userid){
+            location.href = "{% url 'Project:create' %}"
+        }else{
+            alert("로그인이 필요한 항목입니다")
+        }
+    })
+})
+</script>
+{% endblock script %}

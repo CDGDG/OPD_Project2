@@ -4,55 +4,100 @@
 {% block title %}기업 정보수정{% endblock  %}
 
 {% block content %}
+<!-- Password Modal -->
+<div id ="passwordModal"  class="modal fade" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">비밀번호 수정하기</h4>
+            </div>
+            <div class="modal-body">    
+                <p>수정할 비밀번호를 입력해 주세요</p>
+                <input type="password" class="form-control mt-1" id="password" placeholder="비밀번호를 입력해주세요">
+                <div id="check_password"></div>
+                <p class='mt-3'>비밀번호를 다시 입력해주세요</p>
+                <input type="password" class="form-control mt-1" id="re_password" placeholder="비밀번호를 입력해주세요">
+                <div id="check_re_password"></div>
+            </div>
+            <div class="modal-footer"> 
+                <button class="btn btn-primary" id ="change_password" >변경</button>
+                <button class="btn btn-primary" data-bs-dismiss="modal" id="cancel">취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="/static/css/create.css">
 <div class="row mt-5">
     <div class="col-12">
-        <form method="POST" id='updateForm' action="." enctype="multipart/form-data">
+        <form method="POST" id='form_id' name='updateForm' action="." enctype="multipart/form-data">
             {% csrf_token %}  
-            
+
+            <input type='button' class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwordModal" value="비밀번호 수정하기"/>
             {% for field in form %}   {#  form 의 각 필드 별로 for 순환 #}
             {#  field 변수 안에는 필요한 정보들이 있다. #}
             <div class="form-group mt-3">
                 {% if field.name == 'tel' %}
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
-                    <br><input type="hidden" name="{{ field.name }}"/>
-                    <input type="text" class="form-control mt-1" style="width:5%; display:inline-block" id="{{ field.id_for_label }}1"
-                    placeholder="000" name="{{ field.name }}1" value='{{ tel1 }}' maxlength="4"/> -
-                    <input type="text" class="form-control" style="width:5%; display:inline-block" id="{{ field.id_for_label }}2"
-                    placeholder="0000" name="{{ field.name }}2" value='{{ tel2 }}' maxlength="4"/> -
-                    <input type="text" class="form-control" style="width:5%; display:inline-block" id="{{ field.id_for_label }}3"
+                    <input type="hidden" name="{{ field.name }}" id="id_tel"/>
+                    <input type="text" class="form-control mt-1 noani" style="display:inline-block" id="{{ field.id_for_label }}1"
+                    placeholder="000" name="{{ field.name }}1" value='{{ tel1 }}' maxlength="4"/><span style="width: auto;margin: auto 0;color: lightcoral;font-weight: 900;"> - </span>
+                    <input type="text" class="form-control noani" style="display:inline-block" id="{{ field.id_for_label }}2"
+                    placeholder="0000" name="{{ field.name }}2" value='{{ tel2 }}' maxlength="4"/><span style="width: auto;margin: auto 0;color: lightcoral;font-weight: 900;"> - </span>
+                    <input type="text" class="form-control noani" style="display:inline-block" id="{{ field.id_for_label }}3"
                     placeholder="0000" name="{{ field.name }}3" value='{{ tel3 }}' maxlength="4"/>
-                    
+                    {% if field.errors %}
+                        <span class="text-danger">{{ field.errors }}</span>
+                    {% endif %}
+                    <div id="check_{{field.name}}"></div>
                 {% elif field.name == 'address' %}
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
-                    <input type="text" id="sample6_postcode" style="display:inline-block; width:10%" class="form-control" onclick="sample6_execDaumPostcode()" placeholder="우편번호" readonly>
-                    <input type="button" class="btn btn-primary mb-1" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-                    <input type="text" class="form-control mb-1" id="sample6_address" name="{{ field.name }}" placeholder="주소" value="{{ company.address }}" readonly>
-                    <input type="text" class="form-control mb-1" id="sample6_detailAddress" name="address_detail" placeholder="상세주소" value="{{ company.address_detail }}">
-                    <input type="text" class="form-control" id="sample6_extraAddress" name="address_detail2" placeholder="참고항목" readonly>
-                {% elif field.name == 'language' %}
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
-                    <ul class='form-control' style='list-style-type: none;'>
-                        {% for f in field %}
-                        <li>{{f}}</li>
-                        {% endfor %}
-                    </ul>
+                    <label for="{{ field.id_for_label }}" class="noani">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
+                    <input type="text" id="sample6_postcode" style="display:inline-block;" class="form-control noani mb-1 " onclick="sample6_execDaumPostcode()" placeholder="우편번호" readonly>
+                    <input type="button" class="btn btn-primary mb-1" onclick="sample6_execDaumPostcode()" value="우편번호 찾기" id="address_btn"><br>
+                    <input type="text" class="form-control mb-1 " id="sample6_address" name="{{ field.name }}" placeholder="주소" value="{{ company.address }}" readonly>
+                    <input type="text" class="form-control mb-1 " id="sample6_detailAddress" name="address_detail" placeholder="상세주소" value="{{ company.address_detail }}">
+                    <input type="text" class="form-control mb-1 " id="sample6_extraAddress" name="address_detail2" placeholder="참고항목" readonly>
+                    {% if field.errors %}
+                        <span class="text-danger">{{ field.errors }}</span>
+                    {% endif %}
+                    <div id="check_{{field.name}}"></div>
+
+                {% elif field.name == 'name' %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <div class="row mx-0 justify-content-md-center registnumdiv" style="border-radius: 0.25rem;">
+                        <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                        placeholder="{{ field.label }}" name="{{ field.name }}" value="{{ company.name }}" />
+                    </div>
+                    <div id="check_{{field.name}}"></div>
+                    
+                    
+
                 {% else %}
                     {% bootstrap_field field %}
+                    {% comment %} <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                    placeholder="{{ field.label }}" name="{{ field.name }}" />
+                    <div id="check_{{field.name}}"></div> {% endcomment %}
+                    <div id="check_{{field.name}}"></div>
                 {% endif %}
             </div>
-            {% if field.errors %}
-            <span class="text-danger">{{ field.errors }}</span>
-            {% endif %}
+            <script>
+                // 안내 메세지 툴팁
+                if("{{field.id_for_label}}"){
+                    $("#{{field.id_for_label}}").focus(function(){$(this).tooltip('show')})
+                }
+            </script>
+            
             {% endfor %}
 
             <div class="mt-3">
-                <input type="button" class="btn btn-primary mt-3 mb-3" id='submitbtn' onclick="sendit()" value="수정하기">
-                {% comment %} <button type="submit" class="btn btn-primary mt-3">글쓰기</button>
-                <a class="btn btn-primary mt-3" href="{% url 'Board:list' %}">돌아가기</a> {% endcomment %}
+                <input type="button" class="btn btn-primary mt-3 mb-3" id='updatebtn' value="수정하기">
+                {% comment %} <button type="submit" class="btn btn-primary mt-3">글쓰기</button> {% endcomment %}
+                <a class="btn btn-primary mt-3 mb-3" href="{% url 'Company:detail' company.pk %}">돌아가기</a> 
             </div>
         </form>
     </div>
 </div>
+<input type="hidden" value="{{csrf_token}}" id="csrf_token">
 {% endblock %}
 {% block script %}
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -121,5 +166,55 @@
         }).open();
     }
 </script>
+<script>
+    $(document).ready(function(){
+        $('#change_password').click(function(){
+                var password = $("#password").val();
+                var re_password = $("#re_password").val();
+                console.log(password)
+                $.ajax({
+                    url: "{% url 'Company:checkPassword' %}",
+                    type:"POST",
+                    data : {'csrfmiddlewaretoken': $('#csrf_token').val(),'password':password},
+                    datatype:'json',
+                    success:function(response){
+                        if(response.blank){
+                            $('#check_password').html('<p style="color:red">비밀번호를 입력해주세요</p>')
+                            return;
+                        }else if(response.data == "success"){
+                            $('#check_password').html('<p style="color:red">현재 비밀번호와 같습니다</p>')
+                            return;
+                        }else{
+                            var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+                            if(!reg_pass.test(password)){
+                                $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>');
+                                return;
+                            } else if (password != re_password){
+                                $('#check_re_password').html('<p style="color:red">비밀번호가 다릅니다</p>');
+                                return;
+                            } else {
+                                $.ajax({
+                                    url: "{% url 'Company:changePassword' %}",
+                                    type: "POST",
+                                    data: {'csrfmiddlewaretoken': $('#csrf_token').val(),'password':password},
+                                    datatype: "json",
+                                    success:function(response){
+                                        if(response.data == 'success'){
+                                            $("#password").val('')
+                                            $("#re_password").val('')
+                                            $('#cancel').click()
+                                            alert('비밀번호 변경 성공')
+                                        }
+                                    }
+                                })
+                            }
+
+                        }
+                    }
+                })
+        })
+    })
+</script>
+<script src="/static/js/company/company_update.js"></script>
 {% endblock  %}
 

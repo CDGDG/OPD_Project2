@@ -223,6 +223,31 @@ def check_id(request):
 
     return JsonResponse(context)
 
+def checkPassword(request):
+    company = Company.objects.get(pk = request.session.get('id'))
+    password = request.POST.get('password')
+    print(password)
+    check = request.POST.get('check')
+    context = {}
+    # info에서 수정하기 버튼 클릭시 비밀번호 확인
+    if password == "":
+        context['blank'] = True
+    elif not check_password(password,company.password):
+        context['data'] = 'fail'
+    elif check_password(password, company.password):
+        context['data'] = 'success'
+
+    return JsonResponse(context)
+
+def changepassword(request):
+    company = Company.objects.get(pk = request.session.get('id'))
+    password = request.POST.get('password')
+    print(password)
+    company.password = make_password(password)
+    company.save()
+    return JsonResponse({'data': 'success'})
+    
+
 
 def follow(request):
     print(request.session.get('id'))

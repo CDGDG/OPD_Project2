@@ -21,6 +21,7 @@
     </div>
 </div>
 {% comment %} {% if developer.id == request.session.id %} {% endcomment %}
+<input type="hidden" value="{{developer.id}}" id="developer_id">
 <div class="row mt-5">
     <div class="col-12 mt-4">
         <div class="form-group detailDiv rounded row p-4" id="form_id">

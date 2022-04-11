@@ -5,6 +5,7 @@ from admin.models import Language
 from admin.views import logout
 import developer
 from project.models import Project
+from company.models import Company, CompanyFollow
 from .models import Developer, Follow
 from .forms import JoinForm,UpdateForm
 from django.contrib.auth.hashers import make_password, check_password
@@ -157,10 +158,17 @@ def info(request,pk):
     if request.session.get('id') == pk:
         return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password})
     else:
-        if Follow.objects.filter(developer=request.session.get('id'),follower = pk):
-            follow_check = True
-        else:
-            follow_check = False
+        if request.session.get('who') == 'developer':
+            if Follow.objects.filter(developer=request.session.get('id'),follower = pk):
+                follow_check = True
+            else:
+                follow_check = False
+        elif request.session.get('who') == 'company':
+            if CompanyFollow.objects.filter(company=request.session.get('id'),follower = pk):
+                follow_check = True
+            else:
+                follow_check = False
+
         return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password,'follow_check':follow_check})
 
 
@@ -225,7 +233,6 @@ def myproject(request,pk):
         return render(request,'home.html')
     developer = Developer.objects.get(pk=pk)
     projects = Project.objects.filter(leader = developer)
-
     return render(request, 'developer_myproject.html',{'projects':projects,'developer':developer})
 
 def myfollowers(request):
@@ -239,18 +246,32 @@ def follow(request):
     context={}
     follower = request.POST.get('developer_id')
     developer_follower = Developer.objects.get(pk = follower)
-    developer = Developer.objects.get(pk = request.session.get('id'))
-    if request.POST.get('check_follow') == "팔로우":
-        print(follower)
-        print(developer)
-        follow = Follow(
-            developer = developer,
-            follower = developer_follower
-        )
-        follow.save()
-    else:
-        follow = Follow.objects.filter(developer=developer,follower=follower)
-        follow.delete()
+    user = Developer.objects.get(pk = request.session.get('id')) if request.session.get('who') == 'developer' else Company.objects.get(pk = request.session.get('id'))
+    # developer = Developer.objects.get(pk = request.session.get('id'))
+    if request.session.get('who') == 'developer':        
+        if request.POST.get('check_follow') == "팔로우":
+            print(developer_follower)
+            print(user)
+            follow = Follow(
+                developer = user,
+                follower = developer_follower
+            )
+            follow.save()
+        else:
+            follow = Follow.objects.filter(developer=user,follower=follower)
+            follow.delete()
+    elif request.session.get('who') == 'company':
+        if request.POST.get('check_follow') == "팔로우":
+            print(developer_follower)
+            print(user)
+            follow = CompanyFollow(
+                company = user,
+                follower = developer_follower
+            )
+            follow.save()
+        else:
+            follow = Follow.objects.filter(developer=user,follower=follower)
+            follow.delete()
     return JsonResponse(context)
     
 
