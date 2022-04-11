@@ -77,7 +77,7 @@
 
             </div>
             <div class="mt-3 p-0">
-                {% if request.session.id == project.leader.pk %}
+                {% if request.session.who == 'developer' and project.leader.id == request.session.id %}
                 {% csrf_token %}
                 <a class="btn btn-light float-start me-2" href='{% url "Project:update" project.pk %}'>수정하기</a>
                 <a class="btn btn-light float-start" onclick="chkDelete()">삭제하기</a>
