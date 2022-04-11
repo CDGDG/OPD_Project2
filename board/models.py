@@ -37,6 +37,9 @@ class Comment(models.Model):
     regdate = models.DateTimeField(auto_now_add=True, verbose_name='등록시간')
     private = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.contents
+
 
     class Meta:
         db_table = 'opd_comment'

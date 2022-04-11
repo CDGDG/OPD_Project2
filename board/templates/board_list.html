@@ -6,13 +6,16 @@
     <div class="col-12">
         <table class="table table-light table-hover">
             <thead class="thead-light">
+                <input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
+
+                <input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
                 <tr>
                     <th>#</th>
                     <th>제목</th>
                     <th>언어</th>
                     <th>작성자</th>
-                    <th>조회수</th>
                     <th>등록일</th>
+                    <th>조회수</th>
                 </tr>
             </thead>
             <tbody class="text-dark">
@@ -20,10 +23,10 @@
                 <tr onclick="location.href='/board/detail/{{ board.id }}/'">
                     <td>{{ board.id }}</td>
                     <td>{{ board.title }}</td>
-                    <td>{{ board.language }}</td>
+                    <td>{{ board.language.all|join:", " }}</td>
                     <td>{{ board.developer }}</td>
-                    <td>{{ board.viewcnt }}</td>
                     <td>{{ board.regdate|date:"Y-m-d H:i:s"}}</td>
+                    <td>{{ board.viewcnt }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

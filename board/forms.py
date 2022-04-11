@@ -1,7 +1,7 @@
 from functools import reduce
+from .models import Comment
 from django import forms
 from admin.models import Language
-
 from board.models import Board
 from project.widgets import ImagePreviewWidget
 
@@ -34,9 +34,14 @@ class BoardUpdateForm(forms.ModelForm):
     language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어 선택')
 
     # 이미지
-    img = forms.ImageField(widget=ImagePreviewWidget, allow_empty_file=True)
+    img = forms.ImageField(widget=ImagePreviewWidget, allow_empty_file=True, label= '이미지 선택')
 
     class Meta:
         model = Board
         fields = ['title', 'img']
 
+class CommentForm(forms.ModelForm):
+    
+    class Meta:
+        model = Comment
+        fields = {'contents'}
