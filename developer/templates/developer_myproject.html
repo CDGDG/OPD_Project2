@@ -1,47 +1,55 @@
 {% extends 'base.html' %}
 {% block content %}
-{% if developer.id == request.session.id %}
 <div class="row mt-5">
     <div class="col-12">
-        <table class="table table-light table-hover">
-            <tbody class="text-dark">
-                {% if project %}
-                {% for project in projects %}
+        <div class="form-group row">
+            <div class="col-6">
+                <input type="radio" class="btn-check" name="project" id="myproject" value="myproject" autocomplete="off"
+                    checked>
+                <label class="btn login-select col-12" for="myproject">내 프로젝트</label>
+            </div>
+            <div class="col-6">
+                <input type="radio" class="btn-check" name="project" id="likeproject" value="likeproject"
+                    autocomplete="off">
+                <label class="btn login-select col-12" for="likeproject">내가 '좋아요'한 프로젝트</label>
+            </div>
+        </div>
+        <div id="my" style="display:block">
+            <table class="table table-light table-hover">
+                {% for project in projects%}
                 <tr onclick='location.href="/project/detail/{{project.id}}/"'>
                     <td>{{project.id}}</td>
                     <td>{{project.title}}</td>
                     <td><img src="{{project.thumbnail.url}}" alt=""></td>
                 </tr>
-                {% endfor %}
-                {% else %}
-                {{request.session.name}}님의 프로젝트가 없습니다.<br>
-                <a class="btn btn-primary" href="{% url 'Project:list' %}">프로젝트 만들러가기</a>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-</div>
-{% else %}
-<div class="row mt-5">
-    <div class="col-12">
-        <table class="table table-light table-hover">
-            <tbody class="text-dark">
-                {% if project %}
-                {% for project in projects %}
-                <tr onclick='location.href="/project/detail/{{project.id}}/"'>
-                    <td>{{project.id}}</td>
-                    <td>{{project.title}}</td>
-                    <td><img src="{{project.thumbnail.url}}" alt=""></td>
-                </tr>
-                {% endfor %}
-                {% else %}
+                {% empty %}
                 {{developer.nickname}}님의 프로젝트가 없습니다.<br>
-                <a type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</a>
-                {% endif %}
-            </tbody>
+                {% endfor %}
+            </table>
+            {% if developer.id == request.session.id %}
+            <a class="btn btn-primary" href="{% url 'Project:list' %}">프로젝트 만들러가기</a>
+            {% else %}
+            <a type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</a>
+            {% endif %}
+        </div>
+        <div id="like" style="display:none">
+            <table class="table table-light table-hover">
+                {% for likeproject in developer.likeproject.all %}
+                <tr onclick='location.href="/project/detail/{{likeproject.id}}/"'>
+                    <td>{{likeproject.id}}</td>
+                    <td>{{likeproject.title}}</td>
+                    <td><img src="{{likeproject.thumbnail.url}}" alt=""></td>
+                </tr>
+                {% empty %}
+                {{developer.nickname}}님이 '좋아요'한 프로젝트가 없습니다.<br>
+                <a class="btn btn-primary" href="{% url 'Project:list' %}">프로젝트 보러가기</a>
+                {% endfor %}
+            </table>
+        </div>
         </table>
     </div>
 </div>
-{% endif %}
-
 {% endblock  %}
+{% block script %}
+<script src="/static/js/developer/developer_myproject.js"></script>
+{% endblock script %}
