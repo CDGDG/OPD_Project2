@@ -8,8 +8,7 @@ $(document).ready(function(){
             dataType: 'json',
             success: function(response){
                 if(response['data']=="success"){
-                    $("#like").toggleClass('unlike like');
-                    $("#like").html($("#like").is('.like')?"❤":"🤍",);
+                    $("#like").toggleClass('unlike like text-danger text-secondary');
                 }else{
                     console.log('좋아요 실패')
                 }

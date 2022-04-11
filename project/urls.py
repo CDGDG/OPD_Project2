@@ -12,4 +12,5 @@ urlpatterns = [
     path('deleteDocument/', views.deleteDocument, name='deleteDocument'),
     path('likeproject/<int:pk>/', views.likeproject, name='likeproject'),
     path('unlikeproject/<int:pk>/', views.unlikeproject, name='unlikeproject'),
+    path('docdownload/<int:pk>/', views.doc_download, name='doc_download'),
 ]
