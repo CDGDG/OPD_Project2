@@ -157,10 +157,17 @@ def info(request,pk):
     if request.session.get('id') == pk:
         return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password})
     else:
-        if Follow.objects.filter(developer=request.session.get('id'),follower = pk):
-            follow_check = True
-        else:
-            follow_check = False
+        if request.session.get('who') == 'developer':
+            if Follow.objects.filter(developer=request.session.get('id'),follower = pk):
+                follow_check = True
+            else:
+                follow_check = False
+        elif request.session.get('who') == 'company':
+            if CompanyFollow.objects.filter(company=request.session.get('id'),follower = pk):
+                follow_check = True
+            else:
+                follow_check = False
+
         return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password,'follow_check':follow_check})
 
 
