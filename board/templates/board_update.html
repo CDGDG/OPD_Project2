@@ -5,15 +5,12 @@
 <h2>게시글 수정</h2>
 <hr>
 <div class="mb-3 mt-3 clearfix">
-    {% comment %} <span class="float-start me-2">id: {{board.id}}</span>
-    <span class="float-end ms-4">작성일: {{board.regdate|date: "Y-m-s H:i:s"}}</span>
-    <span class="float-end">조회수: {{board.viewcnt}}</span> {% endcomment %}
+    <span class="float-first me-2">id: {{ board.id }}</span>
 </div> 
-
 <form action="{% url 'Board:update' pk %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
-
+    {# 게시판 #}
     <button type="submit" class="btn btn-outline-dark">수정완료</button>
     <button type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</button>
     <a class="btn btn-outline-dark" href="{% url 'Board:list' %}">목록</a>
@@ -24,17 +21,16 @@
     function readImage(input) {
         if (input.target.files && input.target.files[0]) {
             const reader = new FileReader();
-
             reader.onload = (e) => {
-                $('#img_preview').attr('src',e.target.result)
+                $('input[type="file"]').siblings('label').css({'background-image': 'url('+e.target.result+')'})
             }
-            reader.readAsDataURL(input.target.files[0])
+            reader.readAsDataURL(input.target.files[0]);
         }
     }
     $(document).ready(function(){
         $('#id_img').change(function(e){
             readImage(e)
-        })
+        }).siblings('label').css({'background-image': "url(/media/{{img}})"})
     })
 </script>
 {% endblock %}

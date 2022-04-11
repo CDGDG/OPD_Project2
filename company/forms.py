@@ -115,7 +115,8 @@ class CompanyJoinForm(forms.ModelForm):
 class CompanyUpdateForm(forms.ModelForm):
     class Meta:
         model = Company
-        fields = ['name', 'pic', 'tel', 'email', 'address', 'people', 'url', 'summary', 'category', 'language']
+        fields = ['name', 'pic', 'tel', 'address', 'people', 'url', 'summary', 'category', 'language']
+    
     
     address = forms.CharField(
         error_messages={
