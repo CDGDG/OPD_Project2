@@ -77,7 +77,7 @@
 
             </div>
             <div class="mt-3 p-0">
-                {% if request.session.id%}
+                {% if request.session.id == project.leader.pk %}
                 {% csrf_token %}
                 <a class="btn btn-light float-start me-2" href='{% url "Project:update" project.pk %}'>수정하기</a>
                 <a class="btn btn-light float-start" onclick="chkDelete()">삭제하기</a>
@@ -85,7 +85,7 @@
                 
                 <a class="btn btn-primary float-end" href='{% url "Project:list" %}'>돌아가기</a>
                 <a class="btn btn-primary float-end mx-2" href='{% url "Recruit:detail" project.recruit.pk %}'>모집글 보기</a>
-                {% if request.session.id%}
+                {% if request.session.id %}
                 <button id="like" class="btn btn-light float-end border-0 {% if is_like %}like text-danger{%else%}unlike text-secondary{% endif %}"><i class="fa-solid fa-heart"></i></button>
                 {% endif %}
                 <form action="{% url 'Project:delete' %}" name="delete" method="POST">
