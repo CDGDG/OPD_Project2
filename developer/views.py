@@ -5,6 +5,7 @@ from admin.models import Language
 from admin.views import logout
 import developer
 from project.models import Project
+from company.models import Company, CompanyFollow
 from .models import Developer, Follow
 from .forms import JoinForm,UpdateForm
 from django.contrib.auth.hashers import make_password, check_password
@@ -237,18 +238,32 @@ def follow(request):
     context={}
     follower = request.POST.get('developer_id')
     developer_follower = Developer.objects.get(pk = follower)
-    developer = Developer.objects.get(pk = request.session.get('id'))
-    if request.POST.get('check_follow') == "팔로우":
-        print(follower)
-        print(developer)
-        follow = Follow(
-            developer = developer,
-            follower = developer_follower
-        )
-        follow.save()
-    else:
-        follow = Follow.objects.filter(developer=developer,follower=follower)
-        follow.delete()
+    user = Developer.objects.get(pk = request.session.get('id')) if request.session.get('who') == 'developer' else Company.objects.get(pk = request.session.get('id'))
+    # developer = Developer.objects.get(pk = request.session.get('id'))
+    if request.session.get('who') == 'developer':        
+        if request.POST.get('check_follow') == "팔로우":
+            print(developer_follower)
+            print(user)
+            follow = Follow(
+                developer = user,
+                follower = developer_follower
+            )
+            follow.save()
+        else:
+            follow = Follow.objects.filter(developer=user,follower=follower)
+            follow.delete()
+    elif request.session.get('who') == 'company':
+        if request.POST.get('check_follow') == "팔로우":
+            print(developer_follower)
+            print(user)
+            follow = CompanyFollow(
+                company = user,
+                follower = developer_follower
+            )
+            follow.save()
+        else:
+            follow = Follow.objects.filter(developer=user,follower=follower)
+            follow.delete()
     return JsonResponse(context)
     
 

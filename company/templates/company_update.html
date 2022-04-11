@@ -193,7 +193,6 @@
                                 $('#check_re_password').html('<p style="color:red">비밀번호가 다릅니다</p>');
                                 return;
                             } else {
-                                console.log('????')
                                 $.ajax({
                                     url: "{% url 'Company:changePassword' %}",
                                     type: "POST",
