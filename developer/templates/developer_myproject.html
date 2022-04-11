@@ -2,6 +2,7 @@
 {% block content %}
 <div class="row mt-5">
     <div class="col-12">
+        {% if developer.id == request.session.id %}
         <div class="form-group row">
             <div class="col-6">
                 <input type="radio" class="btn-check" name="project" id="myproject" value="myproject" autocomplete="off"
@@ -14,6 +15,7 @@
                 <label class="btn login-select col-12" for="likeproject">내가 '좋아요'한 프로젝트</label>
             </div>
         </div>
+        {% endif %}
         <div id="my" style="display:block">
             <table class="table table-light table-hover">
                 {% for project in projects%}
