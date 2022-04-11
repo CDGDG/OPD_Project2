@@ -1,0 +1,11 @@
+$(document).ready(function(){
+    $('input[name=project]').change(function(){
+        if($("input[name='project']:checked").val()=="myproject"){
+            $('#my').css('display','block')
+            $('#like').css('display','none')
+        }else{
+            $('#my').css('display','none')
+            $('#like').css('display','block')
+        }
+    })
+})

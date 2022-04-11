@@ -35,12 +35,12 @@
         <div class="mt-3">
 
             <a class="btn btn-primary" href='{% url "Project:detail" recruit.project.pk %}'>프로젝트 보기</a>
-
+            {% if request.session.id %}
             <a class="btn btn-primary" href='{% url "Recruit:update" recruit.pk %}'>수정하기</a>
-
-            <a class="btn btn-primary" href='{% url "Recruit:list" %}'>돌아가기</a>
-
+            {% endif %}
             <a class="btn btn-primary" href='{% url "Recruit:apply" recruit.pk %}' data-bs-toggle="modal" data-bs-target="#recruit-modal">신청하기</a>
+            
+            <a class="btn btn-primary" href='{% url "Recruit:list" %}'>돌아가기</a>
         </div>
     </div>
     {% comment %} 신청 목록 {% endcomment %}

@@ -127,8 +127,10 @@ $(document).ready(function(){
         })
     })
 
-    //이메일 인증
-    $('#send_email').click(function(){
+     //이메일 인증
+     $('#send_email').click(function(){
+        $('#check_email').html('<p style="color:blue">잠시만 기다려주세요...</p>')
+        $(this).attr({disabled:true})
         var joinfrm = document.forms['joinfrm']
         var email = joinfrm['email'].value.trim()
         
@@ -149,10 +151,10 @@ $(document).ready(function(){
                     $('#check_email').html('<p style="color:red">이메일을 입력해주세요</p>')
                 }else{
                     $('#check_email').html('<p style="color:green">인증번호를 입력해주세요</p>')
-                    $('#emailnum').css('display','block') 
-                    $('#check_emailnum').css('display','block') //이메일 인증번호 입력란
+                    $('.emailnumDiv').css('display','block') 
                     $('#check_emailnum').click(function(){
                         $('#send_email').attr('value','다시 인증하기')
+                        $(this).attr({disabled:false})
                         if(joinfrm['emailnum'].value.trim() == ""){
                             $('#check_email_result').html('<p style="color:red">인증번호를 입력해주세요</p>')
                             
@@ -166,10 +168,10 @@ $(document).ready(function(){
                         }
                     })
                 }
+            $("#send_email").removeAttr('disabled')
             }
         })
     })
-
 
 
 
