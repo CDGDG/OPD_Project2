@@ -1,4 +1,5 @@
 from functools import reduce
+import urllib
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
@@ -11,6 +12,14 @@ from company.models import Company
 
 from .models import Document, Project
 from .forms import ProjectUpdateForm, Projectform
+
+#파일 다운로드
+import os
+import mimetypes
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from django.http import FileResponse
+
 
 def list(request):
     all_projects = Project.objects.all().order_by('-id')
@@ -70,9 +79,10 @@ def detail(request, pk):
     except Project.DoesNotExist:
         raise Http404('프로젝트를 찾을 수 없습니다.')
     # 프로젝트 좋아요 여부
+    docs = Document.objects.filter(project=project)
     id = request.session.get('id')
+    is_like = None
     if id:
-        is_like = None
         try:
             if request.session.get('who')=="developer":
                 is_like = Developer.objects.filter(id=id, likeproject=project).count()==1
@@ -80,9 +90,8 @@ def detail(request, pk):
                 is_like = Company.objects.filter(id=id, likeproject=project).count()==1
         except Developer.DoesNotExist or Company.DoesNotExist:
             raise Http404('알 수 없는 사용자입니다.')
-        print(is_like)
 
-    return render(request, 'project_detail.html', {'project': project, 'is_like': is_like})
+    return render(request, 'project_detail.html', {'project': project, 'is_like': is_like, 'docs': docs})
 
 def update(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -153,3 +162,26 @@ def unlikeproject(request, pk):
         person.likeproject.remove(project)
         return JsonResponse({'data': 'success'})
     return JsonResponse({'data': 'fail'})
+
+def doc_download(request, pk):
+    doc_file = get_object_or_404(Document, pk=pk)
+
+    # doc_original = doc_file.docfile_original
+    doc_original = urllib.parse.quote(doc_file.docfile_original.encode('utf-8'))
+
+    root_path = os.path.join(settings.MEDIA_ROOT)# MEDIA root 경로
+    file_name = doc_file.docfile.name # 물리적으로 저장되어 있는 파일명
+    full_path = os.path.join(root_path,file_name)
+    mimetype = mimetypes.guess_type(full_path)
+
+    # 확인안되는 mimetype 의 경우. 기본적으로 'application/octet-stream' 으로 세팅
+    if not mimetypes: mimetype = 'application/octet-stream'  
+    file_size = os.path.getsize(full_path)
+
+    fs = FileSystemStorage(root_path)
+    response = FileResponse(fs.open(file_name, 'rb'), content_type=mimetype)
+
+    response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'%s' % doc_original # 최초 업로드 당시 파일명 그대로 다운로드/ 한글 파일명 인코딩 후 다운로드
+    response['Content-Length'] = file_size
+
+    return response

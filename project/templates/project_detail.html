@@ -1,45 +1,110 @@
 {% extends "base.html" %}
 {% block content %}
+<script src="https://kit.fontawesome.com/c0bcdc1f96.js" crossorigin="anonymous"></script>
 <div class="row mt-5">
     <div class="col-12">
-        <div class="form-group">
-            <label for="title">제목</label>
-            <input type="text" class="form-control" id="title" value="{{project.title}}" readonly/>
-            <label for="contents">내용</label>
-            <textarea class="form-control" id="contents" readonly>{{project.contents}}</textarea>
-        </div>
-        <div class="mt-3">
-            {% csrf_token %}
-            <button id="like" class="border-0 bg-transparent {% if is_like %}like{%else%}unlike{% endif %}">{% if is_like %}❤{%else%}🤍{% endif %}</button>
+        <div class="form-group detailDiv rounded p-4 row gx-4" id="form_id">
+            <h2 class="title" id='title'>{{project.title}}</h2>
+            <div class="mb-4 bg-white detail-control">
+                <label for="thumbnail">썸네일</label>
+                <p class="text-center"><img src="{{project.thumbnail.url}}" alt="프로젝트 썸네일" style="height:15vw;object-fit: contain;"></p>
+            </div>
+            <div class="col-6 m-0 p-0 mb-4">
+                <div class="detail-control me-2">
+                    <label for="summary">개요</label>
+                    <p>{{project.summary}}</p>
+                </div>
+            </div>
+            <div class="m-0 p-0 mb-4 col-6">
+                <div class="detail-control ms-2">
+                    <label for="language">사용 언어</label>
+                    <p>
+                        {% for language in project.language.all %}
+                        <a class="text-dark border-dark border border-1 rounded border-primary p-1 text-decoration-none">{{language.language}}</a>
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+            <div class="detail-control mb-4">
+                <label for="member">개발자</label>
+                <p>
+                    <a href="{% url 'Developer:info' project.leader.pk %}" class="leader btn btn-outline-primary">{{project.leader.nickname}}</a>
+                    {% for member in project.member.all %}
+                    <a href="{% url 'Developer:info' member.pk %}" class="member btn btn-outline-success ">{{member.nickname}}</a>
+                    {% endfor %}
+                </p>
+            </div>
+            <div class="col-md-6 d-inline-block m-0 p-0 mb-4">
+                <div class='m-0 me-2 detail-control'>
+                    <label for="startdate">시작일</label>
+                    <p>{{project.startdate}}</p>
+                </div>
+            </div>
+            <div class="col-md-6 d-inline-block m-0 p-0 mb-4">
+                <div class="m-0 ms-2 detail-control">
+                    <label for="enddate">종료일</label>
+                    <p>{{project.enddate}}</p>
+                </div>
+            </div>
+            <div class="detail-control mb-4">
+                <label for="contents">내용</label>
+                <p>{{project.contents}}</p>
+            </div>
+            <div class="detail-control mb-4">
+                <label for="documents">문서</label>
+                <table class="table">
+                    <tr>
+                        <th>문서 유형</th>
+                        <th>파일 명</th>
+                        <th>다운로드</th>
+                    </tr>
+                    {% for doc in docs %}
+                    <tr>
+                        <td>{{doc.category}}</td>
+                        <td>{{doc.docfile_original}}</td>
+                        <td><a class="btn btn-success" href="{% url 'Project:doc_download' doc.id %}">다운로드</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">문서가 없습니다.</td>
+                    </tr>
+                    {% endfor %}
+                </table>
 
-            <a class="btn btn-primary" href='{% url "Recruit:detail" project.recruit.pk %}'>모집 관리</a>
-
-            <a class="btn btn-primary" href='{% url "Project:update" project.pk %}'>수정하기</a>
-
-            <a class="btn btn-outline-dark" onclick="chkDelete()">삭제하기</a>
-            
-            <a class="btn btn-primary" href='{% url "Project:list" %}'>돌아가기</a>
-            <form action="{% url 'Project:delete' %}" name="delete" method="POST">
+            </div>
+            <div class="mt-3 p-0">
                 {% csrf_token %}
-                <input type="hidden" name="pk" value="{{project.pk}}">
-            </form>
-            <script>
-                function chkDelete(){
-                    // 삭제 여부 확인
-                    var r = confirm("삭제하시겠습니까?")
-                    if(r){
-                        document.forms.delete.submit();
+                <a class="btn btn-light float-start me-2" href='{% url "Project:update" project.pk %}'>수정하기</a>
+                <a class="btn btn-light float-start" onclick="chkDelete()">삭제하기</a>
+                
+                
+                <a class="btn btn-primary float-end" href='{% url "Project:list" %}'>돌아가기</a>
+                <a class="btn btn-primary float-end mx-2" href='{% url "Recruit:detail" project.recruit.pk %}'>모집글 보기</a>
+                <button id="like" class="btn btn-light float-end border-0 {% if is_like %}like text-danger{%else%}unlike text-secondary{% endif %}"><i class="fa-solid fa-heart"></i></button>
+                <form action="{% url 'Project:delete' %}" name="delete" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="pk" value="{{project.pk}}">
+                </form>
+                <script>
+                    function chkDelete(){
+                        // 삭제 여부 확인
+                        var r = confirm("삭제하시겠습니까?")
+                        if(r){
+                            document.forms.delete.submit();
+                        }
                     }
-                }
-            </script>
-            
+                </script>
+                
+            </div>
         </div>
-        
+        <br><br><br>
     </div>
 </div>
 <script>
 likeurl = "{% url 'Project:likeproject' project.pk %}"
 unlikeurl = "{% url 'Project:unlikeproject' project.pk %}"
 </script>
+<script src="/static/js/detail.js"></script>
+<link rel="stylesheet" href="/static/css/detail.css">
 <script src="/static/js/project/project_detail.js"></script>
 {% endblock %}
