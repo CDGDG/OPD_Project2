@@ -115,8 +115,8 @@ class UpdateForm(forms.ModelForm):
 
     language = forms.MultipleChoiceField(label="언어 선택",widget=forms.CheckboxSelectMultiple, choices=CHOICES)
 
-    pic = forms.ImageField(widget=PicPreviewWidget, allow_empty_file= True, required=False)
-    resume = forms.FileField(widget=ResumePreviewWidget, allow_empty_file= True,required=False)
+    pic = forms.ImageField(allow_empty_file= True, required=False, label="프로필 사진 변경")
+    resume = forms.FileField(allow_empty_file= True,required=False, label="이력서 첨부")
 
     class Meta:
         model = Developer

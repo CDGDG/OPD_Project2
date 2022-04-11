@@ -8,7 +8,7 @@
 <script src="/static/js/create.js"></script>
 <div class="row mt-5">
     <div class="col-12">
-        <form method="POST" id='form_id' action="." enctype="multipart/form-data">
+        <form method="POST" id='form_id' name='joinForm' action="." enctype="multipart/form-data">
             <h2 class="mb-4">기업 회원가입</h2>
             {% csrf_token %}  
             {% for field in form %}   {#  form 의 각 필드 별로 for 순환 #}
@@ -16,7 +16,7 @@
             <div class="form-group mt-3">
                 {% if field.name == 'tel' %}
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
-                    <input type="hidden" name="{{ field.name }}"/>
+                    <input type="hidden" name="{{ field.name }}" id="id_tel"/>
                     <input type="text" class="form-control mt-1 noani" style="display:inline-block" id="{{ field.id_for_label }}1"
                     placeholder="000" name="{{ field.name }}1" value='{{ tel1 }}' maxlength="4"/><span style="width: auto;margin: auto 0;color: lightcoral;font-weight: 900;"> - </span>
                     <input type="text" class="form-control noani" style="display:inline-block" id="{{ field.id_for_label }}2"
@@ -26,6 +26,7 @@
                     {% if field.errors %}
                         <span class="text-danger">{{ field.errors }}</span>
                     {% endif %}
+                    <div id="check_{{field.name}}"></div>
                 {% elif field.name == 'address' %}
                     <label for="{{ field.id_for_label }}" class="noani">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <input type="text" id="sample6_postcode" style="display:inline-block;" class="form-control noani mb-1 " onclick="sample6_execDaumPostcode()" placeholder="우편번호" readonly>
@@ -36,6 +37,7 @@
                     {% if field.errors %}
                         <span class="text-danger">{{ field.errors }}</span>
                     {% endif %}
+                    <div id="check_{{field.name}}"></div>
                 {% comment %} {% elif field.name == 'language' %}
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <ul class='form-control' style='list-style-type: none;'>
@@ -46,20 +48,64 @@
                     {% if field.errors %}
                         <span class="text-danger">{{ field.errors }}</span>
                     {% endif %} {% endcomment %}
+                {% elif field.name == "companyid"%}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                    title="영문자로 시작하고 최소 5개 이상의 숫자나 영문자가 포함되어야 합니다." name="{{ field.name }}" />
+                    <a class="btn btn-secondary position-absolute" id="duple_companyid" title="중복검사를 진행해주세요.">중복검사</a>
+                    <div id="check_{{field.name}}"></div>
+                {% comment %} <div style='display:inline-block' class="mx-3" id="dupleId_result"></div> {% endcomment %}
+
+                {% elif field.name == 'password'%}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                    title="최소 8자 이상이고 최소 1개 이상의 숫자, 특수문자, 영문 대소문자가 포함되어야 합니다." name="{{ field.name }}" />  
+                    {#<p>최소 8자 이상이고 최소 1개 이상의 숫자, 특수문자, 영문 대소문자가 포함되어야 합니다.</p>#}
+                    <div id="check_{{field.name}}"></div>
+
+                {% elif field.name == 'name' %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <div class="row mx-0 justify-content-md-center registnumdiv" style="border-radius: 0.25rem;">
+                        <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                        placeholder="{{ field.label }}" name="{{ field.name }}" />
+                    </div>
+                    <div id="check_{{field.name}}"></div>
+                    
+                {% elif field.name == 'email'%}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input type="{{field.field.widget.input_type}}" id="email" name="{{field.name}}" class="form-control">
+                    <input type="button" value="이메일 인증" id="send_email" name ='send_email'>
+                    <div id="check_{{field.name}}"></div>
+                    <input type="text" placeholder="인증번호를 입력해 주세요" id="emailnum" name="emailnum" class="form-control" style="display:none">
+                    <input type="button" value="인증하기" id="check_emailnum" name="check_emailnum" style="display:none">
+                    <div id="check_email_result"></div>
+
+                
+                
+                    
+
                 {% else %}
                     {% bootstrap_field field %}
-                    {% if field.name == "companyid"%}
-                    <a class="btn btn-secondary position-absolute" id="duple_companyid" title="중복검사를 진행해주세요.">중복검사</a>
-                    {% comment %} <div style='display:inline-block' class="mx-3" id="dupleId_result"></div> {% endcomment %}
-                    {% endif %}
+                    {% comment %} <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                    placeholder="{{ field.label }}" name="{{ field.name }}" />
+                    <div id="check_{{field.name}}"></div> {% endcomment %}
+                    <div id="check_{{field.name}}"></div>
                 {% endif %}
             </div>
+            <script>
+                // 안내 메세지 툴팁
+                if("{{field.id_for_label}}"){
+                    $("#{{field.id_for_label}}").focus(function(){$(this).tooltip('show')})
+                }
+            </script>
             
             {% endfor %}
 
+
             <div class="px-0 text-end">
                 <input type="button" class="btn btn-outline-secondary mt-3 mb-3" value="돌아가기" onclick="window.history.back()">
-                <input type="button" class="btn btn-primary mt-3 mb-3" id='submitbtn' value="회원가입">
+                <input type="button" class="btn btn-primary mt-3 mb-3" id='joinbtn' value="회원가입">
                 {% comment %} <button type="submit" class="btn btn-primary mt-3">글쓰기</button> {% endcomment %}
             </div>
         </form>
@@ -70,7 +116,7 @@
 {% block script %}
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-<script>
+{% comment %} <script>
     function sendit(){
         let frm = document.forms.joinForm
         let tel1 = document.getElementsByName('tel1')[0].value
@@ -80,19 +126,20 @@
         document.getElementsByName('tel')[0].value = tel1 + '-' + tel2 + '-' + tel3
         
         
-        let result = document.getElementById('dupleId_result')
+        let result = document.getElementsByClassName('tooltip-inner')[0]
         console.log(result.innerHTML)
-        if (result.innerHTML == '<p style="color:green">사용가능한 아이디입니다</p>') {
+        if (result.innerHTML == '사용 가능한 아이디입니다.') {
             document.getElementsByName('address_detail')[0].value += " "+document.getElementsByName('address_detail2')[0].value
+            console.log('zzz')
             frm.submit();
         }else {
             document.getElementById("duple_companyid").focus();
         }
     }
-</script>
+</script> {% endcomment %}
 <script>
     $(document).ready(function(){
-        var id_button = false;
+        id_button = false;
         $('#duple_companyid').tooltip({trigger: 'focus'}).click(function(){
             var companyid=$('#id_companyid').val()
             $.ajax({
@@ -123,6 +170,48 @@
                     
                 }
                 
+            })
+        })
+        //이메일 인증
+        $('#send_email').click(function(){
+            var joinfrm = document.forms['joinForm']
+            var email = joinfrm['email'].value.trim()
+            
+            //이메일 인증번호
+            var num_list = []
+            for(var i=0;i<4;i++){num_list.push(Math.floor(Math.random() * 10)+"")}
+            var emailnum = num_list.join("")
+            
+            $.ajax({
+                url:"{% url 'Developer:send_email' %}",
+                data : {'email':email,'emailnum':emailnum},
+                datatype:'json',
+                success:function(response){
+                    if(response.fail){
+                        $('#check_email').html('<p style="color:red">이메일 인증에 실패 했습니다 다시 시도해주세요</p>')
+                    }
+                    if(response.blank){
+                        $('#check_email').html('<p style="color:red">이메일을 입력해주세요</p>')
+                    }else{
+                        $('#check_email').html('<p style="color:green">인증번호를 입력해주세요</p>')
+                        $('#emailnum').css('display','block') 
+                        $('#check_emailnum').css('display','block') //이메일 인증번호 입력란
+                        $('#check_emailnum').click(function(){
+                            $('#send_email').attr('value','다시 인증하기')
+                            if(joinfrm['emailnum'].value.trim() == ""){
+                                $('#check_email_result').html('<p style="color:red">인증번호를 입력해주세요</p>')
+                                
+                            }else if(joinfrm['emailnum'].value.trim() != emailnum){
+                                $('#check_email_result').html('<p style="color:red">인증번호를 다시 확인해주세요</p>') //인증번호가 맞지 않을 때
+                                
+                            }else{
+                                $('#check_email_result').html('<p style="color:green">인증되었습니다</p>')
+                                send_email=true;
+                                
+                            }
+                        })
+                    }
+                }
             })
         })
     })
