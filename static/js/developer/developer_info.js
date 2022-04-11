@@ -28,7 +28,7 @@ $(document).ready(function(){
         $.ajax({
             url: follow_url,
             type:"POST",
-            data:{'csrfmiddlewaretoken': $('#csrf_token').val(),'developer_id':developer_id,'check_follow':check_follow},
+            data:{'csrfmiddlewaretoken': $('#csrf_token').val(), 'developer_id':developer_id,'check_follow':check_follow},
             datatype:"json",
             success:function(response){
                 location.href = "/developer/info/"+developer_id+"/"
