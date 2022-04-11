@@ -31,6 +31,9 @@ $(document).ready(function(){
     // 주민등록번호 디자인
     $("[id^=id_registnum]").focus(function(){$('.registnumdiv').css({border: '1px solid lightcoral'})}).focusout(function(){$('.registnumdiv').css({border: '1px solid #ced4da'})})
 
+    // 이메일 디자인
+    $('.deve_join_email').focus(function(){$(".emailDiv").css({border: '1px solid lightcoral'})}).focusout(function(){$('.emailDiv').css({border: '1px solid #ced4da'})})
+
     // 프로필 디자인
     $("[for=id_pic]").addClass('h-100').css({'padding': '50.5% 0'}).parent().addClass('col-3').after($('<div></div>').addClass('col-9 px-0 ps-2 mb-4').append($("#id_userid, #id_password, #id_re_password, #id_nickname").parent()))
     $("#id_nickname").parent().addClass('mb-0')

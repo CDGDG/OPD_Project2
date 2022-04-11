@@ -35,12 +35,12 @@ class CompanyJoinForm(forms.ModelForm):
         max_length=500, label='비밀번호 확인', widget=forms.PasswordInput, initial=''
     )
 
-    # name = forms.CharField(
-    #     error_messages={
-    #         'required': '회사 이름을 입력해주세요.'
-    #     },
-    #     max_length=15, label='회사 이름', initial=''
-    # )
+    name = forms.CharField(
+        error_messages={
+            'required': '회사 이름을 입력해주세요.'
+        },
+        max_length=15, label='회사 이름', initial=''
+    )
 
     pic = forms.FileField(label='회사 사진')
 
@@ -73,9 +73,9 @@ class CompanyJoinForm(forms.ModelForm):
         label='회사 홈페이지 URL', initial=''
     )
 
-    # summary = forms.CharField(
-    #     label='회사소개', widget=forms.Textarea, initial=''
-    # )
+    summary = forms.CharField(
+        label='회사소개', widget=forms.Textarea, initial=''
+    )
 
     category = forms.ChoiceField(
         choices=(('', '회사 규모'),('big','대기업'),('littlebig','중견기업'),('small','중소기업'),('start','스타트업')),
