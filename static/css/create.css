@@ -71,6 +71,6 @@
 [id^=id_registnum]:focus{
     outline: none;
 }
-.checkDiv{
+.checkDiv, .invalid-feedback{
     text-align: right;
 }

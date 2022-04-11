@@ -38,9 +38,9 @@ $(document).ready(function(){
     $("#id_address, [id^=sample6]").removeClass('py-4').addClass('noani mb-1').css({width: 'auto', 'height':'fit-content'}).parent('.form-group').addClass('col-6 row pe-2 mx-0')
     $("#sample6_postcode").css({width: '41%', 'margin-right':'1%'})
     $("#address_btn").css({width:'58%'})
-    $("#sample6_address").css({width: '100%'})
+    $("#sample6_address").css({width: '100%'}).attr({placeholder: '주소'})
     $("#sample6_detailAddress").css({width: '50%', 'margin-right': '1%'}).attr({placeholder: '상세 주소'})
-    $("#sample6_extraAddress").css({width: '49%'})
+    $("#sample6_extraAddress").css({width: '49%'}).attr({placeholder: '참고 항목'})
 
     // 직원 수
     $("#id_people").removeClass('py-4').addClass('noani').css({width: '100%'}).parent('.form-group').addClass('mb-0').parent('.form-group').addClass('mb-1 mx-0 peourl')

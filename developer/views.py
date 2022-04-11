@@ -78,12 +78,13 @@ def send_email(request):
         mail_title = "Our Project Diary 이메일 인증" # 이메일 title
         mail_to = email # 사용자 email
         email = EmailMessage(mail_title, message, to=[mail_to])
-        try: 
-            email.send()
-        except:
-            context['fail'] = True # 이메일 전송 실패 시 
         if email == "":
             context['blank'] = True  # 이메일을 다 입력하지 않았을 때
+        else:
+            try: 
+                email.send()
+            except:
+                context['fail'] = True # 이메일 전송 실패 시 
         return JsonResponse(context)
 
 def check_id(request):
