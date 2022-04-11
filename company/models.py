@@ -17,7 +17,7 @@ class Company(models.Model):
     people = models.PositiveIntegerField(verbose_name='직원 수')
     category = models.CharField(max_length=10, verbose_name='분류')
 
-    likeproject = models.ManyToManyField('project.Project', verbose_name='좋아요한 프로젝트')
+    likeproject = models.ManyToManyField('project.Project', verbose_name='좋아요한 프로젝트', related_name='c_likeproject')
 
     language = models.ManyToManyField('admin.Language', verbose_name='사용언어')
 

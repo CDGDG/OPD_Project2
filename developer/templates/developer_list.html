@@ -1,24 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row mt-5">
-    <div class="col-12">
-        <table class="table table-light table-hover">
-            <thead class="thead-light">
+<div class="row mt-5" id="listform">
+    <div class="col-12 rounded tableDiv p-0">
+        <table class="table table-borderless m-0 table-hover">
+            <thead>
                 <tr>
                     <th>#</th>
+                    <th>프로필 사진</th>
                     <th>닉네임</th>
                     <th>이메일</th>
                     <th>사용 언어</th>
+                    <th>팔로우 수</th>
                 </tr>
             </thead>
-            <tbody class="text-dark">
+            <tbody>
                 {% for developer in developer %}
-                <tr onclick="location.href='{% url 'Developer:info' developer.id %}'">
+                <tr style="height:7vw;" onclick="location.href = `{% url 'Developer:info' developer.pk %}`">
                     <td>{{ developer.id }}</td>
+                    <td>
+                        <img src="{% if developer.pic %}{{developer.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;">
+                    </td>
                     <td>{{ developer.nickname }}</td>
                     <td>{{ developer.email }}</td>
                     <td>{{developer.language.all|join:" , "}}</td>
+                    <td>{{developer.follow_follower.count}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -80,6 +86,7 @@
 
 
 {% block script %}
+<link rel="stylesheet" href="/static/css/list.css">
 <script>
     list_url = "{% url 'Developer:list' %}"
     selected_menu = $('#menu').val()

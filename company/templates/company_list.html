@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row mt-5">
-    <div class="col-12">
-        <table class="table table-light table-hover">
-            <thead class="thead-light">
+<div class="row mt-5" id="listform">
+    <h2 class="mb-4">기업</h2>
+    <div class="col-12 rounded tableDiv p-0">
+        <table class="table table-borderless m-0 table-hover">
+            <thead>
                 <tr>
                     <th>#</th>
                     <th>회사명</th>
@@ -13,7 +14,7 @@
                     <th>이메일</th>
                 </tr>
             </thead>
-            <tbody class="text-dark">
+            <tbody>
                 {% for company in companys %}
                 <tr onclick="location.href='{% url 'Company:detail' company.id %}'">
                     <td>{{ company.id }}</td>
@@ -21,7 +22,6 @@
                     <td>{{ company.category }}</td>
                     <td>{{ company.tel }}</td>
                     <td>{{ company.email }}</td>
-                    {% comment %} <td>{{ board.registered_dttm|date:"Y-m-d H:i:s"}}</td> {% endcomment %}
                 </tr>
                 {% endfor %}
             </tbody>
@@ -98,6 +98,7 @@
 
 
 {% block script %}
+<link rel="stylesheet" href="/static/css/list.css">
 <script>
     $( document ).ready(function() {
         $("#menu").val("{{ menu }}").prop("selected", true);

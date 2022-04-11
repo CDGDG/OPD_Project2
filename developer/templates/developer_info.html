@@ -55,14 +55,14 @@
                     <div class="col px-1 mb-2">
                         <div class="bg-white detail-control">
                             <label for="language">보유 기술 및 언어</label> 
-                        <p class="text-center">{{developer.language.all|join:" , "}}</p>
+                        <p class="text-center" style="height:3vw;">{{developer.language.all|join:" , "}}</p>
                         </div>
                     </div>
                     {% if request.session.who == 'developer' and request.session.id == developer.id %}
                     <div class="col-4 px-1 mb-2">
                         <div class="bg-white detail-control">
                             <label for = "resume"> 이력서</label>
-                            <p class="text-center">
+                            <p class="text-center" style="height:3vw;">
                             {% if developer.resume %}
                             <a class="btn btn-primary" href ="{% url 'Developer:resume_download' developer.id %}">다운로드</a>
                             {% else %}

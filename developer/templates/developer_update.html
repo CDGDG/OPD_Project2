@@ -9,14 +9,15 @@
 </script>
 <script src="/static/js/create.js"></script>
 {% load bootstrap4 %}
-<form action="{% url 'Developer:update'%}" method="POST" enctype="multipart/form-data" name="updatefrm" id="form_id">
+<form action="{% url 'Developer:update'%}" method="POST" enctype="multipart/form-data" name="updatefrm" id="form_id" class="mt-5">
     <h2 class="mb-4">사용자 정보 수정</h2>
     {% csrf_token %}
     {% for field in form %}
     {% comment %} 프로필 사진 {% endcomment %}
     {% if field.name == "pic" %}
+    <input type="hidden" id="pic_url" value='{{field.url}}'>
     {% bootstrap_field field %}
-    <input type="button" id="basic" class="btn btn-outline-dark formbtn" value="기본 이미지로 변경"></input>
+    <input type="button" id="basic" class="btn btn-outline-dark formbtn mb-4" value="기본 이미지로 변경"></input>
     <input type="hidden" value="false" name="pic_default" id="pic_default">
     {% else %}
     {% bootstrap_field field %}
@@ -32,10 +33,11 @@
     <input type="button" class="btn btn-primary form-control col mt-3 py-4 formbtn" id="update" value="수정완료">
     <form action="{% url 'Developer:leave' %}" method="post" name="leavefrm">
         {% csrf_token %}
-        <button type="button" class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn" onclick="history.back()">이전으로</button>
-        <input type="button" class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn" id="leave" value="탈퇴하기"></input>
+        <button type="button" class="btn btn-outline-dark col-2 mt-3 py-4 mx-4 formbtn" onclick="history.back()">이전으로</button>
+        <input type="button" class="btn btn-outline-dark col-2 mt-3 formbtn" id="leave" value="탈퇴하기"></input>
     </form>
     <input type="hidden" value="{{csrf_token}}" id="csrf_token">
+<br><br><br>
 {% endblock content %}
 {% block script %}
 <script>
