@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-    $("#menu").val("{{ menu }}").prop("selected", true);
+    $("#menu").val(selected_menu).prop("selected", true);
 });
 
 function search(){
@@ -7,5 +7,5 @@ function search(){
     var menu = document.getElementById('menu')
     console.log(menu.options[menu.selectedIndex].value);
     console.log(searchtxt.value)
-    location.href="{% url 'Developer:list' %}?s="+searchtxt.value+"&m="+menu.options[menu.selectedIndex].value
+    location.href=list_url+"?s="+searchtxt.value+"&m="+menu.options[menu.selectedIndex].value
 }

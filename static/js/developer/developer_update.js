@@ -1,82 +1,129 @@
+function readPic(input) {
+    if (input.target.files && input.target.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            //$('#pic_preview').attr('src',e.target.result)
+            $("[for=id_pic]").css({'background-image': 'url('+e.target.result+')'})
+        }
+        reader.readAsDataURL(input.target.files[0]);
+    }
+}
 $(document).ready(function(){
-    // 시작일 종료일 col-4
-    $('#form_id input[type="date"]').parent().removeClass('col-6').addClass('col-4')
-    // 비공개 col-4
-    $('#form_id .form-check').parent().removeClass('col-6').addClass('col-4')
+
     // 언어 체크
     $("input[name='language']:checked").parent('label').addClass('label-color')
-
-    // 문서 추가
-    let num = 0
-    $('#add_doc').click(function(){
-        let newdiv = $('<div></div>').addClass('form-control mb-2').css({'width': '100%'})
-        // 문서 유형 input
-        newdiv.append($('<input/>', {type: 'text', name: 'doctype'+num, class: 'form-control d-inline-block', placeholder: '문서 유형'})
-            .css({'width': '41%', 'padding-left':'.375rem'}));
-        // 문서 파일 input
-        newdiv.append($('<input/>', {type: 'file', name: 'doc'+num, class: 'form-control d-inline-block my-0'})
-            .css({'width': '50%', 'margin-left': '0.5%', 'margin-right': '0.5%'}));
-        // 삭제 button
-        newdiv.append($('<input/>', {type: 'button', class: 'btn btn-danger col', value: '삭제'}).css({'width': '8%', 'vertical-align':'baseline'})
-            .click(function(){newdiv.slideUp("fast", function(){$(this).remove()})}))
-        $('#docs').append(newdiv);
-        num += 1;
-    })
 
     $('#form_id input[type="checkbox"]').not('.noani').change(function(){
         $(this).siblings('label').toggleClass('label-color').text($(this).siblings('label').text() == '비공개'? "공개" : "비공개")
     })
 
+    $('#id_resume').removeClass('form-control-file')
 
-    // 프로젝트 업데이트 검증
+    $('[for=resume-clear_id],#id_resume, #resume-clear_id').addClass('noani')
+
+    $('#id_pic').change(function(e){
+        readPic(e)
+    }).siblings('label').css({'background-image': "url(/media/{{pic}})"})
+
+
+    $('#basic').click(function(){
+        $('#id_pic').change(function(e){
+            readPic(e)
+        }).siblings('label').css({'background-image': "url(/media/user_icon.png/)"})
+        $('#pic_default').val("true")
+        console.log($('#pic_default').val())
+    })
+    
     $('#update').click(function(){
-        let ok = true;
+        var updatefrm = document.forms['updatefrm']
+        var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+        var check_cnt = $('input[name=language]:checkbox:checked').length;
+        var password = $('#id_password').val();
+        var check = "update";
 
+        let first = null;
         let target = "";
 
-        // 언어
-        target = "[name='language']"
-        $(target).parent('label').removeClass('is-valid is-invalid')
-        if($(target+":checked").length == 0){
-            $(target).parent('label').addClass('is-invalid').focus()
-            ok = false;
-        }else{
-            $(target+":checked").parent('label').addClass('is-valid')
+        target = "#id_password"
+        if(password != ""){
+            $.ajax({
+                url: checkPassword_url,
+                type:"POST",
+                data : {'csrfmiddlewaretoken': $('#csrf_token').val(),'password':password,'check':check},
+                datatype:'json',
+                async: false,
+                success:function(response){
+                    if(response.data == "fail"){
+                        //updatefrm['password'].focus();
+                        $(target).siblings('label').addClass('wrongLabel')
+                        $('#check_password').html('<p style="color:red">현재 사용중인 비밀번호입니다</p>');
+                        first = first?first:target;
+                        console.log(first)
+                        //return false;
+                    }else if(!reg_pass.test(updatefrm['password'].value.trim())){
+                        //updatefrm['password'].focus();
+                        $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
+                        $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>');
+                        //return false;
+                        first = first?first:target;
+                        
+                    } else{
+                        $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
+                    }
+                }
+            })
+            target="#id_re_password"
+            if(updatefrm['re_password'].value.trim()==""){
+                //updatefrm['re_password'].focus();
+            $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
+            $('#check_re_password').html('<p style="color:red">비밀번호 확인을 입력해주세요</p>');
+            //return false;
+            first = first?first:target
+        }else if(updatefrm['password'].value.trim() != updatefrm['re_password'].value.trim()){
+            //updatefrm['re_password'].focus();
+            $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
+            $('#check_re_password').html('<p style="color:red">비밀번호가 다릅니다</p>');
+            //return false;
+            first = first?first:target
         }
-
-        // 내용
-        target = "#id_contents"
-        if($(target).val().trim()==""){
-            $(target).removeClass('is-valid').addClass('is-invalid').attr({'placeholder': '프로젝트 내용을 입력해주세요.'}).focus()
-            ok = false;
-        }else{
-            $(target).removeClass('is-invalid').addClass('is-valid')
+        else{
+            $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
         }
-
-         
-        // 요약
-        target = "#id_summary"
-        if($(target).val().trim()==""){
-            $(target).removeClass('is-valid').addClass('is-invalid').attr({'placeholder': '프로젝트 요약을 입력해주세요.'}).focus()
-            ok = false;
-        }else{
-            $(target).removeClass('is-invalid').addClass('is-valid')
-        }
+    }
+    
         
-        // 타이틀
-        target = "#id_title";
-        if($(target).val().trim()==""){
-            $(target).removeClass('is-valid').addClass('is-invalid').attr({'placeholder': '프로젝트 타이틀을 입력해주세요.'}).focus()
-            ok = false;
-        }else{
-            $(target).removeClass('is-invalid').addClass('is-valid')
+        target = "#id_language"
+        if(check_cnt<1){
+            //$('#id_language').focus();
+            $(target).siblings('label').addClass('wrongLabel')
+            $('#check_language').html('<p style="color:red">한개 이상의 언어를 선택해주세요</p> ')
+            //return false;
+            first = first?first:target
         }
-        
-        // 문서 개수
-        $('#docnum').val(num);
+        else{
+            $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
+        }
 
-        // 검사 완료
-        ok && $('#form_id').submit()        
+        if(first){
+            $(first).focus()
+        }else{
+            var con = confirm("수정하시겠습니까?")
+            if(con){
+                updatefrm.submit()
+                alert("수정되었습니다")
+            }
+        }
     })
+
+    $('#leave').click(function(){
+        var con = confirm("정말 탈퇴하시겠습니까?")
+        if(con){
+            document.forms['leavefrm'].submit();
+            alert("탈퇴되었습니다")
+        }
+    })
+
+
 })
 

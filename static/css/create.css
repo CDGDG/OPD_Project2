@@ -74,3 +74,7 @@
 .checkDiv, .invalid-feedback{
     text-align: right;
 }
+/* 이메일 */
+.deve_join_email:focus{
+    outline: none;
+}

@@ -1,14 +1,11 @@
-from xml.etree.ElementTree import Comment
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
 from admin.models import Language
 
-from .models import Boardimg
-from .models import Board
+from .models import Boardimg, Board
 from django.core.paginator import Paginator
-from .forms import BoardUpdateForm, Boardform
-from developer.models import Developer
+from .forms import BoardUpdateForm, Boardform, CommentForm
 
 
 def board_list(request):
@@ -20,8 +17,8 @@ def board_list(request):
     return render(request, 'board_list.html', {'boards': boards})
 
 def board_create(request):
-    # if not request.session.get('developer'):
-    #     return redirect('/developer/login/')
+    # if not request.session.get('admin'):
+    #     return redirect('Admin/login/')
 
     if request.method == 'POST':
         form = Boardform(request.POST, request.FILES)
@@ -73,10 +70,13 @@ def board_create(request):
 
     return render(request, 'board_create.html', {'form': form})
 
+
+
+
 def board_detail(request, pk):
     try:
-        board = Board.objects.get(pk=pk)
-
+        # board = Board.objects.get(pk=pk)
+        board = get_object_or_404(Board, pk=pk)
         board.viewcnt += 1
         board.save()
     except Board.DoesNotExist:
@@ -84,6 +84,7 @@ def board_detail(request, pk):
 
     return render(request, 'board_detail.html', {'board': board})
     
+
 def board_update(request, pk):
     board = get_object_or_404(Board, pk=pk)
     if request.method=="POST":
@@ -101,7 +102,8 @@ def board_update(request, pk):
     form = BoardUpdateForm(instance=board)
     return render(request, 'board_update.html', {'form' : form, 'pk': pk})
 
-        
+
+
 def board_delete(request):
     pk = request.POST.get('pk')
     board = get_object_or_404(Board, pk=pk)

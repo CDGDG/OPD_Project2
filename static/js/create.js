@@ -43,9 +43,11 @@ $(document).ready(function(){
 
     // 직원 수
     $("#id_people").removeClass('py-4').addClass('noani').css({width: '100%'}).parent('.form-group').addClass('mb-0').parent('.form-group').addClass('mb-1 mx-0 peourl')
+
+    $('#id_tel').parent(".form-group").addClass('mb-1 mx-0 peourl').removeClass('col-6 pe-2')
     
     // URL
-    $("#id_url").removeClass('py-4').addClass('noani').css({width: '100%'}).parent('.form-group').parent('.form-group').addClass('mb-0 mx-0 peourl')
+    $("#id_url").removeClass('py-4').addClass('noani').css({width: '100%'}).parent('.form-group').parent('.form-group').addClass('mb-0 mx-0')
 
     // 직원 수 URL 언어 row
     $("[for=id_address]").parent('.form-group').after($('<div></div>').addClass('col-6 ps-2 pe-0 peourlrow').css({'margin-bottom':'2%'}).append($('.peourl')))
