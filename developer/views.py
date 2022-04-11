@@ -62,7 +62,7 @@ def join(request):
 
 # 이메일 인증
 def send_email(request):
-        email = request.GET.get('email')
+        user_email = request.GET.get('email')
         emailnum = request.GET.get('emailnum') # 이메일 인증번호
         context={}
         current_site = get_current_site(request) 
@@ -76,14 +76,15 @@ def send_email(request):
             # 'token': account_activation_token.make_token(developer),
         })
         mail_title = "Our Project Diary 이메일 인증" # 이메일 title
-        mail_to = email # 사용자 email
+        mail_to = user_email # 사용자 email
         email = EmailMessage(mail_title, message, to=[mail_to])
-        try: 
-            email.send()
-        except:
-            context['fail'] = True # 이메일 전송 실패 시 
-        if email == "":
+        if user_email == "":
             context['blank'] = True  # 이메일을 다 입력하지 않았을 때
+        else:
+            try: 
+                email.send()
+            except:
+                context['fail'] = True # 이메일 전송 실패 시 
         return JsonResponse(context)
 
 def check_id(request):
@@ -199,17 +200,23 @@ def update(request):
                 developer.password = make_password(new_password)
             else:
                 developer.password = old_password
-            if request.FILES.get('pic'): 
-                developer.pic = request.FILES.get('pic')
-                developer.pic_original = developer.pic.name
+
+                if request.POST.get('pic_default') == "true": 
+                    developer.pic = None
+                else: 
+                    if request.FILES.get('pic'):
+                        developer.pic = request.FILES.get('pic')
+                        developer.pic_original = developer.pic.name
             if request.FILES.get('resume'): 
                 developer.resume = request.FILES.get('resume')
                 developer.resume_original = developer.resume.name
             developer.save()
         return redirect(f'/developer/info/{developer.pk}/')
     else:
+        pic, developer.pic= developer.pic, None
+        # resume, developer.resume= developer.resume, None
         form = UpdateForm(instance=developer)
-        return render(request,'developer_update.html',{'form':form})
+        return render(request,'developer_update.html',{'form':form,'pic':pic})
 
 def myproject(request,pk):
     if not request.session.get('id'):
