@@ -2,14 +2,25 @@
 {% block title %}수정{% endblock  %}
 {% block content %}
 <link rel="stylesheet" href="/static/css/create.css">
+<script>
+    $(document).ready(function(){
+        $('[for=resume-clear_id],#id_resume, #resume-clear_id').addClass('noani')
+    })
+</script>
 <script src="/static/js/create.js"></script>
 {% load bootstrap4 %}
-<h2>수정</h2>
-<hr>
 <form action="{% url 'Developer:update'%}" method="POST" enctype="multipart/form-data" name="updatefrm" id="form_id">
+    <h2 class="mb-4">사용자 정보 수정</h2>
     {% csrf_token %}
     {% for field in form %}
+    {% comment %} 프로필 사진 {% endcomment %}
+    {% if field.name == "pic" %}
     {% bootstrap_field field %}
+    <input type="button" id="basic" class="btn btn-outline-dark formbtn" value="기본 이미지로 변경"></input>
+    <input type="hidden" value="false" name="pic_default" id="pic_default">
+    {% else %}
+    {% bootstrap_field field %}
+    {% endif %}
     <div id ="check_{{field.name}}"></div>
     <script>
         // 안내 메세지 툴팁
@@ -18,11 +29,11 @@
         }
     </script>
     {% endfor %}
-    <input type="button" class="btn btn-outline-dark" id="update" value="수정완료">
+    <input type="button" class="btn btn-primary form-control col mt-3 py-4 formbtn" id="update" value="수정완료">
     <form action="{% url 'Developer:leave' %}" method="post" name="leavefrm">
         {% csrf_token %}
-        <input type="button" class="btn btn-primary" id="leave" value="탈퇴하기"></input>
-        <a type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</a>
+        <button type="button" class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn" onclick="history.back()">이전으로</button>
+        <input type="button" class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn" id="leave" value="탈퇴하기"></input>
     </form>
 {% endblock content %}
 {% block script %}
@@ -51,13 +62,24 @@
     }
     // 이벤트 리스너
     $(document).ready(function(){
+       
+        $("input[name='language']:checked").parent('label').addClass('label-color')
+
         $('#id_pic').change(function(e){
             readPic(e)
-        })
-        $('#id_resume').change(function(e){
-            readResume(e)
-        })
+        }).siblings('label').css({'background-image': "url(/media/{{pic}})"})
+        //$('#id_resume').change(function(e){
+        //    readResume(e)
+        //}).siblings('label').css({'background-image': "url(/media/{{resume}})"})
     })
+
+        $('#basic').click(function(){
+            $('#id_pic').change(function(e){
+                readPic(e)
+            }).siblings('label').css({'background-image': "url(/media/user_icon.png/)"})
+            $('#pic_default').val("true")
+            console.log($('#pic_default').val())
+        })
 
         $('#update').click(function(){
             var updatefrm = document.forms['updatefrm']
@@ -97,11 +119,9 @@
                         }
                     }
                 })
-            }
-            
-            target="#id_re_password"
-            if(updatefrm['re_password'].value.trim()==""){
-                //updatefrm['re_password'].focus();
+                target="#id_re_password"
+                if(updatefrm['re_password'].value.trim()==""){
+                    //updatefrm['re_password'].focus();
                 $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
                 $('#check_re_password').html('<p style="color:red">비밀번호 확인을 입력해주세요</p>');
                 //return false;
@@ -116,6 +136,8 @@
             else{
                 $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
             }
+        }
+        
             
             
             target = "#id_language"
@@ -150,5 +172,11 @@
         })
     
 </script>
-<script src="/static/js/developer/developer_join.js"></script>
+<script src="/static/js/developer_update.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#id_resume').removeClass('form-control-file')
+
+    })
+</script>
 {% endblock  %}

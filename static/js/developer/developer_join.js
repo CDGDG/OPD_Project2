@@ -189,6 +189,7 @@ $(document).ready(function(){
             // return false;
         }
 
+
         if(!send_email){
             // joinfrm['send_email'].focus();
             $('#check_email_option').html('<p style="color:red">이메일 인증을 해주세요</p>');
