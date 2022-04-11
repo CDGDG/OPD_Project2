@@ -31,6 +31,9 @@ $(document).ready(function(){
     // 주민등록번호 디자인
     $("[id^=id_registnum]").focus(function(){$('.registnumdiv').css({border: '1px solid lightcoral'})}).focusout(function(){$('.registnumdiv').css({border: '1px solid #ced4da'})})
 
+    // 이메일 디자인
+    $('.deve_join_email').focus(function(){$(".emailDiv").css({border: '1px solid lightcoral'})}).focusout(function(){$('.emailDiv').css({border: '1px solid #ced4da'})})
+
     // 프로필 디자인
     $("[for=id_pic]").addClass('h-100').css({'padding': '50.5% 0'}).parent().addClass('col-3').after($('<div></div>').addClass('col-9 px-0 ps-2 mb-4').append($("#id_userid, #id_password, #id_re_password, #id_nickname").parent()))
     $("#id_nickname").parent().addClass('mb-0')
@@ -56,6 +59,127 @@ $(document).ready(function(){
         $("#email_option").val($('#email_select').val());
     })
 
+    id_button = false; 
+    nick_button = false;
+    send_email = false;
+
+    // 아이디 중복검사
+    $('#duple_userid').tooltip({trigger: 'focus'}).click(function(){
+        var userid=$('#id_userid').val()
+        $.ajax({
+            url: check_id_url,
+            data: {'userid': userid},
+            datatype:'json',
+    
+            success : function(response){
+                if(response.blank){
+                    //$('#dupleId_result').html('<p>아이디를 입력해주세요</p>')
+                    id_button = false;
+                }else{
+                    if(response.data == 'not exist'){
+                        //$('#dupleId_result').html('<p style="color:green">사용가능한 아이디입니다</p>')
+                        $("#duple_userid").removeClass('btn-secondary btn-danger').addClass('btn-success').attr({'data-bs-original-title': '사용 가능한 아이디입니다.'}).tooltip("show");
+                        id_button = true
+                        return;
+                    }else{
+                        //$('#dupleId_result').html('<p style="color:red">중복된 아이디입니다</p>')
+                        $("#duple_userid").removeClass('btn-secondary btn-success').addClass('btn-danger').attr({'data-bs-original-title': '중복된 아이디입니다.'}).tooltip("show");
+                        id_button = false
+                        return;
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        })
+    })
+
+    //닉네임 중복검사
+    $('#duple_nickname').tooltip({trigger: 'focus'}).click(function(){
+        var nickname=$('#id_nickname').val()
+        $.ajax({
+            url:check_nick_url,
+            data:{'nickname':nickname},
+            datatype:'json',
+            
+            success : function(response){
+                if(response.blank){
+                    //$('#dupleNick_result').html('<p>닉네임을 입력해주세요</p>')
+                    nick_button = false;
+                }else{
+                    if(response.data == 'not exist'){
+                        //$('#dupleNick_result').html('<p style="color:green">사용가능한 닉네임입니다</p>')
+                        $("#duple_nickname").removeClass('btn-secondary btn-danger').addClass('btn-success').attr({'data-bs-original-title': '사용 가능한 닉네임입니다.'}).tooltip("show");
+                        nick_button=true;
+                        return;
+                    }else{
+                        //$('#dupleNick_result').html('<p style="color:red">중복된 닉네임입니다</p>')
+                        $("#duple_nickname").removeClass('btn-secondary btn-success').addClass('btn-danger').attr({'data-bs-original-title': '중복된 아이디입니다.'}).tooltip("show");
+                        return;
+                        
+                    }
+                    
+                }
+                
+            }
+        })
+    })
+
+    //이메일 인증
+    $('#send_email').click(function(){
+        var joinfrm = document.forms['joinfrm']
+        var email = joinfrm['email'].value.trim()
+        
+        //이메일 인증번호
+        var num_list = []
+        for(var i=0;i<4;i++){num_list.push(Math.floor(Math.random() * 10)+"")}
+        var emailnum = num_list.join("")
+        
+        $.ajax({
+            url:send_email_url,
+            data : {'email':email,'emailnum':emailnum},
+            datatype:'json',
+            success:function(response){
+                if(response.fail){
+                    $('#check_email').html('<p style="color:red">이메일 인증에 실패 했습니다 다시 시도해주세요</p>')
+                }
+                if(response.blank){
+                    $('#check_email').html('<p style="color:red">이메일을 입력해주세요</p>')
+                }else{
+                    $('#check_email').html('<p style="color:green">인증번호를 입력해주세요</p>')
+                    $('#emailnum').css('display','block') 
+                    $('#check_emailnum').css('display','block') //이메일 인증번호 입력란
+                    $('#check_emailnum').click(function(){
+                        $('#send_email').attr('value','다시 인증하기')
+                        if(joinfrm['emailnum'].value.trim() == ""){
+                            $('#check_email_result').html('<p style="color:red">인증번호를 입력해주세요</p>')
+                            
+                        }else if(joinfrm['emailnum'].value.trim() != emailnum){
+                            $('#check_email_result').html('<p style="color:red">인증번호를 다시 확인해주세요</p>') //인증번호가 맞지 않을 때
+                            
+                        }else{
+                            $('#check_email_result').html('<p style="color:green">인증되었습니다</p>')
+                            send_email=true;
+                            
+                        }
+                    })
+                }
+            }
+        })
+    })
+
+
+
+
+
+
+
+
+
+
+
 
     // 회원가입 유효성 검사
     $('#join').click(function(){
@@ -63,9 +187,13 @@ $(document).ready(function(){
 		var reg_pass = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 		var reg_id = /^[a-z]+[a-z0-9]{5,19}$/g; 
         var check_cnt = $('input[name=language]:checkbox:checked').length;
+        
 
         let first = null;
         let target = "";
+
+        
+
         
         // 아이디
         target="#id_userid"
@@ -188,6 +316,7 @@ $(document).ready(function(){
             $('#check_email').html('<p style="color:red">이메일을 입력해주세요</p>');
             // return false;
         }
+
 
         if(!send_email){
             // joinfrm['send_email'].focus();

@@ -23,9 +23,10 @@ $(document).ready(function(){
         num += 1;
     })
 
-    $('#form_id input[type="checkbox"]').change(function(){
+    $('#form_id input[type="checkbox"]').not('.noani').change(function(){
         $(this).siblings('label').toggleClass('label-color').text($(this).siblings('label').text() == '비공개'? "공개" : "비공개")
     })
+
 
     // 프로젝트 업데이트 검증
     $('#update').click(function(){

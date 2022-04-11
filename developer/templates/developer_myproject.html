@@ -43,36 +43,5 @@
     </div>
 </div>
 {% endif %}
-{% comment %}
-<!-- pagination -->
-<div class="row mt-2">
-    <div class="col-12">
-        <nav>
-            <ul class="pagination justify-content-center">
-                {% if projects.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?p={{projects.previous_page_number}}">이전으로</a>
-                </li>
-                {% else %}
-                <li class="page-item disable">
-                    <a class="page-link disable" href="#">이전으로</a>
-                </li>
-                {% endif %}
-                <li class="page-item active">
-                    <a class="page-link" href="">{{projects.number}} / {{projects.paginator.num_pages}}</a>
-                </li>
-                {% if projects.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?p={{projects.next_page_number}}">다음으로</a>
-                </li>
-                {% else %}
-                <li class="page-item disable">
-                    <a class="page-link disabled" href="#">다음으로</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
-</div> {% endcomment %}
 
 {% endblock  %}

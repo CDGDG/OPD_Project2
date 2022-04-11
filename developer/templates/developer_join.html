@@ -33,11 +33,20 @@
                     <div id="check_{{field.name}}"></div>
                 {% comment %} 이메일 {% endcomment %}
                 {% elif field.name == 'email'%}
-                    <input type="{{field.field.widget.input_type}}" id="email" name="{{field.name}}" class="form-control">
-                    <input type="button" value="이메일 인증" id="send_email" name ='send_email'>
+                    <label for="{{field.id_for_label}}" class='label-color'>이메일</label>
+                    <div class="form-control emailDiv">
+                        <div class="row p-1">
+                            <input type="{{field.field.widget.input_type}}" id="email" name="{{field.name}}" class="col-10 border-0 deve_join_email">
+                            <input type="button" value="이메일 인증" id="send_email" name ='send_email' class="col-2 btn btn-secondary">
+                        </div>
+                    </div>
                     <div id="check_{{field.name}}"></div>
-                    <input type="text" placeholder="인증번호를 입력해 주세요" id="emailnum" name="emailnum" class="form-control" style="display:none">
-                    <input type="button" value="인증하기" id="check_emailnum" name="check_emailnum" style="display:none">
+                    <div class="form-control emailnumDiv" style="display:none">
+                        <div class="row p-1">
+                            <input type="text" placeholder="인증번호를 입력해 주세요" id="emailnum" name="emailnum" class="col-10 border-0 deve_join_email noani">
+                            <input type="button" value="인증하기" id="check_emailnum" name="check_emailnum" class="col-2 btn btn-secondary text-center">
+                        </div>
+                    </div>
                     <div id="check_email_result"></div>
                 {% comment %} 주민등록번호 {% endcomment %}
                 {% elif field.name == 'registnum'%}
@@ -103,6 +112,9 @@
 
 {% block script %}
 <script>
+    check_id_url = "{% url 'Developer:check_id' %}"
+    check_nick_url = "{% url 'Developer:check_nick' %}"
+    send_email_url = "{% url 'Developer:send_email' %}"
 $(document).ready(function(){
     id_button = false; 
     nick_button = false;
@@ -171,6 +183,8 @@ $(document).ready(function(){
     })
     //이메일 인증
     $('#send_email').click(function(){
+        $('#check_email').html('<p style="color:blue">잠시만 기다려주세요...</p>')
+        $(this).attr({disabled:true})
         var joinfrm = document.forms['joinfrm']
         var email = joinfrm['email'].value.trim()
         
@@ -191,10 +205,10 @@ $(document).ready(function(){
                     $('#check_email').html('<p style="color:red">이메일을 입력해주세요</p>')
                 }else{
                     $('#check_email').html('<p style="color:green">인증번호를 입력해주세요</p>')
-                    $('#emailnum').css('display','block') 
-                    $('#check_emailnum').css('display','block') //이메일 인증번호 입력란
+                    $('.emailnumDiv').css('display','block') 
                     $('#check_emailnum').click(function(){
                         $('#send_email').attr('value','다시 인증하기')
+                        $(this).attr({disabled:false})
                         if(joinfrm['emailnum'].value.trim() == ""){
                             $('#check_email_result').html('<p style="color:red">인증번호를 입력해주세요</p>')
                             
@@ -208,6 +222,7 @@ $(document).ready(function(){
                         }
                     })
                 }
+                $(this).attr({disabled:false})
             }
         })
     })

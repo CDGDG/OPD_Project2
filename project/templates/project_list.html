@@ -11,7 +11,7 @@
                     <tr onclick='location.href="/project/detail/{{project.id}}/"'>
                         <td>{{project.id}}</td>
                         <td>{{project.title}}</td>
-                        <td><img src="{{project.thumbnail.url}}" alt=""></td>
+                        <td>{% if project.thumbnail %}<img src="{{project.thumbnail.url}}" alt="">{% else %}썸네일이 없습니다.{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

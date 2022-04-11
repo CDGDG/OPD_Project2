@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="/static/css/create.css">
 <script src="/static/js/create.js"></script>
 <form action="{% url 'Project:update' pk %}" method="POST" enctype="multipart/form-data" id="form_id" name='projectform' class="update">
+    <h2 class="mb-4">프로젝트 수정</h2>
     {% csrf_token %}
     {% bootstrap_form form %}
     {# 프로젝트 문서 #}

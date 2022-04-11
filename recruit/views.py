@@ -57,7 +57,7 @@ def apply(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk)
     if request.method=="POST":
         project = recruit.project
-        developer = get_object_or_404(Developer, pk=request.session['developer_id'])
+        developer = get_object_or_404(Developer, pk=request.session.get('id'))
         contents = request.POST.get('contents', '')
         recruitok = RecruitOk(
             project = project,
