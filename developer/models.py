@@ -15,7 +15,7 @@ class Developer(models.Model):
     resume_original = models.TextField(default="")
 
     language = models.ManyToManyField('admin.Language')
-    likeproject = models.ManyToManyField('project.Project')
+    likeproject = models.ManyToManyField('project.Project', related_name='d_likeproject')
 
     class Meta:
         db_table = 'opd_developer'
@@ -27,8 +27,8 @@ class Developer(models.Model):
         return self.userid
 
 class Follow(models.Model):
-    developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE,related_name='%(class)s_follow_developer')
-    follower = models.ForeignKey('developer.Developer',on_delete=models.CASCADE,related_name='%(class)s_follow_follower')
+    developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE,related_name='follow_developer')
+    follower = models.ForeignKey('developer.Developer',on_delete=models.CASCADE,related_name='follow_follower')
 
     class Meta:
         db_table='opd_follow'

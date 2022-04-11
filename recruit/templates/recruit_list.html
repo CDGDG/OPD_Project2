@@ -2,18 +2,38 @@
 {% block title %}프로젝트 모집 리스트{% endblock %}
 
 {% block content %}
-    <h1>프로젝트 모집 리스트 입니다.</h1>
-    <div class="row mt-5">
-        <div class="col-12">
-            <table class="table table-light table-hover">
-                <tbody class="text-dark">
+<div class="row mt-5" id="listform">
+        <h2 class="mb-4">프로젝트 모집</h2>
+        <div class="col-12 rounded tableDiv p-0">
+            <table class="table table-borderless m-0">
+                <thead>
+                    <th>#</th>
+                    <th>제목</th>
+                    <th>프로젝트</th>
+                    <th>팀장</th>
+                    <th>좋아요 수</th>
+                    <th>조회수</th>
+                </thead>
+                <tbody>
                     {% for recruit in recruits %}
-                    <tr onclick='location.href="/recruit/detail/{{recruit.pk}}/"'>
-                        <td>{{recruit.project.id}}</td>
-                        <td>{{recruit.project.title}}</td>
-                        <td><img src="{{recruit.project.thumbnail.url}}" alt=""></td>
-                        <td>{{recruit.title}}</td>
+                    {% if recruit.ing %}
+                    <tr style="height:7vw;">
+                        <td>{{recruit.pk}}</td>
+                        <td onclick="location.href = `{% url 'Recruit:detail' recruit.pk %}`" class="clicktd">{{recruit.title}}</td>
+                        <td onclick="location.href = `{% url 'Project:detail' recruit.project.pk %}`" class="clicktd">
+                            {{recruit.project.title}}<br>
+                            {% if recruit.project.thumbnail %}
+                            <img src="{{recruit.project.thumbnail.url}}" alt="이미지 없음" style="height:5vw;object-fit: contain;">
+                            {% endif %}
+                        </td>
+                        <td onclick='location.href = `{% url "Developer:info" recruit.project.leader.pk %}`' class="clicktd">
+                            <img src="{% if recruit.project.leader.thumbnail %}recruit.project.leader.thumbnail.url{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:3vw;object-fit: contain;display:block;margin:0 auto;">
+                            {{recruit.project.leader.nickname}}
+                        </td>
+                        <td>{{recruit.project.d_likeproject.count|add:recruit.project.c_likeproject.count}}</td>
+                        <td>{{recruit.viewcnt}}</td>
                     </tr>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
@@ -50,5 +70,7 @@
             </nav>
         </div>
     </div>
-
+{% endblock  %}
+{% block script %}
+<link rel="stylesheet" href="/static/css/list.css">
 {% endblock  %}

@@ -18,14 +18,18 @@ $(document).ready(function(){
         $(this).siblings('label').toggleClass('label-color').text($(this).siblings('label').text() == '비공개'? "공개" : "비공개")
     })
 
-    $('#id_resume').removeClass('form-control-file')
+    $('#id_resume').removeClass('form-control-file').parent().addClass('form-control px-2 pb-2')
+    
 
     $('[for=resume-clear_id],#id_resume, #resume-clear_id').addClass('noani')
 
     $('#id_pic').change(function(e){
         readPic(e)
-    }).siblings('label').css({'background-image': "url(/media/{{pic}})"})
+    }).siblings('label').css({'background-image': `url(${$('#pic_url').val()})`})
+    $('#id_pic').parent().addClass('my-0')
 
+    $('#id_resume').addClass('form-control mb-2')
+    $('[for=resume-clear_id]').css({'background-color':'white', 'color': 'black', 'font-family':'none','font-size':'none','height':'auto'})
 
     $('#basic').click(function(){
         $('#id_pic').change(function(e){

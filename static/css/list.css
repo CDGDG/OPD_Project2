@@ -1,0 +1,28 @@
+#listform h2{
+    font-family: "Dongle";
+    color: lightcoral;
+    font-size: 3vw;
+}
+#listform .tableDiv{
+    border: 3px solid lightcoral;
+}
+#listform thead{
+    background-color: lightcoral;
+    color: white;
+}
+#listform table{
+    text-align: center;
+    vertical-align: middle;
+}
+#listform tr{
+    border-bottom: 1px solid lightcoral;
+}
+#listform a{
+    text-decoration: none;
+}
+#listform .clicktd:hover {
+    background-color: rgba(0,0,0,.075);
+}
+#listform *{
+    font-family: 'Noto Sans KR, sans-serif';
+}

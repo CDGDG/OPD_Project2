@@ -14,6 +14,7 @@ from django.core.paginator import Paginator
 #파일 다운로드
 import os
 import mimetypes
+import urllib
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import FileResponse
@@ -167,7 +168,8 @@ def info(request,pk):
 def download(request,pk):
     file = Developer.objects.get(pk=pk)
 
-    resume_original = file.resume_original
+    # resume_original = file.resume_original
+    resume_original = urllib.parse.quote(file.resume_original.encode('utf-8'))
 
     root_path = os.path.join(settings.MEDIA_ROOT)# MEDIA root 경로
     file_name = file.resume.name # 물리적으로 저장되어 있는 파일명
@@ -181,7 +183,7 @@ def download(request,pk):
     fs = FileSystemStorage(root_path)
     response = FileResponse(fs.open(file_name, 'rb'), content_type=mimetype)
 
-    response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'%s''%"{resume_original}"' # 최초 업로드 당시 파일명 그대로 다운로드/ 한글 파일명 인코딩 후 다운로드
+    response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'%s' % resume_original # 최초 업로드 당시 파일명 그대로 다운로드/ 한글 파일명 인코딩 후 다운로드
     response['Content-Length'] = file_size  
 
     return response
