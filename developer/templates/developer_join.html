@@ -208,7 +208,6 @@ $(document).ready(function(){
                     $('.emailnumDiv').css('display','block') 
                     $('#check_emailnum').click(function(){
                         $('#send_email').attr('value','다시 인증하기')
-                        $(this).attr({disabled:false})
                         if(joinfrm['emailnum'].value.trim() == ""){
                             $('#check_email_result').html('<p style="color:red">인증번호를 입력해주세요</p>')
                             
@@ -222,7 +221,7 @@ $(document).ready(function(){
                         }
                     })
                 }
-                $(this).attr({disabled:false})
+                $("#send_email").removeAttr('disabled')
             }
         })
     })

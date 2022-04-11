@@ -28,7 +28,7 @@
                     {% endif %}
                     <div id="check_{{field.name}}"></div>
                 {% elif field.name == 'address' %}
-                    <label for="{{ field.id_for_label }}" class="noani">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
+                    <label for="{{ field.id_for_label }}" class="form-control text-center py-4 nonai">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <input type="text" id="sample6_postcode" style="display:inline-block;" class="form-control noani mb-1 " onclick="sample6_execDaumPostcode()" placeholder="우편번호" readonly>
                     <input type="button" class="btn btn-primary mb-1" onclick="sample6_execDaumPostcode()" value="우편번호 찾기" id="address_btn"><br>
                     <input type="text" class="form-control mb-1 " id="sample6_address" name="{{ field.name }}" placeholder="주소" readonly>
@@ -72,18 +72,29 @@
                     <div id="check_{{field.name}}"></div>
                     
                 {% elif field.name == 'email'%}
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% comment %} <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     <input type="{{field.field.widget.input_type}}" id="email" name="{{field.name}}" class="form-control">
                     <input type="button" value="이메일 인증" id="send_email" name ='send_email'>
                     <div id="check_{{field.name}}"></div>
                     <input type="text" placeholder="인증번호를 입력해 주세요" id="emailnum" name="emailnum" class="form-control" style="display:none">
                     <input type="button" value="인증하기" id="check_emailnum" name="check_emailnum" style="display:none">
-                    <div id="check_email_result"></div>
-
-                
-                
+                    <div id="check_email_result"></div> {% endcomment %}
                     
-
+                    <label for="{{field.id_for_label}}" class='label-color'>{{ field.label }}</label>
+                    <div class="form-control emailDiv">
+                        <div class="row p-1">
+                            <input type="{{field.field.widget.input_type}}" id="email" name="{{field.name}}" class="col-10 border-0 deve_join_email">
+                            <input type="button" value="이메일 인증" id="send_email" name ='send_email' class="col-2 btn btn-secondary">
+                        </div>
+                    </div>
+                    <div id="check_{{field.name}}"></div>
+                    <div class="form-control emailnumDiv" style="display:none">
+                        <div class="row p-1">
+                            <input type="text" placeholder="인증번호를 입력해 주세요" id="emailnum" name="emailnum" class="col-10 border-0 deve_join_email noani">
+                            <input type="button" value="인증하기" id="check_emailnum" name="check_emailnum" class="col-2 btn btn-secondary text-center">
+                        </div>
+                    </div>
+                    <div id="check_email_result"></div>
                 {% else %}
                     {% bootstrap_field field %}
                     {% comment %} <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -174,6 +185,8 @@
         })
         //이메일 인증
         $('#send_email').click(function(){
+            $('#check_email').html('<p style="color:blue">잠시만 기다려주세요...</p>')
+            $(this).attr({disabled:true})
             var joinfrm = document.forms['joinForm']
             var email = joinfrm['email'].value.trim()
             
@@ -194,8 +207,7 @@
                         $('#check_email').html('<p style="color:red">이메일을 입력해주세요</p>')
                     }else{
                         $('#check_email').html('<p style="color:green">인증번호를 입력해주세요</p>')
-                        $('#emailnum').css('display','block') 
-                        $('#check_emailnum').css('display','block') //이메일 인증번호 입력란
+                        $('.emailnumDiv').css('display','block')
                         $('#check_emailnum').click(function(){
                             $('#send_email').attr('value','다시 인증하기')
                             if(joinfrm['emailnum'].value.trim() == ""){
@@ -211,6 +223,7 @@
                             }
                         })
                     }
+                    $("#send_email").removeAttr('disabled')
                 }
             })
         })
