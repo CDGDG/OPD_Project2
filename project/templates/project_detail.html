@@ -7,7 +7,11 @@
             <h2 class="title" id='title'>{{project.title}}</h2>
             <div class="mb-4 bg-white detail-control">
                 <label for="thumbnail">썸네일</label>
+                {% if project.thumbnail %}
                 <p class="text-center"><img src="{{project.thumbnail.url}}" alt="프로젝트 썸네일" style="height:15vw;object-fit: contain;"></p>
+                {% else %}
+                <p>썸네일이 없습니다.</p>
+                {% endif %}
             </div>
             <div class="col-6 m-0 p-0 mb-4">
                 <div class="detail-control me-2">
@@ -37,13 +41,13 @@
             <div class="col-md-6 d-inline-block m-0 p-0 mb-4">
                 <div class='m-0 me-2 detail-control'>
                     <label for="startdate">시작일</label>
-                    <p>{{project.startdate}}</p>
+                    <p>{% if project.startdate %}{{project.startdate|date:""}}{% else %}미정{% endif %}</p>
                 </div>
             </div>
             <div class="col-md-6 d-inline-block m-0 p-0 mb-4">
                 <div class="m-0 ms-2 detail-control">
                     <label for="enddate">종료일</label>
-                    <p>{{project.enddate}}</p>
+                    <p>{% if project.enddate %}{{project.enddate}}{% else %}미정{% endif %}</p>
                 </div>
             </div>
             <div class="detail-control mb-4">
