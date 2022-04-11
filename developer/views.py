@@ -238,8 +238,6 @@ def follow(request):
     developer_follower = Developer.objects.get(pk = follower)
     developer = Developer.objects.get(pk = request.session.get('id'))
     if request.POST.get('check_follow') == "팔로우":
-        print(follower)
-        print(developer)
         follow = Follow(
             developer = developer,
             follower = developer_follower

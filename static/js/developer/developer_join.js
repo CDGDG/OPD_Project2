@@ -127,8 +127,8 @@ $(document).ready(function(){
         })
     })
 
-     //이메일 인증
-     $('#send_email').click(function(){
+      //이메일 인증
+    $('#send_email').click(function(){
         $('#check_email').html('<p style="color:blue">잠시만 기다려주세요...</p>')
         $(this).attr({disabled:true})
         var joinfrm = document.forms['joinfrm']
@@ -140,7 +140,7 @@ $(document).ready(function(){
         var emailnum = num_list.join("")
         
         $.ajax({
-            url:send_email_url,
+            url:"{% url 'Developer:send_email' %}",
             data : {'email':email,'emailnum':emailnum},
             datatype:'json',
             success:function(response){
@@ -154,7 +154,6 @@ $(document).ready(function(){
                     $('.emailnumDiv').css('display','block') 
                     $('#check_emailnum').click(function(){
                         $('#send_email').attr('value','다시 인증하기')
-                        $(this).attr({disabled:false})
                         if(joinfrm['emailnum'].value.trim() == ""){
                             $('#check_email_result').html('<p style="color:red">인증번호를 입력해주세요</p>')
                             
@@ -168,7 +167,7 @@ $(document).ready(function(){
                         }
                     })
                 }
-            $("#send_email").removeAttr('disabled')
+                $("#send_email").removeAttr('disabled')
             }
         })
     })
