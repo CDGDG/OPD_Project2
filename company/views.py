@@ -200,11 +200,11 @@ def join(request):
                 url = form.cleaned_data['url'],
                 summary = form.cleaned_data['summary'],
                 category = form.cleaned_data['category'],
-                pic = request.FILES['pic'],
-                pic_original = request.FILES['pic'].name,
+                pic = request.FILES.get('pic'),
                 # language = form.language
             )
-
+            if company.pic:
+                company.pic_original = company.pic.name
             company.save()
 
             for pk in form.cleaned_data['language']:    # 선택한 언어 반복

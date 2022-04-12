@@ -42,7 +42,7 @@ class CompanyJoinForm(forms.ModelForm):
         max_length=15, label='회사 이름', initial=''
     )
 
-    pic = forms.FileField(label='회사 사진')
+    pic = forms.FileField(label='회사 사진', required=False)
 
     # tel = forms.CharField(
     #     error_messages={
