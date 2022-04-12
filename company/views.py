@@ -42,6 +42,12 @@ def list(request):
         elif menu == 'summary':
             if search in company.summary:
                 searchcompanys.append(company)
+        elif menu == 'language':
+            for lang in company.language.all():
+                if search in lang.language:
+                    searchcompanys.append(company)
+                    break
+
         elif menu == 'all':
             if search in company.name:
                 searchcompanys.append(company)
@@ -53,6 +59,11 @@ def list(request):
                 searchcompanys.append(company)
             elif search in company.summary:
                 searchcompanys.append(company)
+            else :
+                for lang in company.language.all():
+                    if search in lang.language:
+                        searchcompanys.append(company)
+                        break
         else :
             searchcompanys.append(company)
     
@@ -303,4 +314,62 @@ def follow(request):
     follows = paginator.get_page(page)
 
     return render(request, 'company_follow.html', {'follows': follows, 'search': search, 'menu': menu})
+
+def likeproject(request, pk):
+    company = Company.objects.get(pk = pk)
+    all_projects = company.likeproject.all().order_by('-id')
+
+    search = request.GET.get('s','')
+    menu = request.GET.get('m', 'all')
+
+    searchprojects = []
+
+    for project in all_projects:
+
+        if menu == 'title':
+            print(project)
+            if search in project.title:
+                searchprojects.append(project)
+        elif menu == 'leader':
+            if search in project.leader:
+                searchprojects.append(project)
+        elif menu == 'member':
+            if search in project.member:
+                searchprojects.append(project)
+        elif menu == 'summary':
+            if search in project.summary:
+                searchprojects.append(project)
+        elif menu == 'contents':
+            if search in project.contents:
+                searchprojects.append(project)
+        elif menu == 'language':
+            for lang in project.language.all():
+                if search in lang.language:
+                    searchprojects.append(project)
+                    break
+
+        elif menu == 'all':
+            if search in project.title:
+                searchprojects.append(project)
+            elif search in project.leader:
+                searchprojects.append(project)
+            elif search in project.member:
+                searchprojects.append(project)
+            elif search in project.summary:
+                searchprojects.append(project)
+            elif search in project.contents:
+                searchprojects.append(project)
+            else :
+                for lang in project.language.all():
+                    if search in lang.language:
+                        searchprojects.append(project)
+                        break
+        else :
+            searchprojects.append(project)
+
+    page = int(request.GET.get('p', 1))
+    paginator = Paginator(searchprojects, 10) # 한 페이지당 5개씩 보여주는 Paginator 생성
+    projects = paginator.get_page(page)
+
+    return render(request, 'company_likeproject.html', {'projects': projects, 'search': search, 'menu': menu})
 

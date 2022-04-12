@@ -34,11 +34,11 @@ class BoardUpdateForm(forms.ModelForm):
     language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_OPTIONS, label='언어 선택')
 
     # 이미지
-    img = forms.ImageField(widget=ImagePreviewWidget, allow_empty_file=True, label= '이미지 선택')
+    img = forms.FileField(widget=ImagePreviewWidget, allow_empty_file=True, label= '')
 
     class Meta:
         model = Board
-        fields = ['title', 'img']
+        fields = ['title','contents', 'img']
 
 class CommentForm(forms.ModelForm):
     

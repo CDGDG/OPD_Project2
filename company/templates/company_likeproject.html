@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}프로젝트 리스트{% endblock %}
+
+{% block content %}
+<div class="row mt-5" id="listform">
+    <h2 class="mb-4">프로젝트</h2>
+    <div class="col-12 rounded tableDiv p-0">
+        <table class="table table-borderless m-0">
+            <thead>
+                <th>#</th>
+                <th>제목</th>
+                <th>썸네일</th>
+                <th>팀장</th>
+                <th>팀원 수</th>
+                <th>사용 언어</th>
+                <th>좋아요 수</th>
+                <th>완성 여부</th>
+                <th>조회수</th>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                {% if project.private %}
+                {% else %}
+                <tr style="height:7vw;">
+                    <td>{{project.pk}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' project.pk %}`">{{project.title}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' project.pk %}`">
+                        <img src="{% if project.thumbnail %}{{project.thumbnail.url}}{% else %}/media/thumbnail-default.jpg{% endif %}" alt="이미지 없음" style="height: 5vw;object-fit: contain;">
+                    </td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Developer:info' project.leader.pk %}`">{{project.leader.nickname}}</td>
+                    <td>{{project.member.count|add:1}}</td>
+                    <td>{% for lang in project.language.all %}[{{lang}}] {% endfor %}</td>
+                    <td>{{project.d_likeproject.count|add:project.c_likeproject.count}}</td>
+                    <td>{% if project.enddate %}O{% else %}X{% endif %}</td>
+                    <td>{{project.viewcnt}}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- pagination -->
+<div class="row mt-2">
+    <div class="col-12">
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if projects.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?p={{projects.previous_page_number}}">이전으로</a>
+                </li>
+                {% else %}
+                <li class="page-item disable">
+                    <a class="page-link disable" href="#">이전으로</a>
+                </li>
+                {% endif %}
+                <li class="page-item active">
+                    <a class="page-link" href="">{{projects.number}} / {{projects.paginator.num_pages}}</a>
+                </li>
+                {% if projects.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?p={{projects.next_page_number}}">다음으로</a>
+                </li>
+                {% else %}
+                <li class="page-item disable">
+                    <a class="page-link disabled" href="#">다음으로</a>
+                </li>
+                {% endif %}          
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+            <div class="form-group mt-3">
+                {% comment %} {% for field in form %}
+                    <div class="form-group">
+                        {% bootstrap_field field %}
+                    </div>
+                {% endfor %}
+
+                {{ form }} {% endcomment %}
+
+                <select name="menu" id="menu" class='form-control mx-3' style='width:9%; display:inline-block'>
+                    <option value="all" selected>전체</option>
+                    <option value="title">제목</option>
+                    <option value="leader">팀장</option>
+                    <option value="member">멤버</option>
+                    <option value="summary">요약</option>
+                    <option value="contents">내용</option>
+                    <option value="language">언어</option>
+                </select>
+
+                <input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
+
+                <input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
+            </div>
+    </div>
+</div>
+{% endblock  %}
+{% block script %}
+<link rel="stylesheet" href="/static/css/list.css">
+<script>
+    $( document ).ready(function() {
+        $("#menu").val("{{ menu }}").prop("selected", true);
+    });
+</script>
+<script>
+    function search(){
+        var searchtxt = document.getElementById('searchtxt')
+        var menu = document.getElementById('menu')
+        console.log(menu.options[menu.selectedIndex].value);
+        console.log(searchtxt.value)
+        location.href="{% url 'Company:likeproject' request.session.id %}?s="+searchtxt.value+"&m="+menu.options[menu.selectedIndex].value
+    }
+</script>
+{% endblock script %}

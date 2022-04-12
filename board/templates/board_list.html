@@ -1,11 +1,35 @@
 {% extends 'base.html' %}
 {% block title %}게시판{% endblock %}
 {% block content %}
-<div class="row mt-5" id="listform">
-    <h2 class="mb-4">게시글</h2>
-    <div class="col-12 rounded tableDiv p-0">
-        <table class="table table-borderless m-0">
-            <thead>
+<h1>게시물 리스트</h1>
+<div class="row">
+    <div class="col-12">
+            <div class="form-group mt-3">
+                {% comment %} {% for field in form %}
+                    <div class="form-group">
+                        {% bootstrap_field field }
+                    </div>
+                {% endfor %}
+
+                {{ form }} {% endcomment %}
+                <select name="menu" id="menu" class='form-control mx-3' style='width:9%; display:inline-block'>
+                    <option value="all" selected>전체</option>
+                    <option value="developer">작성자</option>
+                    <option value="title">제목</option>
+                    <option value="language">언어</option>
+                </select>
+
+                <input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
+
+                <input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
+            </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <table class="table table-light table-hover">
+            <thead class="thead-light">
                 <tr>
                     <th>#</th>
                     <th>제목</th>
@@ -30,9 +54,6 @@
         </table>
     </div>
 </div>
-<input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
-
-<input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
 
 <div class="row mt-2">
     <div class="col-12">
