@@ -58,11 +58,15 @@
             <div class="mt-3 p-0 text-end">
                 {% if request.session.who == 'developer' and recruit.project.leader.id == request.session.id %}
                 <a class="btn btn-primary" href='{% url "Recruit:update" recruit.pk %}'>수정하기</a>
-                {% elif request.session.id and request.session.id in recruit.project.member.all  %}
-                <a class="btn btn-primary" href='{% url "Recruit:apply" recruit.pk %}' data-bs-toggle="modal" data-bs-target="#recruit-modal">신청하기</a>
                 {% endif %}
-                <a class="btn btn-primary" href='{% url "Project:detail" recruit.project.pk %}'>프로젝트 보기</a>
-                <a class="btn btn-primary" href='{% url "Recruit:list" %}'>목록</a>
+                {% for member in recruit.project.member.all %}
+                    {% if request.session.id == member.id %}
+                    {% endif %}
+                    {% endfor %}
+                    <a class="btn btn-primary" href='{% url "Recruit:apply" recruit.pk %}' data-bs-toggle="modal" data-bs-target="#recruit-modal">신청하기</a>
+                    <a class="btn btn-primary" href='{% url "Project:detail" recruit.project.pk %}'>프로젝트 보기</a>
+                    <a class="btn btn-primary" href='{% url "Recruit:list" %}'>목록</a>
+                {% comment %} {% elif request.session.id and request.session.id in recruit.project.member.all  %} {% endcomment %}
             </div>
         </div>
     </div>
