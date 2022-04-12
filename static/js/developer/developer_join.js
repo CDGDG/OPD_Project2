@@ -140,7 +140,7 @@ $(document).ready(function(){
         var emailnum = num_list.join("")
         
         $.ajax({
-            url:"{% url 'Developer:send_email' %}",
+            url:send_email_url,
             data : {'email':email,'emailnum':emailnum},
             datatype:'json',
             success:function(response){
