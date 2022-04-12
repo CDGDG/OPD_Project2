@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from admin.models import Language
 from developer.models import Developer
+from company.models import Company
 from .models import Boardimg, Board, Comment
 from django.core.paginator import Paginator
 from .forms import BoardUpdateForm, Boardform, CommentForm
@@ -195,17 +196,26 @@ def comment_write(request, pk):
         private = request.POST.get('private')
         print(private)
         board = Board.objects.get(pk= pk) 
-        developer = Developer.objects.get(pk = request.session.get('id'))
+        user = Developer.objects.get(pk = request.session.get('id')) if request.session.get('who') == 'developer' else Company.objects.get(pk = request.session.get('id'))
         print(private)
-        comment = Comment(
-            board = board,
-            developer = developer,
-            contents = request.POST.get('contents')
-        )
-        if private == 'on':
-            comment.private = True
-        
-        comment.save()
+        if request.session.get('who') == 'developer':
+            comment = Comment(
+                board = board,
+                developer = user,
+                contents = request.POST.get('contents')
+            )
+            if private == 'on':
+                comment.private = True
+            comment.save()
+        elif request.session.get('who') == 'company':
+            comment = Comment(
+                board = board,
+                company = user,
+                contents = request.POST.get('contents')
+            )
+            if private == 'on':
+                comment.private = True
+            comment.save()
         return redirect(f'/board/detail/{pk}/')
 
 

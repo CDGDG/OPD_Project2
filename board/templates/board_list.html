@@ -19,12 +19,12 @@
             <tbody>
                 {% for board in boards %}
                 <tr style="height:7vw;" onclick="location.href=`{% url 'Board:detail' board.id %}`">
-                    <td><br>{{ board.id }}</td>
-                    <td><br>{{ board.title }}</td>
-                    <td><br>{{ board.language.all|join:", " }}</td>
-                    <td><br>{{board.developer.nickname}}</td>
-                    <td><br>{{ board.regdate|date:"Y-m-d H:i:s"}}</td>
-                    <td><br>{{ board.viewcnt }}</td>
+                    <td>{{ board.id }}</td>
+                    <td>{{ board.title }}</td>
+                    <td>{{ board.language.all|join:", " }}</td>
+                    <td>{{board.developer.nickname}}</td>
+                    <td>{{ board.regdate|date:"Y-m-d H:i:s"}}</td>
+                    <td>{{ board.viewcnt }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
