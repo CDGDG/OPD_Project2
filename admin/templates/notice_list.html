@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>공지사항</h1>
-<div class="row mt-5">
+<div class="row mt-5" id="listform">
+    <h2 class-"mb-4">공지사항</h2>
     {% if request.session.who == 'admin' %}
         <div class="col-12 mb-3">
             <a class="btn btn-primary col-12" href="{% url 'Admin:noticewrite' %}">글쓰기</a>
         </div>
     {% endif %}
-    <div class="col-12">
-        <table class="table table-light table-hover">
-            <thead class="thead-light">
+    <div class="col-12 rounded tableDiv p-0">
+        <table class="table table-borderless m-0">
+            <thead>
                 <tr>
                     <th>#</th>
                     <th>제목</th>
@@ -18,7 +18,7 @@
                     <th>조회수</th>
                 </tr>
             </thead>
-            <tbody class="text-dark">
+            <tbody>
                 {% for notice in notices %}
                 <tr onclick="location.href='{% url 'Admin:noticedetail' notice.id %}'">
                     <td>{{ notice.id }}</td>
@@ -99,6 +99,7 @@
 
 
 {% block script %}
+<link rel="stylesheet" href="/static/css/list.css">
 <script>
     $( document ).ready(function() {
         $("#menu").val("{{ menu }}").prop("selected", true);
