@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
+{% block title %}내 프로젝트 리스트{% endblock %}
 {% block content %}
-<div class="row mt-5">
-    <div class="col-12">
+<div class="row mt-5" id="listform">
+    <h2 class="mb-4">내 프로젝트</h2>
+    <div class="col-12 rounded tableDiv p-0">
         {% if developer.id == request.session.id %}
         <div class="form-group row">
-            <div class="col-6">
+            <div class="col-6 pe-0">
                 <input type="radio" class="btn-check" name="project" id="myproject" value="myproject" autocomplete="off"
                     checked>
                 <label class="btn login-select col-12" for="myproject">내 프로젝트</label>
             </div>
-            <div class="col-6">
+            <div class="col-6 ps-0">
                 <input type="radio" class="btn-check" name="project" id="likeproject" value="likeproject"
                     autocomplete="off">
                 <label class="btn login-select col-12" for="likeproject">내가 '좋아요'한 프로젝트</label>
@@ -17,35 +19,65 @@
         </div>
         {% endif %}
         <div id="my" style="display:block">
-            <table class="table table-light table-hover">
+            <table class="table table-borderless m-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>타이틀</th>
+                        <th>팀장</th>
+                        <th>썸네일</th>
+                        <th>사용 언어</th>
+                    </tr>
+                </thead>
+                <tbody>
                 {% for project in projects%}
-                <tr onclick='location.href="/project/detail/{{project.id}}/"'>
+                <tr style="height:7vw;">
                     <td>{{project.id}}</td>
-                    <td>{{project.title}}</td>
-                    <td><img src="{{project.thumbnail.url}}" alt=""></td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' project.pk %}`">{{project.title}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Developer:info' project.leader.pk %}`"><img src="{% if developer.pic %}{{developer.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{project.leader.nickname}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' project.pk %}`">
+                        <img src="{% if project.thumbnail %}{{project.thumbnail.url}}{% else %}/media/thumbnail-default.jpg{% endif %}" alt="이미지 없음" style="height: 5vw;object-fit: contain;">
+                    </td>
+                    <td>{% for lang in project.language.all %}[{{lang}}] {% endfor %}</td>
                 </tr>
                 {% empty %}
                 {{developer.nickname}}님의 프로젝트가 없습니다.<br>
                 {% endfor %}
-            </table>
-            {% if developer.id == request.session.id %}
-            <a class="btn btn-primary" href="{% url 'Project:list' %}">프로젝트 만들러가기</a>
-            {% else %}
-            <a type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</a>
-            {% endif %}
+                    <tbody>
+                </table>
+                {% if developer.id == request.session.id %}
+                <a class="btn btn-primary" href="{% url 'Project:list' %}">프로젝트 만들러가기</a>
+                {% else %}
+                <a type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</a>
+                {% endif %}
         </div>
         <div id="like" style="display:none">
-            <table class="table table-light table-hover">
+            <table class="table table-borderless m-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>타이틀</th>
+                        <th>썸네일</th>
+                        <th>팀장</th>
+                        <th>사용 언어</th>
+                    </tr>
+                </thead>
+                <tbody>
                 {% for likeproject in developer.likeproject.all %}
-                <tr onclick='location.href="/project/detail/{{likeproject.id}}/"'>
+                <tr style="height:7vw;">
                     <td>{{likeproject.id}}</td>
-                    <td>{{likeproject.title}}</td>
-                    <td><img src="{{likeproject.thumbnail.url}}" alt=""></td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' likeproject.pk %}`">{{likeproject.title}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Developer:info' likeproject.leader.pk %}`"><img src="{% if developer.pic %}{{developer.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{likeproject.leader.nickname}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' likeproject.pk %}`">
+                        <img src="{% if likeproject.thumbnail %}{{likeproject.thumbnail.url}}{% else %}/media/thumbnail-default.jpg{% endif %}" alt="이미지 없음" style="height: 5vw;object-fit: contain;">
+                    </td>
+                    <td>{% for lang in likeproject.language.all %}[{{lang}}] {% endfor %}</td>
                 </tr>
                 {% empty %}
                 {{developer.nickname}}님이 '좋아요'한 프로젝트가 없습니다.<br>
                 <a class="btn btn-primary" href="{% url 'Project:list' %}">프로젝트 보러가기</a>
                 {% endfor %}
+            </tbody>
             </table>
         </div>
         </table>
@@ -55,4 +87,5 @@
 {% endblock  %}
 {% block script %}
 <script src="/static/js/developer/developer_myproject.js"></script>
+<link rel="stylesheet" href="/static/css/list.css">
 {% endblock script %}

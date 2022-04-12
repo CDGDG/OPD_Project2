@@ -104,12 +104,36 @@
                 
             </div>
         </div>
-        <br><br><br>
     </div>
 </div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="form-group detailDiv rounded p-4 row" id="id_comment_div">
+            <div class="bg-white detail-control">
+                <label class="px-4 d-inline-block">댓글</label>
+                <div class="position-relative">
+                    <textarea name="comment" id="id_comment" cols="30" rows="2" style="resize:none;padding-right:10%;" class="d-block w-100 form-control"
+                    {% if not request.session.id %}disabled placeholder='로그인 후 이용하세요.'{% else %}placeholder='프로젝트에 댓글을 남겨보세요.'{% endif %}></textarea>
+                    <button class="btn btn-primary position-absolute" style="right:1%;bottom:20%;" id="create_comment_btn" title="댓글을 작성해주세요.">작성</button>
+                </div>
+                {% for comment in comments %}
+                <div class='comment-control rounded p-2 mt-2'>
+                    <label id="comment_label" class="px-4 d-inline-block"><a class="text-decoration-none text-white" href="{% if comment.developer %}{% url 'Developer:info' comment.developer.pk %}{% else %}{% url 'Company:detail' comment.company.pk %}{% endif %}">{% if comment.developer %}{{comment.developer.nickname}}{% else %}{{comment.company.name}}{% endif %}</a></label>
+                    <label class="px-4 d-inline-block bg-success">{{comment.regdate}}</label>
+                    <p class="px-1">{{comment.contents}}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% csrf_token %}
 <script>
 likeurl = "{% url 'Project:likeproject' project.pk %}"
 unlikeurl = "{% url 'Project:unlikeproject' project.pk %}"
+commenturl = "{% url 'Project:addcomment' project.pk %}"
+parentcomment = null
 $(document).ready(function(){
     $('#create').click(function(){
         var userid = '{{request.session.id}}';
@@ -124,4 +148,5 @@ $(document).ready(function(){
 <script src="/static/js/detail.js"></script>
 <link rel="stylesheet" href="/static/css/detail.css">
 <script src="/static/js/project/project_detail.js"></script>
+<script src="/static/js/project/comment.js"></script>
 {% endblock %}

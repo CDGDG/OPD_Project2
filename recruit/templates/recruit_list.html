@@ -57,7 +57,7 @@
                 </li>
                 {% endif %}
                 <li class="page-item active">
-                    <a class="page-link" href="">{{recruit.number}} / {{recruits.paginator.num_pages}}</a>
+                    <a class="page-link" href="">{{recruits.number}} / {{recruits.paginator.num_pages}}</a>
                 </li>
                 {% if recruits.has_next %}
                 <li class="page-item">
@@ -75,4 +75,15 @@
 {% endblock  %}
 {% block script %}
 <link rel="stylesheet" href="/static/css/list.css">
+<script>
+var session = {{request.session.id}}
+$(document).ready(function(){
+    console.log("------------------------------")
+    if(session == null){
+        console.log("=========================="+session+"======================")
+        $('#loginbtn').click()
+    
+    }
+})
+</script>
 {% endblock  %}

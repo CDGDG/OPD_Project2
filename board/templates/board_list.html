@@ -1,35 +1,26 @@
 {% extends 'base.html' %}
 {% block title %}게시판{% endblock %}
 {% block content %}
-<h1>게시물 리스트</h1>
-<div class="row">
+<div class="row mt-5" id="listform">
+    <h2 class="mb-4">게시판</h2>
     <div class="col-12">
-            <div class="form-group mt-3">
-                {% comment %} {% for field in form %}
-                    <div class="form-group">
-                        {% bootstrap_field field }
-                    </div>
-                {% endfor %}
+        <div class="form-group mt-3">
+            <select name="menu" id="menu" class='form-control mx-3' style='width:9%; display:inline-block'>
+                <option value="all" selected>전체</option>
+                <option value="developer">작성자</option>
+                <option value="title">제목</option>
+                <option value="language">언어</option>
+            </select>
 
-                {{ form }} {% endcomment %}
-                <select name="menu" id="menu" class='form-control mx-3' style='width:9%; display:inline-block'>
-                    <option value="all" selected>전체</option>
-                    <option value="developer">작성자</option>
-                    <option value="title">제목</option>
-                    <option value="language">언어</option>
-                </select>
+            <input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
 
-                <input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
-
-                <input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
-            </div>
+            <input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
+        </div>
     </div>
-</div>
 
-<div class="row mt-5">
-    <div class="col-12">
-        <table class="table table-light table-hover">
-            <thead class="thead-light">
+    <div class="col-12 rounded tableDiv p-0">
+        <table class="table table-borderless m-0">
+            <thead>
                 <tr>
                     <th>#</th>
                     <th>제목</th>
@@ -53,42 +44,42 @@
             </tbody>
         </table>
     </div>
-</div>
 
-<div class="row mt-2">
-    <div class="col-12">
-        <nav>
-            <ul class="pagination justify-content-center">
-                {% if boards.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?p={{ boards.previous_page_number }}">이전으로</a>
-                </li>
-                {% else %}
-                <li class="page-item disable">
-                    <a class="page-link disabled" href="#">이전으로</a>
-                </li>
-                {% endif %}
-                <li class="page-item active">
-                    <a class="page-link" href="#">{{ boards.number }} / {{ boards.paginator.num_pages }}</a>
-                </li>
-                {% if boards.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?p={{ boards.next_page_number }}">다음으로</a>
-                </li>
-                {% else %}
-                <li class="page-item disable">
-                    <a class="page-link disabled" href="#">다음으로</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
+    <div class="row mt-2">
+        <div class="col-12">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if boards.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?p={{ boards.previous_page_number }}">이전으로</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disable">
+                        <a class="page-link disabled" href="#">이전으로</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#">{{ boards.number }} / {{ boards.paginator.num_pages }}</a>
+                    </li>
+                    {% if boards.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?p={{ boards.next_page_number }}">다음으로</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disable">
+                        <a class="page-link disabled" href="#">다음으로</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
     </div>
-</div>
 
 
-<div class="row">
-    <div class="col-12">
-        <a class="btn btn-primary" href="{% url 'Board:create' %}">글쓰기</a>
+    <div class="row">
+        <div class="col-12">
+            <a class="btn btn-primary" href="{% url 'Board:create' %}">글쓰기</a>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -90,6 +90,8 @@ def list(request):
     return render(request, 'company_list.html', {'companys': companys, 'search': search, 'menu': menu})
 
 def detail(request, pk):
+    if not request.session.get('id'):
+        return render(request,'no_login.html',{'next':"Company:list"})
     try:
         company = Company.objects.get(pk=pk)
         if company.category == 'big':
@@ -113,6 +115,8 @@ def detail(request, pk):
     return render(request, 'company_detail.html', {'company': company})
 
 def update(request, pk):
+    if not request.session.get('id'):
+        return render(request,'no_login.html',{'next':"home"})
     if request.method == "GET":
         company = Company.objects.get(pk=pk)
         company.address = company.address.replace(" "," ")
@@ -267,6 +271,8 @@ def changepassword(request):
 
 
 def follow(request):
+    if not request.session.get('id'):
+        return render(request,'no_login.html',{'next':"home"})
     print(request.session.get('id'))
     print(request.session['id'])
     session_id = int(request.session.get('id'))
@@ -316,6 +322,8 @@ def follow(request):
     return render(request, 'company_follow.html', {'follows': follows, 'search': search, 'menu': menu})
 
 def likeproject(request, pk):
+    if not request.session.get('id'):
+        return render(request,'no_login.html',{'next':"home"})
     company = Company.objects.get(pk = pk)
     all_projects = company.likeproject.all().order_by('-id')
 

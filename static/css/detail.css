@@ -23,3 +23,8 @@
     font-weight: 400;
     line-height: 1.5;
 }
+
+.comment-control{
+    border: 2px solid lightcoral;
+    background-color: white;
+}
