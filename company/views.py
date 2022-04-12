@@ -318,18 +318,22 @@ def likeproject(request, pk):
 
     searchprojects = []
 
+    flag = False
+
     for project in all_projects:
 
         if menu == 'title':
             print(project)
             if search in project.title:
                 searchprojects.append(project)
-        elif menu == 'leader':
-            if search in project.leader:
-                searchprojects.append(project)
         elif menu == 'member':
-            if search in project.member:
+            if search in project.leader.nickname:
                 searchprojects.append(project)
+            else:
+                for member in project.member.all():
+                    if search in member.nickname:
+                        searchprojects.append(project)
+                        break
         elif menu == 'summary':
             if search in project.summary:
                 searchprojects.append(project)
@@ -345,19 +349,25 @@ def likeproject(request, pk):
         elif menu == 'all':
             if search in project.title:
                 searchprojects.append(project)
-            elif search in project.leader:
-                searchprojects.append(project)
-            elif search in project.member:
-                searchprojects.append(project)
             elif search in project.summary:
                 searchprojects.append(project)
             elif search in project.contents:
                 searchprojects.append(project)
-            else :
+            elif search in project.leader.nickname:
+                searchprojects.append(project)
+            else:
+                for member in project.member.all():
+                    if search in member.nickname:
+                        # searchprojects.append(project)
+                        flag = True
+                        break
                 for lang in project.language.all():
                     if search in lang.language:
-                        searchprojects.append(project)
+                        # searchprojects.append(project)
+                        flag = True
                         break
+                if flag:
+                    searchprojects.append(project)
         else :
             searchprojects.append(project)
 
