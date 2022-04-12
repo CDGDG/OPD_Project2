@@ -18,7 +18,7 @@ urlpatterns = [
     path('follow/',views.myfollowers, name = 'followers'),  # 내 팔로우 리스트
     path('follower/',views.follow, name = 'follow'), # 팔로우 하기
     path('list/',views.list, name = 'list'),
-    path('leave/',views.leave, name = 'leave'),
+    path('leave/',views.leave, name ='leave'),
 ]
 
 #MEDIA 경로 추가
