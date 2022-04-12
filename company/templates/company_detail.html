@@ -73,7 +73,7 @@
                 {% if request.session.who == 'company' and request.session.id == company.pk %}
                 {% comment %} <a class="btn btn-primary" href='{% url 'Company:update' company.pk %}'>수정</a> {% endcomment %}
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwordModal">수정하기</button>
-                <button type="button" class="btn btn-primary" onclick="chkDelete()">삭제</button>
+                <button type="button" class="btn btn-primary" onclick="chkDelete()">탈퇴</button>
                 {% endif %}
             </div>
         </div>
