@@ -303,6 +303,12 @@ def list(request):
                 searchdeveloper.append(developer)
             elif search in developer.email:
                 searchdeveloper.append(developer)
+            else:
+                for lang in developer.language.all():
+                    print("==========================",lang)
+                    if search in lang.language:
+                        print("------------------",search)
+                        searchdeveloper.append(developer)
         else :
             searchdeveloper.append(developer)
     

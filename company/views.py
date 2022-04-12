@@ -200,11 +200,11 @@ def join(request):
                 url = form.cleaned_data['url'],
                 summary = form.cleaned_data['summary'],
                 category = form.cleaned_data['category'],
-                pic = request.FILES['pic'],
-                pic_original = request.FILES['pic'].name,
+                pic = request.FILES.get('pic'),
                 # language = form.language
             )
-
+            if company.pic:
+                company.pic_original = company.pic.name
             company.save()
 
             for pk in form.cleaned_data['language']:    # 선택한 언어 반복
@@ -324,18 +324,22 @@ def likeproject(request, pk):
 
     searchprojects = []
 
+    flag = False
+
     for project in all_projects:
 
         if menu == 'title':
             print(project)
             if search in project.title:
                 searchprojects.append(project)
-        elif menu == 'leader':
-            if search in project.leader:
-                searchprojects.append(project)
         elif menu == 'member':
-            if search in project.member:
+            if search in project.leader.nickname:
                 searchprojects.append(project)
+            else:
+                for member in project.member.all():
+                    if search in member.nickname:
+                        searchprojects.append(project)
+                        break
         elif menu == 'summary':
             if search in project.summary:
                 searchprojects.append(project)
@@ -351,19 +355,25 @@ def likeproject(request, pk):
         elif menu == 'all':
             if search in project.title:
                 searchprojects.append(project)
-            elif search in project.leader:
-                searchprojects.append(project)
-            elif search in project.member:
-                searchprojects.append(project)
             elif search in project.summary:
                 searchprojects.append(project)
             elif search in project.contents:
                 searchprojects.append(project)
-            else :
+            elif search in project.leader.nickname:
+                searchprojects.append(project)
+            else:
+                for member in project.member.all():
+                    if search in member.nickname:
+                        # searchprojects.append(project)
+                        flag = True
+                        break
                 for lang in project.language.all():
                     if search in lang.language:
-                        searchprojects.append(project)
+                        # searchprojects.append(project)
+                        flag = True
                         break
+                if flag:
+                    searchprojects.append(project)
         else :
             searchprojects.append(project)
 
