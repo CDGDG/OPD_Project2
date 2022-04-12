@@ -247,7 +247,6 @@ def follow(request):
     follower = request.POST.get('developer_id')
     developer_follower = Developer.objects.get(pk = follower)
     user = Developer.objects.get(pk = request.session.get('id')) if request.session.get('who') == 'developer' else Company.objects.get(pk = request.session.get('id'))
-    # developer = Developer.objects.get(pk = request.session.get('id'))
     if request.session.get('who') == 'developer':        
         if request.POST.get('check_follow') == "팔로우":
             print(developer_follower)
@@ -270,7 +269,7 @@ def follow(request):
             )
             follow.save()
         else:
-            follow = Follow.objects.filter(developer=user,follower=follower)
+            follow = CompanyFollow.objects.filter(company=user,follower=follower)
             follow.delete()
     return JsonResponse(context)
     
