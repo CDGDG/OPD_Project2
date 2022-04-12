@@ -9,69 +9,105 @@
                     <p>조회수 : {{ board.viewcnt}}</p>
                     <hr>
                     <p>작성일 : {{ board.regdate }}</p>
-                </tr>        
+                </tr>     
                 <label>내용</label>
                 <textarea class="form-control" id="contents" readonly>{{board.contents}}</textarea>
 
-                <p><b>댓글 목록</b></p>
-                {% for comment in comments %}
-                    <li>{{ board.contents }}</li>
-                {% empty %}
-                    <p>아직 댓글이 없습니다.</p>
-                {% endfor %}
-                <hr.
-                    
-
-                    
-                </label>
-                <textarea class="form-control" id="contents" readonly>{{comment.contents}}</textarea>
-                <br>
-                <div class="comment-area">
-                    <!-- Comments Form -->
+                <label>첨부 파일</label>
+                {% if boardimg == '' %}
+                <p>첨부파일이 없습니다</p>
+                {% else %}
+                <a class='form-control' href="{% url 'Board:filedownload' boardimg.pk %}">{{ boardimg.img_original }}</a>
+                {% endif %}
+                
+            </label>
+            <br>
+            <div class="comment-area">
+                <!-- Comments Form -->
+                <form action="{% url 'Board:commentwrite' board.pk %}" name="commentForm" id="commentwrite" method="POST">
+                    {% csrf_token %}
                     <div class="card my-4">
                         <h5 class="card-header">댓글 달기:</h5>
+                        <label><input type="checkbox" name="private" id="private">비공개</label>
                         <div class="card-body">
-                            <form>
-                                <div class="form-group">
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">전송</button>
-                            </form>
+                            <div class="form-group">
+                                <textarea class="form-control" name="contents" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">전송</button>
                         </div>
                     </div>
-
-                    {% if board.comment_set.exists %}
-                        {% for comment in board.comment_set.iterator %}
-                        <!-- Single Comment -->
-                        <div class="media mb-4" id="comment-{{ comment.pk }}">
-                            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                            <div class="media-body">
-                                <h5 class="mt-0">{{ comment.developer.developerid}} &nbsp;&nbsp;<small class="text-muted">{{ comment.regdate }}</small>
-                                </h5>
-                                <p>{{ comment.contents | linebreaks }}</p>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% endif %}
+                </form>
+                
+                <p><b>댓글 목록</b></p>
+                <!-- <p>아직 댓글이 없습니다.</p> -->
+                {% for comment in comments %}
+                {% if comment.private == True %}
+                <div class="media mb-4" id="comment-{{ comment.pk }}">
+                    <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                    <div class="media-body">
+                        <h5 class="mt-0">{{ comment.developer.developerid}} &nbsp;&nbsp;<small class="text-muted">{{ comment.regdate }}</small>
+                        </h5>
+                        {% if comment.developer.id == request.session.id and request.session.who == 'developer' %}
+                        {% endif %}
+                        <p>비밀 댓글입니다</p>
+                    </div>
                 </div>
-                <hr/>
-                <!-- Comments Form -->
-                <div class="card my-4">
+                {% else %}
+                <div class="media mb-4" id="comment-{{ comment.pk }}">
+                    <!-- 
+                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                    -->
+                    <div class="media-body">
+                        <h5 class="mt-0">{{ comment.developer.developerid}} &nbsp;&nbsp;<small class="text-muted">{{ comment.regdate }}</small>
+                        </h5>
+                        <b style="display: inline-block;">{{comment.developer.nickname}}</b>
+                        <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
+                        {% if comment.developer.id == request.session.id and request.session.who == 'developer' %}
+
+                        <button class="btn btn-primary" id="commentdelete{{ comment.pk }}">삭제</button>
+                        <script>
+                            $(document).ready(function(){
+                                $('#commentdelete{{ comment.pk }}').click(function(){
+                                    $.ajax({
+                                        url: "{% url 'Board:commentdelete' %}",
+                                        type : "POST",
+                                        data : {'csrfmiddlewaretoken': $('#csrf_token').val(), 'pk':'{{comment.pk}}'},
+                                        dataType: 'json',
+                                        success:function(response){
+                                            alert('삭제성공~')
+                                            location.reload();
+                                        }
+                                    })
+                                })
+                            })
+                        </script>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% empty %}
+                <p id="contents" style="color: darkgray;" readonly>아직 댓글이 없습니다...</p>
+                {% endfor %}
+                
+            </div>
+            <hr/>
+            <!-- Comments Form -->
+            <!-- <div class="card my-4">
                     <h5 class="card-header">확인</h5>
-                    <div class="card-body">
-                        {% if user.is_authenticated %}
+                    <div class="card-body"> -->
+                        <!-- {% if user.is_authenticated %}
                         <form id="comment-form" method="POST" action="{{ board.get_absolute_url }} new_comment/">
                             <div class="form-group">
                                 <!-- <textarea class="form-control" rows="3"></textarea> -->
-                            </div>
+                            <!-- </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                         {% else %}
                             <a role="button" class="btn btn-outline-dark btn-block btn-sm" href="#" 
                             data-toggle="modal" data-target="#loginModal">Log in and leave a comment</a>
                         {% endif %}
-                    </div>
-                </div>
+                    </div> 
+                </div> -->
                 <!-- <label for="board_contents">댓글작성 </label>
                     <br>
                     <input type="text" class="form-control" id="contents">
@@ -79,13 +115,14 @@
                
 
                 <!-- <textarea class="form-control" id="contents" value="{{ comment.contents }}"></textarea> -->
-        </div>
+        <!-- </div> -->
         <div class="mt-3">
 
             <a class="btn btn-outline-dark" href='{% url "Board:list" %}'>목록</a>
+            {% if request.session.who == 'developer' and request.session.id == board.developer.pk %}
             <a class="btn btn-outline-dark" href='{% url "Board:update" board.pk %}'>수정하기</a>
             <a class="btn btn-outline-dark" onclick="chkDelete()">삭제하기</a>
-
+            {% endif %}
             <form action="{% url 'Board:delete' %}" name="delete" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="pk" value="{{board.pk}}">
@@ -103,4 +140,9 @@
         </div>
     </div>
 </div>
+<input type="hidden" value="{{csrf_token}}" id="csrf_token">
+{% endblock %}
+
+{% block script %}
+    
 {% endblock %}
