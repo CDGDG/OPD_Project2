@@ -22,26 +22,29 @@ def board_list(request):
 
     search = request.GET.get('s','')
     menu = request.GET.get('m', 'all')
-
+    # 메뉴
     searchboards = []
 
     for board in boards_all:
-        # if menu == 'developer':
-        #     if search in board.developer:
-        #         searchboards.append(board)
-        if menu == 'title':
+        if menu == 'developer':
+            if search in board.developer:
+                searchboards.append(board)
+        elif menu == 'title':
             if search in board.title:
                 searchboards.append(board)
         elif menu == 'language':
-            if search in board.language:
+            for lang in lang.language:
                 searchboards.append(board)
+
         elif menu == 'all':
-            # if search in board.developer:
-            #     searchboards.append(board)
-            if search in board.title:
+            if search in board.developer:
                 searchboards.append(board)
-            elif search in board.language:
+            elif search in board.title:
                 searchboards.append(board)
+            else :
+                for lang in board.languae,all():
+                    if search in lang.language:
+                        searchboards.append(board)
         else :
             searchboards.append(board)
 

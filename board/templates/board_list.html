@@ -5,6 +5,13 @@
     <h2 class="mb-4">게시판</h2>
     <div class="col-12">
         <div class="form-group mt-3">
+            {% comment %} {% for field in form %}
+                <div class="form-group">
+                    {% bootstrap_field field %}
+                </div>
+            {% endfor %}
+
+            {{ form }} {% endcomment %}
             <select name="menu" id="menu" class='form-control mx-3' style='width:9%; display:inline-block'>
                 <option value="all" selected>전체</option>
                 <option value="developer">작성자</option>
