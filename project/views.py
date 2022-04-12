@@ -21,14 +21,72 @@ from django.http import FileResponse
 
 
 def list(request):
-    all_projects = Project.objects.all().order_by('-id')
+    all_projects = Project.objects.filter(private = False).order_by('-id')
+
+    search = request.GET.get('s','')
+    menu = request.GET.get('m', 'all')
+
+    searchprojects = []
+
+    flag = False
+
+    for project in all_projects:
+
+        if menu == 'title':
+            print(project)
+            if search in project.title:
+                searchprojects.append(project)
+        elif menu == 'member':
+            if search in project.leader.nickname:
+                searchprojects.append(project)
+            else:
+                for member in project.member.all():
+                    if search in member.nickname:
+                        searchprojects.append(project)
+                        break
+        elif menu == 'summary':
+            if search in project.summary:
+                searchprojects.append(project)
+        elif menu == 'contents':
+            if search in project.contents:
+                searchprojects.append(project)
+        elif menu == 'language':
+            for lang in project.language.all():
+                if search in lang.language:
+                    searchprojects.append(project)
+                    break
+
+        elif menu == 'all':
+            if search in project.title:
+                searchprojects.append(project)
+            elif search in project.summary:
+                searchprojects.append(project)
+            elif search in project.contents:
+                searchprojects.append(project)
+            elif search in project.leader.nickname:
+                searchprojects.append(project)
+            else:
+                for member in project.member.all():
+                    if search in member.nickname:
+                        # searchprojects.append(project)
+                        flag = True
+                        break
+                for lang in project.language.all():
+                    if search in lang.language:
+                        # searchprojects.append(project)
+                        flag = True
+                        break
+                if flag:
+                    searchprojects.append(project)
+        else :
+            searchprojects.append(project)
 
     # 페이징
     page = int(request.GET.get('p', 1))
-    paginator = Paginator(all_projects, 5) # 한 페이지당 5개씩 보여주는 Paginator 생성
+    paginator = Paginator(searchprojects, 4) # 한 페이지당 5개씩 보여주는 Paginator 생성
     projects = paginator.get_page(page)
 
-    return render(request, 'project_list.html', {"projects": projects})
+    return render(request, 'project_list.html', {'projects': projects, 'search': search, 'menu': menu})
 
 def create(request):
     if request.method == "POST":

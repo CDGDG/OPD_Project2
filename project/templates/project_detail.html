@@ -81,8 +81,9 @@
                 {% csrf_token %}
                 <a class="btn btn-light float-start me-2" href='{% url "Project:update" project.pk %}'>수정하기</a>
                 <a class="btn btn-light float-start" onclick="chkDelete()">삭제하기</a>
-                {% endif %}
-                
+                {% elif request.session.who == 'admin'%}
+                <a class="btn btn-light float-start" onclick="chkDelete()">삭제하기</a>
+                {% endif %}            
                 <a class="btn btn-primary float-end" href='{% url "Project:list" %}'>돌아가기</a>
                 <a class="btn btn-primary float-end mx-2" href='{% url "Recruit:detail" project.recruit.pk %}'>모집글 보기</a>
                 {% if request.session.id %}

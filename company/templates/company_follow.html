@@ -1,13 +1,14 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="row mt-5">
-    <div class="col-12">
-        <table class="table table-light table-hover">
-            <thead class="thead-light">
+<div class="row mt-5" id="listform">
+    <h2 class="mb-4">내 팔로우</h2>
+    <div class="col-12 rounded tableDiv p-0">
+        <table class="table table-borderless m-0 table-hover">
+            <thead>
                 <tr>
                     <th>#</th>
                     <th>닉네임</th>
+                    <th>프로필</th>
                     <th>전화번호</th>
                     <th>이메일</th>
                     <th>가입날짜</th>
@@ -15,9 +16,12 @@
             </thead>
             <tbody class="text-dark">
                 {% for follow in follows %}
-                <tr onclick="location.href='{% url 'Developer:info' follow.id %}'">
+                <tr style="height:7vw;" onclick="location.href='{% url 'Developer:info' follow.id %}'">
                     <td>{{ follow.id }}</td>
                     <td>{{ follow.nickname }}</td>
+                    <td>
+                        <img src="{% if follow.pic %}{{follow.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;">
+                    </td>
                     <td>{{ follow.phonenum }}</td>
                     <td>{{ follow.email }}</td>
                     <td>{{ follow.regdate|date:"Y-m-d H:i:s" }}</td>
@@ -97,4 +101,5 @@
         location.href="{% url 'Company:follow' %}?s="+searchtxt.value+"&m="+menu.options[menu.selectedIndex].value
     }
 </script>
+<link rel="stylesheet" href="/static/css/list.css">
 {% endblock  %}

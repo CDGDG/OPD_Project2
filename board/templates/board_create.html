@@ -4,10 +4,29 @@
 {% load bootstrap4 %}
     <form action="{% url 'Board:create' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {% bootstrap_form form %}
-        <input type="{{ field.field.widget.input_type }}" class="form-control" 
-                        id="{{ field.id_for_label }}" placeholder="{{ field.label }}" name="{{ field.name }}" value="{{ nickname }}">
-        <div class="mt-3">
+        {% for field in form %}
+        <div class="form-group mt-3">
+            
+            {% if field.name == "title"%}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                name="{{ field.name }}" placeholder="title"/>
+                <div id="check_{{field.name}}"></div>
+
+            {% elif field.name == 'developer'%}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                 value="{{ request.session.name }}" readonly/>  
+                <input type="hidden" name="{{field.name}}" value="{{request.session.id}}">
+                <div id="check_{{field.name}}"></div>
+
+            
+            {% else %}
+                {% bootstrap_field field %}
+                <div id="check_{{field.name}}"></div>
+            {% endif %}
+        {% endfor %}
+        </div>
             <a class="btn btn-primary mt-3" href="{% url 'Board:list' %}">목록</a>
             <button class="btn btn-primary mt-3">작성하기</button>
         </div>

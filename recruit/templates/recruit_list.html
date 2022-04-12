@@ -18,7 +18,6 @@
             </thead>
             <tbody>
                 {% for recruit in recruits %}
-                {% if recruit.ing %}
                 <tr style="height:7vw;">
                     <td>{{recruit.pk}}</td>
                     <td onclick="location.href = `{% url 'Recruit:detail' recruit.pk %}`" class="clicktd">{{recruit.title}}</td>
@@ -35,7 +34,6 @@
                     <td>{{recruit.project.d_likeproject.count|add:recruit.project.c_likeproject.count}}</td>
                     <td>{{recruit.viewcnt}}</td>
                 </tr>
-                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
@@ -72,6 +70,24 @@
         </nav>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-12">
+            <div class="form-group mt-3">
+
+                <select name="menu" id="menu" class='form-control mx-3' style='width:9%; display:inline-block'>
+                    <option value="all" selected>전체</option>
+                    <option value="title">제목</option>
+                    <option value="contents">내용</option>
+                    <option value="project">프로젝트</option>
+                </select>
+
+                <input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
+
+                <input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
+            </div>
+    </div>
+</div>
 {% endblock  %}
 {% block script %}
 <link rel="stylesheet" href="/static/css/list.css">
@@ -85,5 +101,19 @@ $(document).ready(function(){
     
     }
 })
+</script>
+<script>
+    $( document ).ready(function() {
+        $("#menu").val("{{ menu }}").prop("selected", true);
+    });
+</script>
+<script>
+    function search(){
+        var searchtxt = document.getElementById('searchtxt')
+        var menu = document.getElementById('menu')
+        console.log(menu.options[menu.selectedIndex].value);
+        console.log(searchtxt.value)
+        location.href="{% url 'Recruit:list' %}?s="+searchtxt.value+"&m="+menu.options[menu.selectedIndex].value
+    }
 </script>
 {% endblock  %}

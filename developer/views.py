@@ -318,15 +318,19 @@ def list(request):
     
     #페이징
     page = int(request.GET.get('p', 1))
-    paginator = Paginator(searchdeveloper, 10)  # 한 페이지당 10개씩 보여주는 paginator 생성
+    paginator = Paginator(searchdeveloper, 4)  # 한 페이지당 10개씩 보여주는 paginator 생성
     developer = paginator.get_page(page)
 
     return render(request,'developer_list.html',{'developer':developer,'search':search,'menu':menu})
 
 
 def leave(request):
-    if request.method == "POST":
-        developer = Developer.objects.get(pk = request.session.get('id'))
-        developer.delete()
+    print("========================="+request.session.get('who')+"===================")
+    pk = request.POST.get('pk')
+    developer = Developer.objects.get(pk = pk)
+    developer.delete()
+    if request.session.get('who') == "admin":
+        return redirect("/developer/list/")
+    else:
         return logout(request)
-    return redirect("/")
+    
