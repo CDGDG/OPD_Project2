@@ -3,73 +3,75 @@
 
 {% block content %}
 <div class="row mt-5" id="listform">
-        <h2 class="mb-4">프로젝트 모집</h2>
-        <div class="col-12 rounded tableDiv p-0">
-            <table class="table table-borderless m-0">
-                <thead>
+    <h2 class="mb-4">프로젝트 모집</h2>
+    <div class="col-12 rounded tableDiv p-0">
+        <table class="table table-borderless m-0">
+            <thead>
+                <tr>
                     <th>#</th>
                     <th>제목</th>
                     <th>프로젝트</th>
                     <th>팀장</th>
                     <th>좋아요 수</th>
                     <th>조회수</th>
-                </thead>
-                <tbody>
-                    {% for recruit in recruits %}
-                    {% if recruit.ing %}
-                    <tr style="height:7vw;">
-                        <td>{{recruit.pk}}</td>
-                        <td onclick="location.href = `{% url 'Recruit:detail' recruit.pk %}`" class="clicktd">{{recruit.title}}</td>
-                        <td onclick="location.href = `{% url 'Project:detail' recruit.project.pk %}`" class="clicktd">
-                            {{recruit.project.title}}<br>
-                            {% if recruit.project.thumbnail %}
-                            <img src="{{recruit.project.thumbnail.url}}" alt="이미지 없음" style="height:5vw;object-fit: contain;">
-                            {% endif %}
-                        </td>
-                        <td onclick='location.href = `{% url "Developer:info" recruit.project.leader.pk %}`' class="clicktd">
-                            <img src="{% if recruit.project.leader.thumbnail %}recruit.project.leader.thumbnail.url{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:3vw;object-fit: contain;display:block;margin:0 auto;">
-                            {{recruit.project.leader.nickname}}
-                        </td>
-                        <td>{{recruit.project.d_likeproject.count|add:recruit.project.c_likeproject.count}}</td>
-                        <td>{{recruit.viewcnt}}</td>
-                    </tr>
-                    {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                </tr>
+            </thead>
+            <tbody>
+                {% for recruit in recruits %}
+                {% if recruit.ing %}
+                <tr style="height:7vw;">
+                    <td>{{recruit.pk}}</td>
+                    <td onclick="location.href = `{% url 'Recruit:detail' recruit.pk %}`" class="clicktd">{{recruit.title}}</td>
+                    <td onclick="location.href = `{% url 'Project:detail' recruit.project.pk %}`" class="clicktd">
+                        {{recruit.project.title}}<br>
+                        {% if recruit.project.thumbnail %}
+                        <img src="{{recruit.project.thumbnail.url}}" alt="이미지 없음" style="height:5vw;object-fit: contain;">
+                        {% endif %}
+                    </td>
+                    <td onclick='location.href = `{% url "Developer:info" recruit.project.leader.pk %}`' class="clicktd">
+                        <img src="{% if recruit.project.leader.thumbnail %}recruit.project.leader.thumbnail.url{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:3vw;object-fit: contain;display:block;margin:0 auto;">
+                        {{recruit.project.leader.nickname}}
+                    </td>
+                    <td>{{recruit.project.d_likeproject.count|add:recruit.project.c_likeproject.count}}</td>
+                    <td>{{recruit.viewcnt}}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+</div>
     
-    <!-- pagination -->
-    <div class="row mt-2">
-        <div class="col-12">
-            <nav>
-                <ul class="pagination justify-content-center">
-                    {% if recruits.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?p={{recruits.previous_page_number}}">이전으로</a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disable">
-                        <a class="page-link disable" href="#">이전으로</a>
-                    </li>
-                    {% endif %}
-                    <li class="page-item active">
-                        <a class="page-link" href="">{{recruit.number}} / {{recruits.paginator.num_pages}}</a>
-                    </li>
-                    {% if recruits.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?p={{recruits.next_page_number}}">다음으로</a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disable">
-                        <a class="page-link disabled" href="#">다음으로</a>
-                    </li>
-                    {% endif %}          
-                </ul>
-            </nav>
-        </div>
+<!-- pagination -->
+<div class="row mt-2">
+    <div class="col-12">
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if recruits.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?p={{recruits.previous_page_number}}">이전으로</a>
+                </li>
+                {% else %}
+                <li class="page-item disable">
+                    <a class="page-link disable" href="#">이전으로</a>
+                </li>
+                {% endif %}
+                <li class="page-item active">
+                    <a class="page-link" href="">{{recruit.number}} / {{recruits.paginator.num_pages}}</a>
+                </li>
+                {% if recruits.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?p={{recruits.next_page_number}}">다음으로</a>
+                </li>
+                {% else %}
+                <li class="page-item disable">
+                    <a class="page-link disabled" href="#">다음으로</a>
+                </li>
+                {% endif %}          
+            </ul>
+        </nav>
     </div>
+</div>
 {% endblock  %}
 {% block script %}
 <link rel="stylesheet" href="/static/css/list.css">
