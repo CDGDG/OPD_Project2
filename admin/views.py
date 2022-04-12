@@ -27,9 +27,26 @@ import random
 
 def home(request):
     if request.method=="GET":
-        like_projects = Project.objects.all().order_by
-    
-    return render(request,"home.html")
+        all_like_projects = sorted(Project.objects.all(), key=lambda project: project.d_likeproject.count()+project.c_likeproject.count(), reverse=True)
+        # 페이징
+        likepage = int(request.GET.get('like', 1))
+        paginator = Paginator(all_like_projects, 5) # 한 페이지당 5개씩 보여주는 Paginator 생성
+        likeprojects = paginator.get_page(likepage)
+        # 로그인 되어있으면 내가 좋아요한 프로젝트
+        all_mylike_projects = None
+        if request.session.get('who') == 'developer':
+            all_mylike_projects = Developer.objects.get(id=request.session.get('id')).likeproject.all().order_by('-id')
+        elif request.session.get('who') == 'company':
+            all_mylike_projects = Company.objects.get(id=request.session.get('id')).likeproject.all().order_by('-id')
+        # 페이징
+        if all_mylike_projects:
+            mylikepage = int(request.GET.get('mylike', 1))
+            paginator = Paginator(all_like_projects, 5) # 한 페이지당 5개씩 보여주는 Paginator 생성
+            mylikeprojects = paginator.get_page(mylikepage)
+
+        print(mylikeprojects)
+
+    return render(request,"home.html", {'likeprojects': likeprojects, 'mylikeprojects': mylikeprojects})
 
 def login(request):
     if request.method=="POST":
