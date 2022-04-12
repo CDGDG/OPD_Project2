@@ -5,11 +5,17 @@
 <h2>게시글 수정</h2>
 <hr>
 <div class="mb-3 mt-3 clearfix">
-    <span class="float-first me-2">id: {{ board.id }}</span>
+    <span class="float-first me-2">id: {{ pk }}</span>
 </div> 
 <form action="{% url 'Board:update' pk %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
+    {% for img in imgs %}
+    <p>현재 첨부파일</p>
+    <p id="img_name" style="display:inline-block">{{img.img_original}}</p>
+    <input type="button" id="changefile" onclick="$('#fileinput').click()" value="변경하기"><br>
+    <input type="file" style="display:none" id="fileinput" name="img">
+    {% endfor %}
     {# 게시판 #}
     <button type="submit" class="btn btn-outline-dark">수정완료</button>
     <button type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</button>
@@ -17,6 +23,12 @@
 </form>
 {% endblock content %}
 {% block script %}
+<script>
+    $('#fileinput').change(function(){
+        filename = $(this).val().split('\\')
+        $('#img_name').html(filename[filename.length-1])
+    })
+</script>
 <!-- <script>
     function readImage(input) {
         if (input.target.files && input.target.files[0]) {

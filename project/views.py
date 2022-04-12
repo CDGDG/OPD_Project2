@@ -6,11 +6,10 @@ from django.core.paginator import Paginator
 
 from admin.models import Language
 from developer.models import Developer
-import project
 from recruit.models import Recruit, Recruit_Language
 from company.models import Company
 
-from .models import Document, Project
+from .models import Document, Project, ProjectComment
 from .forms import ProjectUpdateForm, Projectform
 
 #파일 다운로드
@@ -22,14 +21,72 @@ from django.http import FileResponse
 
 
 def list(request):
-    all_projects = Project.objects.all().order_by('-id')
+    all_projects = Project.objects.filter(private = False).order_by('-id')
+
+    search = request.GET.get('s','')
+    menu = request.GET.get('m', 'all')
+
+    searchprojects = []
+
+    flag = False
+
+    for project in all_projects:
+
+        if menu == 'title':
+            print(project)
+            if search in project.title:
+                searchprojects.append(project)
+        elif menu == 'member':
+            if search in project.leader.nickname:
+                searchprojects.append(project)
+            else:
+                for member in project.member.all():
+                    if search in member.nickname:
+                        searchprojects.append(project)
+                        break
+        elif menu == 'summary':
+            if search in project.summary:
+                searchprojects.append(project)
+        elif menu == 'contents':
+            if search in project.contents:
+                searchprojects.append(project)
+        elif menu == 'language':
+            for lang in project.language.all():
+                if search in lang.language:
+                    searchprojects.append(project)
+                    break
+
+        elif menu == 'all':
+            if search in project.title:
+                searchprojects.append(project)
+            elif search in project.summary:
+                searchprojects.append(project)
+            elif search in project.contents:
+                searchprojects.append(project)
+            elif search in project.leader.nickname:
+                searchprojects.append(project)
+            else:
+                for member in project.member.all():
+                    if search in member.nickname:
+                        # searchprojects.append(project)
+                        flag = True
+                        break
+                for lang in project.language.all():
+                    if search in lang.language:
+                        # searchprojects.append(project)
+                        flag = True
+                        break
+                if flag:
+                    searchprojects.append(project)
+        else :
+            searchprojects.append(project)
 
     # 페이징
     page = int(request.GET.get('p', 1))
-    paginator = Paginator(all_projects, 5) # 한 페이지당 5개씩 보여주는 Paginator 생성
+    paginator = Paginator(searchprojects, 4) # 한 페이지당 5개씩 보여주는 Paginator 생성
     projects = paginator.get_page(page)
 
-    return render(request, 'project_list.html', {"projects": projects})
+    return render(request, 'project_list.html', {'projects': projects, 'search': search, 'menu': menu})
 
 def create(request):
     if request.method == "POST":
@@ -93,8 +150,10 @@ def detail(request, pk):
                 is_like = Company.objects.filter(id=id, likeproject=project).count()==1
         except Developer.DoesNotExist or Company.DoesNotExist:
             raise Http404('알 수 없는 사용자입니다.')
+    # 댓글
+    comments = ProjectComment.objects.filter(project=project)
 
-    return render(request, 'project_detail.html', {'project': project, 'is_like': is_like, 'docs': docs})
+    return render(request, 'project_detail.html', {'project': project, 'is_like': is_like, 'docs': docs, 'comments': comments})
 
 def update(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -190,3 +249,24 @@ def doc_download(request, pk):
     response['Content-Length'] = file_size
 
     return response
+
+def addcomment(request, pk):
+    if request.method == "POST" and request.session.get('id'):
+        project = get_object_or_404(Project,pk=pk)
+        parentComment = request.POST.get('parentcomment', None)
+        writer = get_object_or_404(Developer if request.session.get('who')=='developer' else Company, id=request.session.get('id'))
+        contents = request.POST.get('contents','')
+        pcomment = ProjectComment(
+            project = project,
+            contents = contents,
+        )
+        if parentComment:
+            pcomment.parentComment = parentComment
+        if request.session.get('who') == 'developer':
+            pcomment.developer = writer
+        elif request.session.get('who') == 'company':
+            pcomment.company = writer
+        pcomment.save()
+
+        return JsonResponse({'data':'success'})
+

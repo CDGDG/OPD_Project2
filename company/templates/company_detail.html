@@ -75,7 +75,7 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwordModal">수정하기</button>
                 <button type="button" class="btn btn-primary" onclick="chkDelete()">삭제</button>
                 {% elif request.session.who == 'admin'%}
-                <button type="button" class="btn btn-primary" onclick="chkDelete()">삭제</button>
+                <button type="button" class="btn btn-primary" onclick="chkDelete()">탈퇴</button>
                 {% endif %}
             </div>
         </div>
@@ -88,7 +88,7 @@
         <script>
             function chkDelete(){
                 // 삭제 여부 확인
-                var r = confirm('삭제하시겠습니까?')
+                var r = confirm('탈퇴 하시겠습니까?')
                 if(r){
                     document.forms['delete'].submit();
                 }
