@@ -39,12 +39,11 @@ def home(request):
         elif request.session.get('who') == 'company':
             all_mylike_projects = Company.objects.get(id=request.session.get('id')).likeproject.all().order_by('-id')
         # 페이징
+        mylikeprojects = None
         if all_mylike_projects:
             mylikepage = int(request.GET.get('mylike', 1))
             paginator = Paginator(all_like_projects, 5) # 한 페이지당 5개씩 보여주는 Paginator 생성
             mylikeprojects = paginator.get_page(mylikepage)
-
-        print(mylikeprojects)
 
     return render(request,"home.html", {'likeprojects': likeprojects, 'mylikeprojects': mylikeprojects})
 

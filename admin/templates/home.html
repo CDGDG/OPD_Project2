@@ -67,8 +67,8 @@
             </div>
         </div>
     </div>
+    {% if mylikeprojects %}
     <div class="rounded tableDiv p-0">
-        {% if mylikeprojects %}
         <h2 class="p-2 text-center">내가 좋아요 한 프로젝트</h2>
         <table class="table table-borderless m-0">
             <thead>
@@ -133,8 +133,8 @@
                 </nav>
             </div>
         </div>
-        {% endif %}
     </div>
+    {% endif %}
 </div>
 <link rel="stylesheet" href="/static/css/list.css">
 {% endblock content %}

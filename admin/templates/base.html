@@ -48,7 +48,7 @@
               {% if request.session.id %}
               <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" id="dropdownUserToggle">
                 {% if request.session.who == 'developer' %}
-                  <li><p>{{request.session.name}} 님</p></li>
+                  <li class="px-2"><p class="pb-2 text-center rounded text-white" style="font-family: 'Dongle'; font-size: 2vw;background-color:lightcoral;">{{request.session.name}} 님</p></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Developer:info' request.session.id %}">내 정보</a></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Developer:myproject' request.session.id %}">내 프로젝트</a></li>
                   <li><a class="dropdown-item pb-2" href="{% url 'Developer:followers' %}">팔로우</a></li>
@@ -111,18 +111,27 @@
         </div>
       </header>
 
-      <div class="container mt-3">
+      <div class="container mt-3 bg-white">
         {% block content %}
         {% endblock content %}
     </div>
 </body>
 
-<footer class="d-flex flex-wrap justify-content-between align-items-center p-3 my-4 border-top">
-  <p class="col-md-4 mb-0 text-muted">© 2022 KDT-DJANGO</p>
-
-  <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none header-text py-2 px-4 me-1">
+<footer class="d-flex flex-wrap justify-content-between align-items-center p-3 mt-3 border-top bg-white bottom-0 w-100">
+  <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none header-text py-2 px-4 me-1" style="border: 2px solid lightpink;">
     ["our", "project", "diary"]
   </a>
+
+  <p class="col-md-2 mb-0 text-muted">© 220118 KDT-DJANGO</p>
+
+  <h4 class="text-secondary mb-0" style="font-family:Dongle; font-size:3vw;">Team 어무해 -</h4>
+  <ul class="nav col-md-2 justify-content-end">
+    <li class="nav-item"><a class="nav-link px-2 text-primary">조동건</a></li>
+    <li class="nav-item"><a class="nav-link px-2 text-success">김혜원</a></li>
+    <li class="nav-item"><a class="nav-link px-2 text-success">이정수</a></li>
+    <li class="nav-item"><a class="nav-link px-2 text-success">이창준</a></li>
+  </ul>
+
 
   <ul class="nav col-md-4 justify-content-end">
     <li class="nav-item"><a href="{% url 'Project:list' %}" class="nav-link px-2 text-muted">Project</a></li>
