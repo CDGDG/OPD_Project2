@@ -318,7 +318,7 @@ def list(request):
     
     #페이징
     page = int(request.GET.get('p', 1))
-    paginator = Paginator(searchdeveloper, 10)  # 한 페이지당 10개씩 보여주는 paginator 생성
+    paginator = Paginator(searchdeveloper, 4)  # 한 페이지당 10개씩 보여주는 paginator 생성
     developer = paginator.get_page(page)
 
     return render(request,'developer_list.html',{'developer':developer,'search':search,'menu':menu})

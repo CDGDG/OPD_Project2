@@ -11,14 +11,40 @@ from project.models import Project
 from django.core.paginator import Paginator
 
 def list(request):
-    all_recruits = Recruit.objects.all().order_by('-pk')
+    all_recruits = Recruit.objects.filter(ing = True).order_by('-pk')
+
+    search = request.GET.get('s','')
+    menu = request.GET.get('m', 'all')
+
+    searchrecruits = []
+
+    for recruit in all_recruits:
+        if menu == 'title':
+            if search in recruit.title:
+                searchrecruits.append(recruit)
+        elif menu == 'contents':
+            if search in recruit.contents:
+                searchrecruits.append(recruit)
+        elif menu == 'project':
+            if search in recruit.project.title:
+                searchrecruits.append(recruit)
+
+        elif menu == 'all':
+            if search in recruit.title:
+                searchrecruits.append(recruit)
+            elif search in recruit.contents:
+                searchrecruits.append(recruit)
+            elif search in recruit.project.title:
+                searchrecruits.append(recruit)
+        else :
+            searchrecruits.append(recruit)
 
     # 페이징
     page = int(request.GET.get('p', 1))
-    paginator = Paginator(all_recruits, 4) # 한 페이지당 5개씩 보여주는 Paginator 생성
+    paginator = Paginator(searchrecruits, 4) # 한 페이지당 5개씩 보여주는 Paginator 생성
     recruits = paginator.get_page(page)
 
-    return render(request, 'recruit_list.html', {"recruits": recruits})
+    return render(request, 'recruit_list.html', {"recruits": recruits, 'search': search, 'menu': menu})
 
 def detail(request, pk):
     if not request.session.get('id'):
