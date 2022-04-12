@@ -1,14 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}게시판{% endblock %}
 {% block content %}
-<h1>게시물 리스트</h1>
-<div class="row mt-5">
-    <div class="col-12">
-        <table class="table table-light table-hover">
-            <thead class="thead-light">
-                <input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
-
-                <input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
+<div class="row mt-5" id="listform">
+    <h2 class="mb-4">게시글</h2>
+    <div class="col-12 rounded tableDiv p-0">
+        <table class="table table-borderless m-0">
+            <thead>
                 <tr>
                     <th>#</th>
                     <th>제목</th>
@@ -18,13 +15,13 @@
                     <th>조회수</th>
                 </tr>
             </thead>
-            <tbody class="text-dark">
+            <tbody>
                 {% for board in boards %}
-                <tr onclick="location.href='/board/detail/{{ board.id }}/'">
+                <tr style="height:7vw;">
                     <td>{{ board.id }}</td>
-                    <td>{{ board.title }}</td>
+                    <td onclick="location.href=`{% url 'Board:detail' board.id %}`" class="clicktd">{{ board.title }}</td>
                     <td>{{ board.language.all|join:", " }}</td>
-                    <td>{{ board.developer }}</td>
+                    <td onclick="location.href=`{% url 'Developer:info' board.developer.pk %}`" class="clicktd"><img src="{% if developer.pic %}{{developer.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{board.developer.nickname}}</td>
                     <td>{{ board.regdate|date:"Y-m-d H:i:s"}}</td>
                     <td>{{ board.viewcnt }}</td>
                 </tr>
@@ -33,6 +30,9 @@
         </table>
     </div>
 </div>
+<input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
+
+<input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
 
 <div class="row mt-2">
     <div class="col-12">
@@ -71,3 +71,6 @@
     </div>
 </div>
 {% endblock %}
+{% block script %}
+<link rel="stylesheet" href="/static/css/list.css">
+{% endblock  %}
