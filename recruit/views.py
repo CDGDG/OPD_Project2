@@ -25,7 +25,15 @@ def detail(request, pk):
     apply = request.GET.get("apply", False)
     recruits = RecruitOk.objects.filter(project=recruit.project)
     re_la = Recruit_Language.objects.filter(recruit=recruit)
-    return render(request, 'recruit_detail.html', {'recruit': recruit, 'apply': apply, 'recruits': recruits, 're_la': re_la})
+    me = None
+    re_ok = None
+    if request.session.get('who')=='developer':
+        try:
+            me = Developer.objects.get(pk=request.session.get('id',None))
+            re_ok = recruits.filter(developer=me).count()>0
+        except Developer.DoesNotExist:
+            pass
+    return render(request, 'recruit_detail.html', {'recruit': recruit, 'apply': apply, 'recruits': recruits, 're_la': re_la, 'me': me, 're_ok': re_ok})
 
 def update(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk)

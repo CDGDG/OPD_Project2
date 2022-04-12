@@ -10,4 +10,5 @@ urlpatterns = [
     path("detail/<int:pk>/", views.board_detail, name="detail"),
     path("update/<int:pk>/", views.board_update, name="update"),
     path("delete/", views.board_delete, name="delete"),
+    # path("c")
 ]

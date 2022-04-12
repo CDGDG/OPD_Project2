@@ -10,11 +10,37 @@ from .forms import BoardUpdateForm, Boardform, CommentForm
 
 def board_list(request):
     boards_all = Board.objects.all().order_by('-id')
+
+    search = request.GET.get('s','')
+    menu = request.GET.get('m', 'all')
+
+    searchboards = []
+
+    for board in boards_all:
+        # if menu == 'developer':
+        #     if search in board.developer:
+        #         searchboards.append(board)
+        if menu == 'title':
+            if search in board.title:
+                searchboards.append(board)
+        elif menu == 'language':
+            if search in board.language:
+                searchboards.append(board)
+        elif menu == 'all':
+            # if search in board.developer:
+            #     searchboards.append(board)
+            if search in board.title:
+                searchboards.append(board)
+            elif search in board.language:
+                searchboards.append(board)
+        else :
+            searchboards.append(board)
+
     page = int(request.GET.get('p', 1)) # 없으면 1로 지정
     paginator = Paginator(boards_all, 10)   # 한 페이지당 10개씩 보여준다
     boards = paginator.get_page(page)
 
-    return render(request, 'board_list.html', {'boards': boards})
+    return render(request, 'board_list.html', {'boards': boards,'search': search, 'menu': menu})
 
 def board_create(request):
     # if not request.session.get('admin'):
