@@ -27,14 +27,16 @@ def board_list(request):
 
     for board in boards_all:
         if menu == 'developer':
-            if search in board.developer:
+            if search in board.developer.nickname:
                 searchboards.append(board)
         elif menu == 'title':
             if search in board.title:
                 searchboards.append(board)
         elif menu == 'language':
-            for lang in lang.language:
-                searchboards.append(board)
+            for lang in board.language.all():
+                if search in lang.language:
+                    searchboards.append(board)
+                    break
 
         elif menu == 'all':
             if search in board.developer:
@@ -42,14 +44,15 @@ def board_list(request):
             elif search in board.title:
                 searchboards.append(board)
             else :
-                for lang in board.languae,all():
+                for lang in board.language.all():
                     if search in lang.language:
                         searchboards.append(board)
+                        break
         else :
             searchboards.append(board)
 
     page = int(request.GET.get('p', 1)) # 없으면 1로 지정
-    paginator = Paginator(boards_all, 10)   # 한 페이지당 10개씩 보여준다
+    paginator = Paginator(searchboards, 10)   # 한 페이지당 10개씩 보여준다
     boards = paginator.get_page(page)
 
     return render(request, 'board_list.html', {'boards': boards,'search': search, 'menu': menu})
