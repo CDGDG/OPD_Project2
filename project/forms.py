@@ -41,6 +41,7 @@ class ProjectUpdateForm(forms.ModelForm):
 
     thumbnail = forms.ImageField(allow_empty_file= True, label="썸네일", required=False)
 
+
     class Meta:
         model = Project
         fields = ['title', 'summary', 'contents', 'thumbnail','startdate', 'enddate', 'private', 'language']

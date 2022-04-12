@@ -31,9 +31,9 @@
     </script>
     {% endfor %}
     <input type="button" class="btn btn-primary form-control col mt-3 py-4 formbtn" id="update" value="수정완료">
+    <button type="button" class="btn btn-outline-dark col-2 mt-3 py-4 mx-4 formbtn" onclick="history.back()">이전으로</button>
     <form action="{% url 'Developer:leave' %}" method="post" name="leavefrm">
         {% csrf_token %}
-        <button type="button" class="btn btn-outline-dark col-2 mt-3 py-4 mx-4 formbtn" onclick="history.back()">이전으로</button>
         <input type="button" class="btn btn-outline-dark col-2 mt-3 formbtn" id="leave" value="탈퇴하기"></input>
     </form>
     <input type="hidden" value="{{csrf_token}}" id="csrf_token">

@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="row mt-5">
-    <div class="col-12">
-        <table class="table table-light table-hover">
-            <thead class="thead-light">
+<div class="row mt-5" id="listform">
+    <h2 class="mb-4">내 팔로우</h2>
+    <div class="col-12 rounded tableDiv p-0">
+        <table class="table table-borderless m-0 table-hover">
+            <thead>
                 <tr>
                     <th>닉네임</th>
                     <th>프로필</th>
@@ -11,24 +12,28 @@
                     <th>사용 언어</th>
                 </tr>
             </thead>
-            <tbody class="text-dark">
+            <tbody>
                 {% for f in follow %}
-                <tr onclick='location.href="/developer/info/{{f.follower.id}}/"'>
+                <tr style="height:7vw;" onclick='location.href="/developer/info/{{f.follower.id}}/"'>
                     <td>{{f.follower}}</td>
-                    <td>{% if f.follower.pic %}
-                        <img src="{{f.follower.pic.url}}" alt="사진 없음"><br>
-                        {% else %}
-                        <img src="/media/user_icon.png/" alt="사진 없음"><br>
-                        {% endif %}
+                    <td>
+                        <img src="{% if f.follower.pic %}{{f.follower.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;">
                     </td>
                     <td>{{ f.follower.email }}</td>
                     <td>{{f.follower.language.all|join:" , "}}</td>
                 </tr>
                 {%empty%}
-                {{request.session.name}}님의 팔로우가 없습니다 ㅠㅠ
+                <tr>
+                    <td colspan="4">
+                        {{request.session.name}}님의 팔로우가 없습니다 ㅠㅠ
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
 {% endblock content %}
+{% block script %}
+<link rel="stylesheet" href="/static/css/list.css">
+{% endblock script %}

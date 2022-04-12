@@ -325,8 +325,12 @@ def list(request):
 
 
 def leave(request):
-    if request.method == "POST":
-        developer = Developer.objects.get(pk = request.session.get('id'))
-        developer.delete()
+    print("========================="+request.session.get('who')+"===================")
+    pk = request.POST.get('pk')
+    developer = Developer.objects.get(pk = pk)
+    developer.delete()
+    if request.session.get('who') == "admin":
+        return redirect("/developer/list/")
+    else:
         return logout(request)
-    return redirect("/")
+    
