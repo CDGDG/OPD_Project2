@@ -58,13 +58,14 @@
                         <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                     -->
                     <div class="media-body">
-                        <h5 class="mt-0">{{ comment.developer.developerid}} &nbsp;&nbsp;<small class="text-muted">{{ comment.regdate }}</small>
+                        <h5 class="mt-0">{{ comment.developer}} &nbsp;<small class="text-muted">{{ comment.regdate }}</small>
                         </h5>
-                        <b style="display: inline-block;">{{comment.developer.nickname}}</b>
+                        <b style="display: inline-block;">{{comment.developer.nickname}} :</b>
                         <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
                         {% if comment.developer.id == request.session.id and request.session.who == 'developer' %}
-
+                        
                         <button class="btn btn-primary" id="commentdelete{{ comment.pk }}">삭제</button>
+                        <hr/>
                         <script>
                             $(document).ready(function(){
                                 $('#commentdelete{{ comment.pk }}').click(function(){
