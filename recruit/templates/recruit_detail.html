@@ -89,7 +89,7 @@
                         {% else %}
                         내용이 없습니다.
                         {% endif %}
-                        <a class="btn btn-primary col-12 mt-4" href="#">정보 보기</a>
+                        <a class="btn btn-primary col-12 mt-4" href="{% url 'Developer:info' re.developer.id %}">정보 보기</a>
                     </div>
                 </div>
             </div>
