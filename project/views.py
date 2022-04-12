@@ -6,11 +6,10 @@ from django.core.paginator import Paginator
 
 from admin.models import Language
 from developer.models import Developer
-import project
 from recruit.models import Recruit, Recruit_Language
 from company.models import Company
 
-from .models import Document, Project
+from .models import Document, Project, ProjectComment
 from .forms import ProjectUpdateForm, Projectform
 
 #파일 다운로드
@@ -93,8 +92,10 @@ def detail(request, pk):
                 is_like = Company.objects.filter(id=id, likeproject=project).count()==1
         except Developer.DoesNotExist or Company.DoesNotExist:
             raise Http404('알 수 없는 사용자입니다.')
+    # 댓글
+    comments = ProjectComment.objects.filter(project=project)
 
-    return render(request, 'project_detail.html', {'project': project, 'is_like': is_like, 'docs': docs})
+    return render(request, 'project_detail.html', {'project': project, 'is_like': is_like, 'docs': docs, 'comments': comments})
 
 def update(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -190,3 +191,24 @@ def doc_download(request, pk):
     response['Content-Length'] = file_size
 
     return response
+
+def addcomment(request, pk):
+    if request.method == "POST" and request.session.get('id'):
+        project = get_object_or_404(Project,pk=pk)
+        parentComment = request.POST.get('parentcomment', None)
+        writer = get_object_or_404(Developer if request.session.get('who')=='developer' else Company, id=request.session.get('id'))
+        contents = request.POST.get('contents','')
+        pcomment = ProjectComment(
+            project = project,
+            contents = contents,
+        )
+        if parentComment:
+            pcomment.parentComment = parentComment
+        if request.session.get('who') == 'developer':
+            pcomment.developer = writer
+        elif request.session.get('who') == 'company':
+            pcomment.company = writer
+        pcomment.save()
+
+        return JsonResponse({'data':'success'})
+
