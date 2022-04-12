@@ -187,7 +187,7 @@ def update(request, pk):
         print('project:update - form 검증 False')
     thumbnail, project.thumbnail = project.thumbnail, None
     form = ProjectUpdateForm(instance=project)
-    return render(request, 'project_update.html', {'form': form, 'thumbnail': thumbnail, 'docs': documents,'pk': pk})
+    return render(request, 'project_update.html', {'form': form, 'thumbnail': thumbnail, 'docs': documents,'pk': pk,'project':project})
 
 
 def delete(request):
@@ -270,3 +270,9 @@ def addcomment(request, pk):
 
         return JsonResponse({'data':'success'})
 
+
+def kick(request,pk):
+    member_pk = request.POST.get('member_pk')
+    project  = Project.objects.get(pk=pk)
+    project.member.remove(member_pk)
+    return redirect(f'/project/update/{project.pk}')
