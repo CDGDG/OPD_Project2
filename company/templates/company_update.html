@@ -4,6 +4,8 @@
 {% block title %}기업 정보수정{% endblock  %}
 
 {% block content %}
+<link rel="stylesheet" href="/static/css/create.css">
+<script src="/static/js/create.js"></script>
 <!-- Password Modal -->
 <div id ="passwordModal"  class="modal fade" role="dialog">
     <div class="modal-dialog" role="document">
@@ -26,13 +28,12 @@
         </div>
     </div>
 </div>
-<link rel="stylesheet" href="/static/css/create.css">
 <div class="row mt-5">
     <div class="col-12">
         <form method="POST" id='form_id' name='updateForm' action="." enctype="multipart/form-data">
             {% csrf_token %}  
 
-            <input type='button' class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwordModal" value="비밀번호 수정하기"/>
+            <input id="pwbtn" type='button' class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwordModal" value="비밀번호 수정하기"/>
             {% for field in form %}   {#  form 의 각 필드 별로 for 순환 #}
             {#  field 변수 안에는 필요한 정보들이 있다. #}
             <div class="form-group mt-3">
@@ -50,7 +51,7 @@
                     {% endif %}
                     <div id="check_{{field.name}}"></div>
                 {% elif field.name == 'address' %}
-                    <label for="{{ field.id_for_label }}" class="noani">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
+                    <label for="{{ field.id_for_label }}" class="form-control text-center py-4 noani">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <input type="text" id="sample6_postcode" style="display:inline-block;" class="form-control noani mb-1 " onclick="sample6_execDaumPostcode()" placeholder="우편번호" readonly>
                     <input type="button" class="btn btn-primary mb-1" onclick="sample6_execDaumPostcode()" value="우편번호 찾기" id="address_btn"><br>
                     <input type="text" class="form-control mb-1 " id="sample6_address" name="{{ field.name }}" placeholder="주소" value="{{ company.address }}" readonly>
@@ -68,8 +69,11 @@
                         placeholder="{{ field.label }}" name="{{ field.name }}" value="{{ company.name }}" />
                     </div>
                     <div id="check_{{field.name}}"></div>
-                    
-                    
+                {% elif field.name == 'pic' %}
+                    <input type="hidden" id="pic_url" value="{{field.url}}">
+                    {% bootstrap_field field %}
+                    <input type="button" id="basic" class="btn btn-outline-dark formbtn mb-4 col-12" value="기본 이미지로 변경"></input>
+                    <input type="hidden" value="false" name="pic_default" id="pic_default">
 
                 {% else %}
                     {% bootstrap_field field %}
@@ -168,6 +172,7 @@
 </script>
 <script>
     $(document).ready(function(){
+        $('[for=id_pic]').css({'background-image': "url(/media/{{pic}})"})
         $('#change_password').click(function(){
                 var password = $("#password").val();
                 var re_password = $("#re_password").val();

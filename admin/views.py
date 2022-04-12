@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from .forms import LoginForm, NoticeWriteForm, LanguageForm
 from django.urls import reverse_lazy
 from company.forms import Company
+from project.models import Project
 from developer.forms import Developer
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import Http404, JsonResponse
@@ -25,6 +26,9 @@ import random
 
 
 def home(request):
+    if request.method=="GET":
+        like_projects = Project.objects.all().order_by
+    
     return render(request,"home.html")
 
 def login(request):
