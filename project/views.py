@@ -69,11 +69,14 @@ def create(request):
                 recru_lang.save()
 
             return redirect(f'/project/detail/{project.pk}/')
-
+    if not request.session.get('id'):
+       return render(request,'no_login.html',{'next':"Project:list"})
     form = Projectform()
     return render(request, 'project_create.html', {'form': form})
 
 def detail(request, pk):
+    if not request.session.get('id'):
+       return render(request,'no_login.html',{'next':"Project:list"})
     try:
         project = Project.objects.get(pk=pk)
     except Project.DoesNotExist:
@@ -119,8 +122,10 @@ def update(request, pk):
 
 
             return redirect(f"/project/detail/{pk}/")
-        else:
-            print('project:update - form 검증 False')
+    else:
+        if not request.session.get('id'):
+            return render(request,'no_login.html',{'next':"Project:list"})
+        print('project:update - form 검증 False')
     thumbnail, project.thumbnail = project.thumbnail, None
     form = ProjectUpdateForm(instance=project)
     return render(request, 'project_update.html', {'form': form, 'thumbnail': thumbnail, 'docs': documents,'pk': pk})

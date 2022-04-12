@@ -75,4 +75,15 @@
 {% endblock  %}
 {% block script %}
 <link rel="stylesheet" href="/static/css/list.css">
+<script>
+var session = {{request.session.id}}
+$(document).ready(function(){
+    console.log("------------------------------")
+    if(session == null){
+        console.log("=========================="+session+"======================")
+        $('#loginbtn').click()
+    
+    }
+})
+</script>
 {% endblock  %}

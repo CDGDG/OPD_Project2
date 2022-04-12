@@ -21,6 +21,8 @@ def list(request):
     return render(request, 'recruit_list.html', {"recruits": recruits})
 
 def detail(request, pk):
+    if not request.session.get('id'):
+       return render(request,'no_login.html',{'next':"Recruit:list"})
     recruit = get_object_or_404(Recruit, pk=pk)
     apply = request.GET.get("apply", False)
     recruits = RecruitOk.objects.filter(project=recruit.project)
@@ -56,7 +58,9 @@ def update(request, pk):
 
             return redirect(f"/recruit/detail/{pk}/")
         else:
-            print('recruit:update - form 검증 False')
+            if not request.session.get('id'):
+                return render(request,'no_login.html',{'next':"Recruit:list"})
+        print('recruit:update - form 검증 False')
     form = RecruitUpdateForm(instance=recruit)
     languages = reduce(lambda result, language: result.append(language) or result, Language.objects.all(), [])
     re_la = Recruit_Language.objects.filter(recruit = recruit)

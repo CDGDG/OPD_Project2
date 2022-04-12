@@ -136,6 +136,8 @@ def checkPassword(request):
     return JsonResponse(context)
 
 def info(request,pk):
+    if not request.session.get('id'):
+       return render(request,'no_login.html',{'next':"Developer:list"})
     try:
         developer = Developer.objects.get(pk = pk)
     except Developer.DoesNotExist:
@@ -159,6 +161,7 @@ def info(request,pk):
     if request.session.get('id') == pk:
         return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password})
     else:
+        follow_check = None
         if request.session.get('who') == 'developer':
             if Follow.objects.filter(developer=request.session.get('id'),follower = pk):
                 follow_check = True
@@ -198,8 +201,6 @@ def download(request,pk):
     return response
 
 def update(request):
-    if not request.session.get('id'):
-        return render(request,'home.html')
     developer = Developer.objects.get(pk = request.session.get('id'))
     if request.method == "POST":
         old_password = developer.password
@@ -224,6 +225,8 @@ def update(request):
             developer.save()
         return redirect(f'/developer/info/{developer.pk}/')
     else:
+        if not request.session.get('id'):
+            return render(request,'no_login.html',{'next':"home"})
         pic, developer.pic= developer.pic, None
         # resume, developer.resume= developer.resume, None
         form = UpdateForm(instance=developer)
@@ -231,7 +234,7 @@ def update(request):
 
 def myproject(request,pk):
     if not request.session.get('id'):
-        return render(request,'home.html')
+        return render(request,'no_login.html',{'next':"home"})
     developer = Developer.objects.get(pk=pk)
     projects = Project.objects.filter(
         Q(leader=developer) | Q(member=developer)
@@ -239,6 +242,8 @@ def myproject(request,pk):
     return render(request, 'developer_myproject.html',{'projects':projects,'developer':developer})
 
 def myfollowers(request):
+    if not request.session.get('id'):
+       return render(request,'no_login.html',{'next':"home"})
     developer = Developer.objects.get(pk=request.session.get('id'))
     follow = Follow.objects.filter(developer = developer)
     
@@ -278,7 +283,6 @@ def follow(request):
     
 
 def list(request):
-
     all_developer = Developer.objects.all().order_by('id')
 
     search = request.GET.get('s','')
