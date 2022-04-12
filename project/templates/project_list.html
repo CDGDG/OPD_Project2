@@ -26,7 +26,7 @@
                     <td class="clicktd" onclick="location.href = `{% url 'Project:detail' project.pk %}`">
                         <img src="{% if project.thumbnail %}{{project.thumbnail.url}}{% else %}/media/thumbnail-default.jpg{% endif %}" alt="이미지 없음" style="height: 5vw;object-fit: contain;">
                     </td>
-                    <td class="clicktd" onclick="location.href = `{% url 'Developer:info' project.leader.pk %}`"><img src="{% if developer.pic %}{{developer.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{project.leader.nickname}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Developer:info' project.leader.pk %}`"><img src="{% if project.leader.pic %}{{project.leader.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{project.leader.nickname}}</td>
                     <td>{{project.member.count|add:1}}</td>
                     <td>{% for lang in project.language.all %}[{{lang}}] {% endfor %}</td>
                     <td>{{project.d_likeproject.count|add:project.c_likeproject.count}}</td>

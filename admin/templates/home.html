@@ -1,4 +1,140 @@
 {% extends 'base.html' %}
 {% block content %}
-<div></div>
+<div class="row mt-5" id="listform">
+    <div class="rounded tableDiv p-0 mb-5">
+        <h2 class="p-2 text-center">인기 프로젝트</h2>
+        <table class="table table-borderless m-0">
+            <thead>
+                <th>#</th>
+                <th>제목</th>
+                <th>썸네일</th>
+                <th>팀장</th>
+                <th>팀원 수</th>
+                <th>사용 언어</th>
+                <th>좋아요 수</th>
+                <th>완성 여부</th>
+                <th>조회수</th>
+            </thead>
+            <tbody>
+                {% for project in likeprojects %}
+                {% if project.private %}
+                {% else %}
+                <tr style="height:7vw;">
+                    <td>{{project.pk}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' project.pk %}`">{{project.title}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' project.pk %}`">
+                        <img src="{% if project.thumbnail %}{{project.thumbnail.url}}{% else %}/media/thumbnail-default.jpg{% endif %}" alt="이미지 없음" style="height: 5vw;object-fit: contain;">
+                    </td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Developer:info' project.leader.pk %}`"><img src="{% if project.leader.pic %}{{project.leader.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{project.leader.nickname}}</td>
+                    <td>{{project.member.count|add:1}}</td>
+                    <td>{% for lang in project.language.all %}[{{lang}}] {% endfor %}</td>
+                    <td>{{project.d_likeproject.count|add:project.c_likeproject.count}}</td>
+                    <td>{% if project.enddate %}O{% else %}X{% endif %}</td>
+                    <td>{{project.viewcnt}}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- pagination -->
+        <div class="row mt-2">
+            <div class="col-12">
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if likeprojects.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?p={{likeprojects.previous_page_number}}">이전으로</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disable">
+                            <a class="page-link disable" href="#">이전으로</a>
+                        </li>
+                        {% endif %}
+                        <li class="page-item active">
+                            <a class="page-link" href="">{{likeprojects.number}} / {{likeprojects.paginator.num_pages}}</a>
+                        </li>
+                        {% if projects.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?p={{likeprojects.next_page_number}}">다음으로</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disable">
+                            <a class="page-link disabled" href="#">다음으로</a>
+                        </li>
+                        {% endif %}          
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="rounded tableDiv p-0">
+        {% if mylikeprojects %}
+        <h2 class="p-2 text-center">내가 좋아요 한 프로젝트</h2>
+        <table class="table table-borderless m-0">
+            <thead>
+                <th>#</th>
+                <th>제목</th>
+                <th>썸네일</th>
+                <th>팀장</th>
+                <th>팀원 수</th>
+                <th>사용 언어</th>
+                <th>좋아요 수</th>
+                <th>완성 여부</th>
+                <th>조회수</th>
+            </thead>
+            <tbody>
+                {% for project in mylikeprojects %}
+                {% if project.private %}
+                {% else %}
+                <tr style="height:7vw;">
+                    <td>{{project.pk}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' project.pk %}`">{{project.title}}</td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Project:detail' project.pk %}`">
+                        <img src="{% if project.thumbnail %}{{project.thumbnail.url}}{% else %}/media/thumbnail-default.jpg{% endif %}" alt="이미지 없음" style="height: 5vw;object-fit: contain;">
+                    </td>
+                    <td class="clicktd" onclick="location.href = `{% url 'Developer:info' project.leader.pk %}`"><img src="{% if project.leader.pic %}{{project.leader.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{project.leader.nickname}}</td>
+                    <td>{{project.member.count|add:1}}</td>
+                    <td>{% for lang in project.language.all %}[{{lang}}] {% endfor %}</td>
+                    <td>{{project.d_likeproject.count|add:project.c_likeproject.count}}</td>
+                    <td>{% if project.enddate %}O{% else %}X{% endif %}</td>
+                    <td>{{project.viewcnt}}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- pagination -->
+        <div class="row mt-2">
+            <div class="col-12">
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if mylikeprojects.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?p={{mylikeprojects.previous_page_number}}">이전으로</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disable">
+                            <a class="page-link disable" href="#">이전으로</a>
+                        </li>
+                        {% endif %}
+                        <li class="page-item active">
+                            <a class="page-link" href="">{{mylikeprojects.number}} / {{mylikeprojects.paginator.num_pages}}</a>
+                        </li>
+                        {% if mylikeprojects.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?p={{mylikeprojects.next_page_number}}">다음으로</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disable">
+                            <a class="page-link disabled" href="#">다음으로</a>
+                        </li>
+                        {% endif %}          
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<link rel="stylesheet" href="/static/css/list.css">
 {% endblock content %}
