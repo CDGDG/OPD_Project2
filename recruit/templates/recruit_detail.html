@@ -63,6 +63,7 @@
                 {% endif %}
                 <a class="btn btn-primary" href='{% url "Project:detail" recruit.project.pk %}'>프로젝트 보기</a>
                 <a class="btn btn-primary" href='{% url "Recruit:list" %}'>목록</a>
+                {% comment %} {% elif request.session.id and request.session.id in recruit.project.member.all  %} {% endcomment %}
             </div>
         </div>
     </div>

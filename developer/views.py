@@ -10,6 +10,7 @@ from .models import Developer, Follow
 from .forms import JoinForm,UpdateForm
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 #파일 다운로드
@@ -232,7 +233,9 @@ def myproject(request,pk):
     if not request.session.get('id'):
         return render(request,'home.html')
     developer = Developer.objects.get(pk=pk)
-    projects = Project.objects.filter(leader = developer)
+    projects = Project.objects.filter(
+        Q(leader=developer) | Q(member=developer)
+    )
     return render(request, 'developer_myproject.html',{'projects':projects,'developer':developer})
 
 def myfollowers(request):

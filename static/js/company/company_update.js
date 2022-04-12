@@ -139,7 +139,7 @@ $(document).ready(function(){
         }else{
             $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
             $('#check_address').html('')
-            updatefrm['address'].value += " "+$('#sample6_detailAddress').val()
+            updatefrm['address_detail'].value += " "+$('#sample6_extraAddress').val()
         }
 
         // URL 
@@ -175,7 +175,7 @@ $(document).ready(function(){
             $(first).focus()
         }else{
             updatefrm.submit();
-            alert("회원가입되었습니다. 감사합니다~")
+            alert("수정 완료~")
         }
     })
 })
