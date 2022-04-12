@@ -28,7 +28,7 @@
                     {% endif %}
                     <div id="check_{{field.name}}"></div>
                 {% elif field.name == 'address' %}
-                    <label for="{{ field.id_for_label }}" class="form-control text-center py-4 nonai">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
+                    <label for="{{ field.id_for_label }}" class="form-control text-center py-4 noani">{{ field.label }}</label>  {# id_for_label  <- id 정보가 담겨 있다 #}
                     <input type="text" id="sample6_postcode" style="display:inline-block;" class="form-control noani mb-1 " onclick="sample6_execDaumPostcode()" placeholder="우편번호" readonly>
                     <input type="button" class="btn btn-primary mb-1" onclick="sample6_execDaumPostcode()" value="우편번호 찾기" id="address_btn"><br>
                     <input type="text" class="form-control mb-1 " id="sample6_address" name="{{ field.name }}" placeholder="주소" readonly>

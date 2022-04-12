@@ -12,10 +12,29 @@ function readImage(input) {
 $(document).ready(function(){
     $(".form-group").children('.form-group').addClass('mb-0')
 
+    // -----------------------디자인
+    // 비밀번호 수정
+    $("#pwbtn").addClass('py-2')
+    $('#id_summary').focus()
+    // 아이디
+    $('[for=id_name]').focus().parent().removeClass('col-6 pe-2')
+    // 회사 규모
+    $('[for=id_category]').parent().addClass('me-4').parent().toggleClass('col-6 col-3')
+    //언어
+    $('#check_language').parent().addClass('col-9')
 
     // 회사 사진 미리보기 띄우기
     $('#id_pic').change(function (e) {
         readImage(e)
+    })
+
+    // 기본 이미지로 변경
+    $('#basic').click(function(){
+        $('#id_pic').change(function(e){
+            readPic(e)
+        }).siblings('label').css({'background-image': "url(/media/thumbnail-default.jpg/)"})
+        $('#pic_default').val("true")
+        console.log($('#pic_default').val())
     })
 
     $("#submitbtn").click(function(){

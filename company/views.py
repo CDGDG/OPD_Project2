@@ -117,10 +117,11 @@ def update(request, pk):
         company = Company.objects.get(pk=pk)
         company.address = company.address.replace(" "," ")
         tellist = company.tel.split('-')
+        pic, company.pic = company.pic, None
         form = CompanyUpdateForm(instance=company)
         print(company.address)
         print(company.address_detail)
-        return render(request, 'company_update.html', {'form':form, 'company': company, 'tel1': tellist[0], 'tel2': tellist[1], 'tel3': tellist[2]})
+        return render(request, 'company_update.html', {'form':form, 'company': company, 'tel1': tellist[0], 'tel2': tellist[1], 'tel3': tellist[2], 'pic': pic})
         
     elif request.method == "POST":
         company = Company.objects.get(pk=pk)
@@ -142,6 +143,11 @@ def update(request, pk):
             # company.category = form.cleaned_data['category']
             # company.pic = request.FILES['pic']
             # company.pic_original = request.FILES['pic'].name
+            if request.POST.get('pic_default') == "true":
+                company.pic = None
+            elif request.FILES.get('pic'):
+                company.pic = request.FILES.get('pic')
+                company.pic_original = company.pic.name
             company.save()  # UPDATE
 
             for id in form.cleaned_data['language']:    # 선택한 언어 반복
