@@ -39,13 +39,13 @@
                     <th>조회수</th>
                 </tr>
             </thead>
-            <tbody class="text-dark">
+            <tbody>
                 {% for board in boards %}
-                <tr onclick="location.href='/board/detail/{{ board.id }}/'">
+                <tr style="height:7vw;">
                     <td>{{ board.id }}</td>
-                    <td>{{ board.title }}</td>
+                    <td onclick="location.href=`{% url 'Board:detail' board.id %}`" class="clicktd">{{ board.title }}</td>
                     <td>{{ board.language.all|join:", " }}</td>
-                    <td>{{ board.developer }}</td>
+                    <td onclick="location.href=`{% url 'Developer:info' board.developer.pk %}`" class="clicktd"><img src="{% if developer.pic %}{{developer.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{board.developer.nickname}}</td>
                     <td>{{ board.regdate|date:"Y-m-d H:i:s"}}</td>
                     <td>{{ board.viewcnt }}</td>
                 </tr>
@@ -54,6 +54,9 @@
         </table>
     </div>
 </div>
+<input class='form-control' style='width:70%; display:inline-block' type="text" name="searchtxt" id="searchtxt" value='{{ search }}'>
+
+<input type="button" class="btn btn-primary mt-1 mb-2 mx-3" style='width:9%;' value="검색" onclick="search()">
 
 <div class="row mt-2">
     <div class="col-12">
@@ -92,11 +95,6 @@
     </div>
 </div>
 {% endblock %}
-
 {% block script %}
-<script>
-    list_url = "{% url 'Board:list' %}"
-    selected_menu = $('#menu').val()
-</script>
-<script src="/static/js/board/board_list.js"></script>
-{% endblock %}
+<link rel="stylesheet" href="/static/css/list.css">
+{% endblock  %}
