@@ -32,7 +32,8 @@ class Boardimg(models.Model):
     
 class Comment(models.Model):
     board = models.ForeignKey('board.Board', on_delete=models.CASCADE, verbose_name='게시판')
-    developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE, verbose_name='작성자')
+    developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE, verbose_name="작성자", null=True)
+    company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="작성자", null=True)
     contents = models.CharField(max_length=100, verbose_name='댓글내용')
     regdate = models.DateTimeField(auto_now_add=True, verbose_name='등록시간')
     private = models.BooleanField(default=False)
