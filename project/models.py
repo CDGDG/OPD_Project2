@@ -42,7 +42,7 @@ class ProjectComment(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트 댓글')
     developer = models.ForeignKey('developer.Developer', on_delete=models.CASCADE, verbose_name="작성자", null=True)
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="작성자", null=True)
-    parentComment = models.OneToOneField('project.ProjectComment', on_delete=models.CASCADE, verbose_name='상위 댓글', null=True)
+    parentComment = models.ForeignKey('project.ProjectComment', on_delete=models.CASCADE, verbose_name='상위 댓글', null=True, related_name='parents')
     contents = models.CharField(max_length=200, verbose_name='댓글 내용')
     regdate = models.DateTimeField(auto_now_add=True, verbose_name='댓글 등록일')
 

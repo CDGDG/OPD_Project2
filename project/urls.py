@@ -14,4 +14,5 @@ urlpatterns = [
     path('unlikeproject/<int:pk>/', views.unlikeproject, name='unlikeproject'),
     path('docdownload/<int:pk>/', views.doc_download, name='doc_download'),
     path('addcomment/<int:pk>/', views.addcomment, name='addcomment'),
+    path('removecomment/<int:pk>/', views.removecomment, name='removecomment'),
 ]

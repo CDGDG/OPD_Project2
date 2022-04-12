@@ -93,7 +93,7 @@ def detail(request, pk):
         except Developer.DoesNotExist or Company.DoesNotExist:
             raise Http404('알 수 없는 사용자입니다.')
     # 댓글
-    comments = ProjectComment.objects.filter(project=project)
+    comments = ProjectComment.objects.filter(project=project, parentComment=None)
 
     return render(request, 'project_detail.html', {'project': project, 'is_like': is_like, 'docs': docs, 'comments': comments})
 
@@ -203,12 +203,25 @@ def addcomment(request, pk):
             contents = contents,
         )
         if parentComment:
-            pcomment.parentComment = parentComment
+            pcomment.parentComment = get_object_or_404(ProjectComment, pk=parentComment)
+        nickname = None
         if request.session.get('who') == 'developer':
             pcomment.developer = writer
+            nickname = writer.nickname
         elif request.session.get('who') == 'company':
             pcomment.company = writer
+            nickname = writer.name
         pcomment.save()
 
-        return JsonResponse({'data':'success'})
+        pic = None
+        if writer.pic:
+            pic = writer.pic.url
 
+
+        return JsonResponse({'data':'success', 'pk': pcomment.pk, 'who': request.session.get('who'), 'regdate': pcomment.regdate, 'contents': pcomment.contents, 'nickname': nickname, 'pic': pic})
+
+def removecomment(request, pk):
+    if request.method == "POST" and request.session.get('id'):
+        comment = get_object_or_404(ProjectComment, pk=pk)
+        comment.delete()
+        return JsonResponse({'data': 'success'})
