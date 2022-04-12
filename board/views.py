@@ -39,7 +39,7 @@ def board_list(request):
                     break
 
         elif menu == 'all':
-            if search in board.developer:
+            if search in board.developer.nickname:
                 searchboards.append(board)
             elif search in board.title:
                 searchboards.append(board)
