@@ -41,7 +41,7 @@
                     <label class="px-4 d-inline-block"><a class="text-decoration-none text-white" href="{% if comment.developer %}{% url 'Developer:info' comment.developer.pk %}{% else %}{% url 'Company:detail' comment.company.pk %}{% endif %}">{% if comment.developer %}{{comment.developer.nickname}}{% else %}{{comment.company.name}}{% endif %}</a></label>
                     <label class="px-4 d-inline-block {% if comment.developer %}bg-primary{% else %}bg-warning{% endif %}">{% if comment.developer %}개발자{% else %}기업{% endif %}</label>
                     <label class="px-4 d-inline-block bg-success">{{comment.regdate}}</label>
-                    {% if comment.private %}
+                    {% if not comment.private %}
                         {% if board.developer.pk == request.session.id and request.session.who == 'developer' %}
                             <p class="px-1">{{comment.contents}}</p>
                         {% elif comment.developer and comment.developer.id == request.session.id %}
@@ -49,12 +49,11 @@
                         {% elif comment.company and comment.company.id == request.session.id %}
                             <p class="px-1">{{comment.contents}}</p>
                         {% else %}
-                            <p class="px-1">비공개 댓글입니다</p>
+                            <p class="px-1">{{comment.contents}}</p>
                         {% endif %}
                     {% else %}
-                        <p class="px-1">{{comment.contents}}</p>
+                    <p class="px-1">비공개 댓글입니다</p>
                     {% endif %}
-
 
 
 
