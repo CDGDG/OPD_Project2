@@ -124,6 +124,7 @@
                     <img class="rounded-circle border border-1" style="height:3vw;width:3vw;object-fit: contain;border-color:lightcoral !important"
                     src="{% if comment.developer and comment.developer.pic %}{{comment.developer.pic.url}}{% elif comment.developer %}/media/user_icon.png/{% elif comment.company.pic %}{{comment.company.pic.url}}{% else %}/media/thumbnail-default.jpg{% endif %}" alt="이미지 없음">
                     <label class="px-4 d-inline-block"><a class="text-decoration-none text-white" href="{% if comment.developer %}{% url 'Developer:info' comment.developer.pk %}{% else %}{% url 'Company:detail' comment.company.pk %}{% endif %}">{% if comment.developer %}{{comment.developer.nickname}}{% else %}{{comment.company.name}}{% endif %}</a></label>
+                    <label class="px-4 d-inline-block {% if comment.developer %}bg-primary{% else %}bg-warning{% endif %}">{% if comment.developer %}개발자{% else %}기업{% endif %}</label>
                     <label class="px-4 d-inline-block bg-success">{{comment.regdate}}</label>
                     <p class="px-1">{{comment.contents}}</p>
                     {% if request.session.who == 'developer' and comment.developer.pk == request.session.id or request.session.who == 'company' and comment.company.pk == request.session.id %}
@@ -149,6 +150,7 @@
                         <img class="rounded-circle border border-1" style="height:3vw;width:3vw;object-fit: contain;border-color:white !important"
                         src="{% if comment.developer and comment.developer.pic %}{{comment.developer.pic.url}}{% elif comment.developer %}/media/user_icon.png/{% elif comment.company.pic %}{{comment.company.pic.url}}{% else %}/media/thumbnail-default.jpg{% endif %}" alt="이미지 없음">
                         <label class="px-4 d-inline-block bg-white"><a class="text-decoration-none" style="color:lightcoral" href="{% if reply.developer %}{% url 'Developer:info' reply.developer.pk %}{% else %}{% url 'Company:detail' reply.company.pk %}{% endif %}">{% if reply.developer %}{{reply.developer.nickname}}{% else %}{{reply.company.name}}{% endif %}</a></label>
+                        <label class="px-4 d-inline-block {% if comment.developer %}bg-primary{% else %}bg-warning{% endif %}">{% if comment.developer %}개발자{% else %}기업{% endif %}</label>
                         <label class="px-4 d-inline-block bg-success">{{reply.regdate}}</label>
                         <p class="px-1">{{reply.contents}}</p>
                         {% if request.session.who == 'developer' and reply.developer.pk == request.session.id or request.session.who == 'company' and reply.company.pk == request.session.id %}

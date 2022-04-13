@@ -18,7 +18,7 @@ $(document).ready(function(){
         $(this).siblings('label').toggleClass('label-color').text($(this).siblings('label').text() == '비공개'? "공개" : "비공개")
     })
 
-    $('#id_resume').removeClass('form-control-file').parent().addClass('form-control px-2 pb-2')
+    $('#fileinput').removeClass('form-control-file').parent().addClass('form-control px-2 pb-2')
     
 
     $('[for=resume-clear_id],#id_resume, #resume-clear_id').addClass('noani')

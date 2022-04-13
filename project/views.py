@@ -1,4 +1,5 @@
 from functools import reduce
+from multiprocessing import context
 import urllib
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -284,8 +285,13 @@ def removecomment(request, pk):
         comment.delete()
         return JsonResponse({'data': 'success'})
 
-def kick(request,pk):
-    member_pk = request.POST.get('member_pk')
-    project  = Project.objects.get(pk=pk)
+def kick(request):
+    member_pk = request.POST.get('member')
+    print("================",member_pk)
+    project_pk = request.POST.get('project')
+    project  = Project.objects.get(pk=project_pk)
+    context = {}
     project.member.remove(member_pk)
-    return redirect(f'/project/update/{project.pk}')
+    context['delete'] = "success" 
+
+    return JsonResponse(context)

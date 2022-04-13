@@ -9,7 +9,7 @@ $(document).ready(function(){
             alert('댓글이 너무 길어요.')
             return false;
         }
-        
+
         $.ajax({
             url: commenturl,
             type: 'POST',
@@ -31,6 +31,7 @@ $(document).ready(function(){
                             <img class="rounded-circle border border-1" style="height:3vw;width:3vw;object-fit: contain;border-color:lightcoral !important"
                             src=${pic?pic:"/media/user_icon.png"} alt="이미지 없음">
                             <label class="px-4 d-inline-block bg-white rounded p-1 mb-3"><a class="text-decoration-none" style="color:lightcoral" href=${who=='developer'?'{% url Developer:info '+pk+' %}':'{% url Company:detail '+pk+' %}'}>${nickname}</a></label>
+                            <label class="px-4 d-inline-block rounded p-1 mb-3 text-white ${who=='developer'?'bg-primary':'bg-warning'}">${who=='devloper'?'개발자':'기업'}</label>
                             <label class="px-4 d-inline-block bg-success rounded p-1 mb-3">방금</label>
                             <p class="px-1">${contents}</p>
                             <button class="btn btn-danger mb-1 ${pk}">삭제</button>
@@ -58,6 +59,7 @@ $(document).ready(function(){
                             <img class="rounded-circle border border-1" style="height:3vw;width:3vw;object-fit: contain;border-color:white !important"
                             src=${pic?pic:"/media/user_icon.png"} alt="이미지 없음">
                             <label class="px-4 d-inline-block rounded p-1 mb-3" style='font-family: "Noto Sans KR", sans-serif; color: white; background-color: lightcoral;'><a class="text-decoration-none text-white" href=${who=='developer'?'{% url "Developer:info" '+pk+' %}':'{% url "Company:detail" '+pk+' %}'}>${nickname}</a></label>
+                            <label class="px-4 d-inline-block rounded p-1 mb-3 text-white ${who=='developer'?'bg-primary':'bg-warning'}">${who=='devloper'?'개발자':'기업'}</label>
                             <label class="px-4 d-inline-block bg-success rounded p-1 mb-3 text-white">방금</label>
                             <p class="px-1">${contents}</p>
                             <button class="btn btn-danger mb-1 ${pk}">삭제</button>
