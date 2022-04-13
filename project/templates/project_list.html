@@ -67,7 +67,9 @@
         </nav>
     </div>
 </div>
+{% if request.session.who == 'developer' %}
 <button id="create" class="btn btn-primary">생성</button>
+{% endif %}
 
 <div class="row">
     <div class="col-12">

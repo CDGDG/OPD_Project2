@@ -22,51 +22,62 @@ $(document).ready(function(){
             .css({'width': '28%', 'padding-left':'.375rem', 'margin-left': '1%', 'margin-right': '1%'}));
         // 삭제 button
         newdiv.append($('<input/>', {type: 'button', class: 'btn btn-danger col', value: '삭제'}).css({'width': '20%', 'vertical-align':'baseline'})
-            .click(function(){newdiv.slideUp("fast", function(){$(this).remove()})}))
+            .click(function(){newdiv.slideUp("fast", function(){$(this).remove();$('#select'+num).remove()})}))
         num += 1;
     })
 
     // 모집 수정 검증
     $("#update").click(function(){
-        let ok = true;
+        let ok = true
 
-        let target = "";
+        target = ""
 
         // 언어
         for(let i=0;i<num;i++){
-            if($("#people"+i) && ! $('#people'+i).val()){
+            if($("#people"+i).length>0 && !$('#people'+i).val()){
                 $('#people'+i).addClass('is-invalid').focus();
+                console.log("======1")
                 ok = false;
-            }else{
+                console.log(ok)
+            }else{ 
                 $("#people"+i).removeClass('is-invalid').addClass('is-valid')
             }
-            if($("#select"+i) &&! $("#select"+i).val()){
+            if($("#select"+i).length>0 && !$("#select"+i).val()){
                 $('#select'+i).addClass('is-invalid').focus();
+                console.log("======2")
+                console.log($('#select'+i))
                 ok = false;
             }else{
                 $("#select"+i).removeClass('is-invalid').addClass('is-valid')
+                console.log(ok)
             }
         }
-
+        
         // 내용
         target = "#id_contents"
         $(target).siblings('label').removeClass('is-valid is-invalid')
         if($(target).val().trim()==""){
             $(target).addClass('is-invalid').attr({'placeholder': '모집 내용을 입력해주세요.'}).focus()
+            console.log("======3")
+            console.log(ok)
             ok = false;
         }else{
             $(target).removeClass('is-invalid').addClass('is-valid')
+            console.log(ok)
         }
-
+        
         // 타이틀
         target = "#id_title";
         if($(target).val().trim()==""){
             $(target).removeClass('is-valid').addClass('is-invalid').attr({'placeholder': '모집 타이틀을 입력해주세요.'}).focus()
+            console.log("======4")
+            console.log(ok)
             ok = false;
         }else{
             $(target).removeClass('is-invalid').addClass('is-valid')
+            console.log(ok)
         }
-
+        
         // 검사 완료
         console.log(ok)
         if(ok){

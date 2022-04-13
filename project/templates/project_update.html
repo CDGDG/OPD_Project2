@@ -9,38 +9,29 @@
     <h2 class="mb-4">프로젝트 수정</h2>
     {% csrf_token %}
     {% bootstrap_form form %}
-        {# 프로젝트 문서 #}
-        <div id="docs" class='p-0'></div>
-        <input type="hidden" name='docnum' id='docnum'>
-        <input type="button" class="form-control text-center formbtn py-2 mb-2 btn btn-success text-white" id="add_doc"
-        value="문서 추가">
-        <button type="button" class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn"
-        onclick="history.back()">이전으로</button>
-    <a class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn" href="{% url 'Project:list' %}">목록</a>
-    <input type="button" class="btn btn-primary form-control col mt-3 py-4 formbtn" id="update" value="수정">
-</form>
- <label class="form-control text-center label-color py-2 mb-1"
-        style="position:static; height: auto; font-size: 0.8vw;">멤버 강퇴시키기</label>
-<form action="{% url 'Project:kick' project.pk %}" method="POST" enctype="multipart/form-data" name="kick" >
-    {% csrf_token %}
-    <p>
+     <label class="form-control text-center label-color py-2 mb-1 noani"
+            style="position:static; height: auto; font-size: 0.8vw;">멤버 강퇴시키기</label>
+    <p class="px-0">
+    <input type="hidden" value="{{project.pk}}" name="project_pk">
     {% for member in project.member.all %}
-    <input type="hidden" value="{{member.pk}}" name="member_pk">
-    <input type="button" class="member btn btn-outline-success " onclick="chkKick()" value="{{member.nickname}}">
+    <input type="button" class="member btn btn-outline-danger kick" value="{{member.nickname}}" id="{{member.pk}}">
     {% endfor %}
     </p>
+    {# 프로젝트 문서 #}
+    <div id="docs" class='p-0'></div>
+    <input type="hidden" name='docnum' id='docnum'>
+    <input type="button" class="form-control text-center formbtn py-2 mb-2 btn btn-success text-white" id="add_doc"
+    value="문서 추가">
+    <button type="button" class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn"
+    onclick="history.back()">이전으로</button>
+    <a class="btn btn-outline-dark col-2 mt-3 py-4 me-4 formbtn" href="{% url 'Project:list' %}">목록</a>
+    <input type="button" class="btn btn-primary form-control col mt-3 py-4 formbtn" id="update" value="수정">
 </form>
 <br><br><br>
 {% endblock content %}
 {% block script %}
 <script src="/static/js/project_update.js"></script>
 <script>
-    function chkKick(){
-        var r = confirm("삭제하시겠습니까?")
-        if(r){
-            document.forms.kick.submit();
-        }
-    }
     function readImage(input) {
         if (input.target.files && input.target.files[0]) {
             const reader = new FileReader();
@@ -129,6 +120,33 @@
                 }))
             $('#docs').append(newdiv);
         }
+        $('.kick').click(function(){
+            var r = confirm("정말 강퇴시키겠습니까?")
+            if(r){
+                var frm = document.forms['projectform']
+                var member = $(this).attr('id')
+                var project = frm['project_pk'].value
+                
+                $.ajax({
+                    url:"{% url 'Project:kick' %}",
+                    data : {'csrfmiddlewaretoken': '{{csrf_token}}','member':member,'project':project},
+                    datatype:"json",
+                    type:"POST",
+                    success:function(response){
+                        if(response.delete == "success"){
+                            alert("강퇴했습니다")
+                            $(this).remove()
+                            
+                        }else{
+                            alert("강퇴 실패")
+                        }
+                    }
+                    
+                })
+                
+            }
+        })
+                
     })
 </script>
 {% endblock  %}

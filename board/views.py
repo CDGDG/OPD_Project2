@@ -105,7 +105,8 @@ def board_create(request):
 
 
             return redirect(f'/board/detail/{board.pk}/')
-
+    if not request.session.get('id'):
+            return render(request,'no_login.html',{'next':"Board:list"})
     form = Boardform()
     # developer = request.session.get('developer_id')
     # nickname = Developer.objects.get(pk=developer).nickname
@@ -177,6 +178,8 @@ def board_update(request, pk):
             return redirect(f"/board/detail/{pk}/")
         else:
             print('board:update - form 검증 False')
+    if not request.session.get('id'):
+        return render(request,'no_login.html',{'next':"Board:list"})
     form = BoardUpdateForm(instance=board)
     imgs = Boardimg.objects.filter(board = board)
     print(Boardimg.objects.filter(board = board))
