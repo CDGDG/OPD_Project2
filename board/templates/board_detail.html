@@ -33,7 +33,9 @@
                             <div class="form-group">
                                 <textarea class="form-control" name="contents" rows="3"></textarea>
                             </div>
+                            {% if request.session.who == 'developer' %}
                             <button type="button" id="commentwrite_button" class="btn btn-primary">작성</button>
+                            {% endif %}
                         </div>
                     </div>
                 </form>
