@@ -284,7 +284,9 @@ def follow(request):
 
 def list(request):
     all_developer = Developer.objects.all().order_by('id')
-
+    like_developer = {}
+    for developer in all_developer:
+        like_developer[developer.pk] = developer.follow_developer.count() + developer.companyfollow_follower.count()
     search = request.GET.get('s','')
     menu = request.GET.get('m', 'all')
     #메뉴
@@ -321,7 +323,7 @@ def list(request):
     paginator = Paginator(searchdeveloper, 4)  # 한 페이지당 10개씩 보여주는 paginator 생성
     developer = paginator.get_page(page)
 
-    return render(request,'developer_list.html',{'developer':developer,'search':search,'menu':menu})
+    return render(request,'developer_list.html',{'developer':developer,'search':search,'menu':menu, 'like_developer': like_developer})
 
 
 def leave(request):

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load custom_filters %}
 {% block content %}
 <div class="row mt-5" id="listform">
     <h2 class="mb-4">개발자</h2>
@@ -25,7 +25,7 @@
                     <td>{{ developer.nickname }}</td>
                     <td>{{ developer.email }}</td>
                     <td>{{developer.language.all|join:" , "}}</td>
-                    <td>{{developer.follow_follower.count}}</td>
+                    <td>{{like_developer|reportkey:developer.pk}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
