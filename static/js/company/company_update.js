@@ -22,6 +22,8 @@ $(document).ready(function(){
     $('[for=id_category]').parent().addClass('me-4').parent().toggleClass('col-6 col-3')
     //언어
     $('#check_language').parent().addClass('col-9')
+    // 언어 체크
+    $("input[name='language']:checked").parent('label').addClass('label-color')
 
     // 회사 사진 미리보기 띄우기
     $('#id_pic').change(function (e) {

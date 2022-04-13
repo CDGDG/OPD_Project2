@@ -15,7 +15,7 @@
             </thead>
             <tbody>
                 {% for notice in notices %}
-                <tr onclick="location.href='{% url 'Admin:noticedetail' notice.id %}'">
+                <tr class="clicktd" onclick="location.href='{% url 'Admin:noticedetail' notice.id %}'">
                     <td>{{ notice.id }}</td>
                     <td>{{ notice.title }}</td>
                     <td>{{ notice.regdate|date:"Y-m-d H:i:s" }}</td>

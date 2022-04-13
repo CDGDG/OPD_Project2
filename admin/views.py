@@ -202,7 +202,7 @@ def noticewrite(request):
                     img_original = request.FILES.get('file').name,
                 )
                 noticeimg.save()
-            else:
+            else :
                 noticeimg = ''
 
         return render(request, 'notice_detail.html', {'notice': notice, 'noticeimg': noticeimg})
