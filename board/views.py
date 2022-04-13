@@ -210,6 +210,7 @@ def comment_write(request, pk):
             if private == 'on':
                 comment.private = True
             comment.save()
+            nickname = comment.developer.nickname
         elif request.session.get('who') == 'company':
             comment = Comment(
                 board = board,
@@ -219,7 +220,14 @@ def comment_write(request, pk):
             if private == 'on':
                 comment.private = True
             comment.save()
-        return redirect(f'/board/detail/{pk}/')
+            nickname = comment.company.name
+        pic = None
+        if user.pic:
+            pic = user.pic.url
+        return JsonResponse({'data':'success', 'pk': comment.pk, 'who': request.session.get('who'), 'regdate': comment.regdate, 'contents': comment.contents, 'nickname': nickname, 'pic': pic})
+
+        # return redirect(f'/board/detail/{pk}/')
+
 
 
 def comment_delete(request):
