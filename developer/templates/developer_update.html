@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}수정{% endblock  %}
+{% block title %}사용자 정보 수정{% endblock  %}
+{% load bootstrap4 %}
 {% block content %}
 <link rel="stylesheet" href="/static/css/create.css">
 <script>
@@ -8,7 +9,6 @@
     })
 </script>
 <script src="/static/js/create.js"></script>
-{% load bootstrap4 %}
 <form action="{% url 'Developer:update'%}" method="POST" enctype="multipart/form-data" name="updatefrm" id="form_id" class="mt-5">
     <h2 class="mb-4">사용자 정보 수정</h2>
     {% csrf_token %}
