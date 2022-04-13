@@ -21,6 +21,7 @@
             </div>
             <div class="comment-area mb-4 bg-white detail-control">
                 <label for="">댓글</label>
+                {% if request.session.who == 'developer' or request.session.who == 'company' %}
                 <!-- Comments Form -->
                 <form action="{% url 'Board:commentwrite' board.pk %}" name="commentForm" id="commentwrite" method="POST">
                     {% csrf_token %}
@@ -28,14 +29,15 @@
                         <div class="card-body">
                             <div class="form-group position-relative">
                                 <textarea class="form-control" name="contents" rows="3"></textarea>
-                                <label class="noani d-inline-block w-25 text-center mt-1"><input type="checkbox" name="private" id="private"> 비공개</label>
-                                {% if request.session.who == 'developer' %}
-                                <button type="button" id="commentwrite_button" class="mt-1 btn btn-primary position-absolute end-0">작성</button>
-                                {% endif %}
+                                <label class="noani d-inline-block w-25 text-center mt-1"><input type="checkbox"
+                                        name="private" id="private"> 비공개</label>
+                                <button type="button" id="commentwrite_button"
+                                    class="mt-1 btn btn-primary position-absolute end-0">작성</button>
                             </div>
                         </div>
                     </div>
                 </form>
+                {% endif %}
                 <label for="" class="mt-3">댓글 목록</label>
                 <!-- <p>아직 댓글이 없습니다.</p> -->
                 {% for comment in comments %}
