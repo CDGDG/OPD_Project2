@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}게시판 세부내용 {% endblock %}
+{% block title %}게시판{% endblock %}
 {% block content %}
 <div class="row mt-5">
-    <div class="col-12">
-        <div class="form-group">
+    <div class="col-12 mt-4">
+        <div class="form-group detailDiv rounded row p-4" id="form_id">
                 <tr onclick="location.href='/board/detail/{{board.pk}}/'">
                     <h1>제목 : {{board.title}} </h1>
                     <p>조회수 : {{ board.viewcnt}}</p>
