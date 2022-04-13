@@ -160,7 +160,6 @@
                     {% if comment.developer %}
                     <b style="display: inline-block;" class="bg-primary p-2 rounded text-white">{{comment.developer.nickname}}</b>
                     <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
-                    <hr>
                     {% elif comment.company %}
                     <b style="display: inline-block;" class="bg-warning p-2 rounded text-white">{{comment.company.name}}</b>
                     <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
@@ -171,13 +170,11 @@
                     <p>비밀 댓글입니다</p>
                     {% else %}
                     <b style="display: inline-block;" class="bg-primary p-2 rounded text-white">{{comment.developer.nickname}}</b>
-                    <span style="display: inline-block;" class="bg-warning p-2 rounded text-white">{{ comment.contents | linebreaks }}</span>
+                    <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
                     {% endif %}
-                    <hr>
                     {% endif %}
                     {% empty %}
                     <p id="contents" style="color: darkgray;" readonly>아직 댓글이 없습니다...</p>
-                    <hr>
                 </div>
                 {% endfor %}
             <div class="mt-3">
