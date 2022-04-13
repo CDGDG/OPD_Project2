@@ -42,7 +42,7 @@ def home(request):
         mylikeprojects = None
         if all_mylike_projects:
             mylikepage = int(request.GET.get('mylike', 1))
-            paginator = Paginator(all_like_projects, 5) # 한 페이지당 5개씩 보여주는 Paginator 생성
+            paginator = Paginator(all_mylike_projects, 5) # 한 페이지당 5개씩 보여주는 Paginator 생성
             mylikeprojects = paginator.get_page(mylikepage)
 
     return render(request,"home.html", {'likeprojects': likeprojects, 'mylikeprojects': mylikeprojects})

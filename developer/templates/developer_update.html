@@ -15,7 +15,7 @@
     {% for field in form %}
     {% comment %} 프로필 사진 {% endcomment %}
     {% if field.name == "pic" %}
-    <input type="hidden" id="pic_url" value='{{field.url}}'>
+    <input type="hidden" id="pic_url" value='{{pic.url}}'>
     {% bootstrap_field field %}
     <input type="button" id="basic" class="btn btn-outline-dark formbtn mb-4" value="기본 이미지로 변경"></input>
     <input type="hidden" value="false" name="pic_default" id="pic_default">

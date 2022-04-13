@@ -215,10 +215,12 @@ def update(request):
 
                 if request.POST.get('pic_default') == "true": 
                     developer.pic = None
+                    request.session['pic_url'] = None
                 else: 
                     if request.FILES.get('pic'):
                         developer.pic = request.FILES.get('pic')
                         developer.pic_original = developer.pic.name
+                        request.session['pic_url'] = developer.pic.url
             if request.FILES.get('resume'): 
                 developer.resume = request.FILES.get('resume')
                 developer.resume_original = developer.resume.name
@@ -227,7 +229,10 @@ def update(request):
     else:
         if not request.session.get('id'):
             return render(request,'no_login.html',{'next':"home"})
-        pic, developer.pic= developer.pic, None
+        if developer.pic:
+            pic, developer.pic= developer.pic, None
+        else:
+            pic = None
         # resume, developer.resume= developer.resume, None
         form = UpdateForm(instance=developer)
         return render(request,'developer_update.html',{'form':form,'pic':pic})
@@ -286,7 +291,7 @@ def list(request):
     all_developer = Developer.objects.all().order_by('id')
     like_developer = {}
     for developer in all_developer:
-        like_developer[developer.pk] = developer.follow_developer.count() + developer.companyfollow_follower.count()
+        like_developer[developer.pk] = developer.follow_follower.count() + developer.companyfollow_follower.count()
     search = request.GET.get('s','')
     menu = request.GET.get('m', 'all')
     #메뉴

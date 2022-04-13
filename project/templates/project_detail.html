@@ -60,12 +60,14 @@
                     <tr>
                         <th>문서 유형</th>
                         <th>파일 명</th>
+                        <th>열기</th>
                         <th>다운로드</th>
                     </tr>
                     {% for doc in docs %}
                     <tr>
                         <td>{{doc.category}}</td>
                         <td>{{doc.docfile_original}}</td>
+                        <td><a href="{{doc.docfile.url}}" target="_blank" class="btn btn-primary">열기</a></td>
                         <td><a class="btn btn-success" href="{% url 'Project:doc_download' doc.id %}">다운로드</a></td>
                     </tr>
                     {% empty %}
