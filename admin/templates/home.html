@@ -27,7 +27,7 @@
                     </td>
                     <td class="clicktd" onclick="location.href = `{% url 'Developer:info' project.leader.pk %}`"><img src="{% if project.leader.pic %}{{project.leader.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{project.leader.nickname}}</td>
                     <td>{{project.member.count|add:1}}</td>
-                    <td>{% for lang in project.language.all %}[{{lang}}] {% endfor %}</td>
+                    <td>{% for lang in project.language.all %}<span class="border border-1 rounded p-2 border-dark mx-1">{{lang}}</span>{% endfor %}</td>
                     <td>{{project.d_likeproject.count|add:project.c_likeproject.count}}</td>
                     <td>{% if project.enddate %}O{% else %}X{% endif %}</td>
                     <td>{{project.viewcnt}}</td>
@@ -94,7 +94,7 @@
                     </td>
                     <td class="clicktd" onclick="location.href = `{% url 'Developer:info' project.leader.pk %}`"><img src="{% if project.leader.pic %}{{project.leader.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{project.leader.nickname}}</td>
                     <td>{{project.member.count|add:1}}</td>
-                    <td>{% for lang in project.language.all %}[{{lang}}] {% endfor %}</td>
+                    <td>{% for lang in project.language.all %}<span class="border border-1 rounded p-2 border-dark mx-1">{{lang}}</span>{% endfor %}</td>
                     <td>{{project.d_likeproject.count|add:project.c_likeproject.count}}</td>
                     <td>{% if project.enddate %}O{% else %}X{% endif %}</td>
                     <td>{{project.viewcnt}}</td>

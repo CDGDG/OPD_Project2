@@ -3,11 +3,6 @@
 {% block content %}
 <div class="row mt-5" id="listform">
     <h2 class-"mb-4">공지사항</h2>
-    {% if request.session.who == 'admin' %}
-        <div class="col-12 mb-3">
-            <a class="btn btn-primary col-12" href="{% url 'Admin:noticewrite' %}">글쓰기</a>
-        </div>
-    {% endif %}
     <div class="col-12 rounded tableDiv p-0">
         <table class="table table-borderless m-0">
             <thead>
@@ -20,19 +15,24 @@
             </thead>
             <tbody>
                 {% for notice in notices %}
-                <tr onclick="location.href='{% url 'Admin:noticedetail' notice.id %}'">
+                <tr class="clicktd" onclick="location.href='{% url 'Admin:noticedetail' notice.id %}'">
                     <td>{{ notice.id }}</td>
                     <td>{{ notice.title }}</td>
                     <td>{{ notice.regdate|date:"Y-m-d H:i:s" }}</td>
                     <td>{{ notice.viewcnt }}</td>
                     {% comment %} <td>{{ board.registered_dttm|date:"Y-m-d H:i:s"}}</td> {% endcomment %}
                 </tr>
+                {%empty%}
+                <tr>
+                    <td colspan="4">
+                        공지사항이 없습니다
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-
 <!-- pagination -->
 <div class="row mt-2">
     <div class="col-12">
@@ -63,6 +63,9 @@
         </nav>
     </div>
 </div>
+{% if request.session.who == 'admin' %}
+    <a class="btn btn-primary" href="{% url 'Admin:noticewrite' %}">글쓰기</a>
+{% endif %}
 <!-- pagination -->
 
 <div class="row">
