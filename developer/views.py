@@ -238,7 +238,7 @@ def myproject(request,pk):
     developer = Developer.objects.get(pk=pk)
     projects = Project.objects.filter(
         Q(leader=developer) | Q(member=developer)
-    )
+    ).distinct()
     return render(request, 'developer_myproject.html',{'projects':projects,'developer':developer})
 
 def myfollowers(request):

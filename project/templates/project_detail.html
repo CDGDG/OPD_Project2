@@ -47,7 +47,7 @@
             <div class="col-md-6 d-inline-block m-0 p-0 mb-4">
                 <div class="m-0 ms-2 detail-control">
                     <label for="enddate">종료일</label>
-                    <p>{% if project.enddate %}{{project.enddate}}{% else %}미정{% endif %}</p>
+                    <p>{% if project.enddate %}{{project.enddate|date:""}}{% else %}미정{% endif %}</p>
                 </div>
             </div>
             <div class="detail-control mb-4">
@@ -84,10 +84,12 @@
                 {% elif request.session.who == 'admin'%}
                 <a class="btn btn-light float-start" onclick="chkDelete()">삭제하기</a>
                 {% endif %}            
-                <a class="btn btn-primary float-end" href='{% url "Project:list" %}'>돌아가기</a>
-                <a class="btn btn-primary float-end mx-2" href='{% url "Recruit:detail" project.recruit.pk %}'>모집글 보기</a>
+                <a class="btn btn-primary float-end" href='{% url "Project:list" %}'>프로젝트 목록</a>
+                {% if project.recruit.ing or request.session.who == 'developer' and request.session.id == project.leader.id %}
+                <a class="btn btn-primary float-end me-2" href='{% url "Recruit:detail" project.recruit.pk %}'>모집글 보기</a>
+                {% endif %}
                 {% if request.session.id %}
-                <button id="like" class="btn btn-light float-end border-0 {% if is_like %}like text-danger{%else%}unlike text-secondary{% endif %}"><i class="fa-solid fa-heart"></i></button>
+                <button id="like" class="me-2 btn btn-light float-end border-0 {% if is_like %}like text-danger{%else%}unlike text-secondary{% endif %}"><i class="fa-solid fa-heart"></i></button>
                 {% endif %}
                 <form action="{% url 'Project:delete' %}" name="delete" method="POST">
                     {% csrf_token %}
