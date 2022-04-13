@@ -2,35 +2,42 @@
 {% block title %}게시판 작성{% endblock %}
 {% block content %}
 {% load bootstrap4 %}
-    <form action="{% url 'Board:create' %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for field in form %}
-        <div class="form-group mt-3">
-            
-            {% if field.name == "title"%}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
-                name="{{ field.name }}" placeholder="title"/>
-                <div id="check_{{field.name}}"></div>
-
-            {% elif field.name == 'developer'%}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
-                 value="{{ request.session.name }}" readonly/>  
-                <input type="hidden" name="{{field.name}}" value="{{request.session.id}}">
-                <div id="check_{{field.name}}"></div>
-
-            
-            {% else %}
-                {% bootstrap_field field %}
-                <div id="check_{{field.name}}"></div>
-            {% endif %}
-        {% endfor %}
-        </div>
-            <a class="btn btn-primary mt-3" href="{% url 'Board:list' %}">목록</a>
-            <button class="btn btn-primary mt-3">작성하기</button>
-        </div>
-    </form>
+<link rel="stylesheet" href="/static/css/create.css">
+<script src="/static/js/create.js"></script>
+<div class="row mt-5">
+    <div class="col-12">
+        <form action="{% url 'Board:create' %}" method="POST" enctype="multipart/form-data" id="form_id">
+            <h2 class="mb-4">게시글 작성</h2>
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                {% if field.name == "title"%}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                    name="{{ field.name }}" placeholder="title"/>
+                    <div id="check_{{field.name}}"></div>
+                {% elif field.name == 'developer'%}
+                    <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                        value="{{ request.session.name }}" readonly/>  
+                    <input type="hidden" name="{{field.name}}" value="{{request.session.id}}">
+                    <div id="check_{{field.name}}"></div>
+                {% elif field.name == 'img' %}
+                    <label for="{{ field.id_for_label}}" class='noani form-control text-center position-static h-auto mb-1'>첨부{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type}}" class="form-control" id="{{ field.id_for_label }}"
+                    name="{{ field.name }}">
+                {% else %}
+                    {% bootstrap_field field %}
+                    <div id="check_{{field.name}}"></div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            </div>
+                <a class="btn btn-primary mt-3" href="{% url 'Board:list' %}">목록</a>
+                <button class="btn btn-primary mt-3">작성하기</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block script %}
@@ -46,10 +53,10 @@
     //         reader.readAsDataURL(input.target.files[0])
     //     }
     // }
-    $(document).ready(function(){
+    {% comment %} $(document).ready(function(){
         $('#id_img').change(function(e){
             readImage(e)
         })
-    })
+    }) {% endcomment %}
 </script>
 {% endblock %}
