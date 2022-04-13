@@ -129,7 +129,7 @@ def board_detail(request, pk):
             boardimg = ''
 
         try:
-            comments = Comment.objects.filter(board = pk)
+            comments = Comment.objects.filter(board = pk).order_by('-id')
         except Comment.DoesNotExist:
             comments = ''
 
