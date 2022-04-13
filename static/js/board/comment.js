@@ -30,22 +30,20 @@ $(document).ready(function(){
                         <img class="rounded-circle border border-1" style="height:3vw;width:3vw;object-fit: contain;border-color:white !important"
                         src=${pic?pic:"/media/user_icon.png"} alt="이미지 없음">
                         <label class="px-4 d-inline-block rounded p-1 mb-3" style='font-family: "Noto Sans KR", sans-serif; color: white; background-color: lightcoral;'><a class="text-decoration-none text-white" href=${who=='developer'?'{% url "Developer:info" '+pk+' %}':'{% url "Company:detail" '+pk+' %}'}>${nickname}</a></label>
-                        <label class="px-4 d-inline-block rounded p-1 mb-3 text-white ${who=='developer'?'bg-primary':'bg-warning'}">${who=='devloper'?'개발자':'기업'}</label>
+                        <label class="px-4 d-inline-block rounded p-1 mb-3 text-white ${who=='developer'?'bg-primary':'bg-warning'}">${who=='developer'?'개발자':'기업'}</label>
                         <label class="px-4 d-inline-block bg-success rounded p-1 mb-3 text-white">방금</label>
                         <p class="px-1">${contents}</p>
                         <button class="btn btn-danger mb-1 ${pk}">삭제</button>
                         <script>
                         $(".${pk}").click(function(){
                             $.ajax({
-                                url: "/project/removecomment/${pk}/",
+                                url: "/board/commentdelete/",
                                 type: "POST", 
-                                data: {'csrfmiddlewaretoken': $("[name=csrfmiddlewaretoken]").val()},
+                                data: {'csrfmiddlewaretoken': $("[name=csrfmiddlewaretoken]").val(), 'pk': '${pk}'},
                                 dataType: "json", 
                                 success: function(response){
-                                    if(response.data == 'success'){
                                         console.log("삭제성공")
                                         $('.div${pk}').slideUp("fast", function(){$(".div${pk}").remove()})
-                                    }
                                 }
                             })
                         })
