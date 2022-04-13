@@ -42,7 +42,7 @@
                 <!-- <p>아직 댓글이 없습니다.</p> -->
                 {% for comment in comments %}
                 {% if comment.developer.id == request.session.id and request.session.who == 'developer' %}
-
+                
                 {% elif comment.company.id == request.session.id and request.session.who == 'company' %}
 
                 {% else %}
