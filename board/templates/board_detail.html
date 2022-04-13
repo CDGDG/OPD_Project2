@@ -47,7 +47,7 @@
                         <p class="px-1">{{comment.contents}}</p>
                     {% elif comment.company and comment.company.id == request.session.id %}
                         <p class="px-1">{{comment.contents}}</p>
-                    {% else %}
+                    {% elif not comment.private or comment.developer.id and comment.company.id %}
                         <p class="px-1">비공개 댓글입니다</p>
                     {% endif %}
 
