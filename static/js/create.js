@@ -5,11 +5,11 @@ $(document).ready(function(){
     $('#form_id input[type="text"], #form_id input[type=password]').not(".noani").addClass('form-control py-4');
     $('#form_id input[type="text"],#form_id textarea,  #form_id input[type=password]').not('.noani').attr({'placeholder': null});
     $('#form_id textarea').siblings('label').removeClass('py-4').css({'padding-top': '9%'});
-    $('#form_id input[type="text"],#form_id textarea,#form_id input[type="date"], #form_id input[type=password], #form_id input[type=email], #form_id input[type=number], #form_id input[type=url], #form_id select, .registnumdiv, #id_resume, #resume-clear_id').siblings('label').css({'background-color':'lightcoral', 'color': 'white'});
+    $('#form_id input[type="text"],#form_id textarea,#form_id input[type="date"], #form_id input[type=password], #form_id input[type=email], #form_id input[type=number], #form_id input[type=url], #form_id select, .registnumdiv, #id_resume, #resume-clear_id, #id_img').siblings('label').css({'background-color':'lightcoral', 'color': 'white'});
 
     $('[id^=check]').addClass('checkDiv')
     // 파일 업로드
-    $('#form_id input[type="file"]').not('#id_resume, #resume-clear_id').siblings('label').css({'background-color':'rgba(0,0,0,0)', 'border': '2px solid lightcoral', 'position': 'static', 'color': 'lightcoral',
+    $('#form_id input[type="file"]').not('#id_resume, #resume-clear_id, #id_img').siblings('label').css({'background-color':'rgba(0,0,0,0)', 'border': '2px solid lightcoral', 'position': 'static', 'color': 'lightcoral',
     'padding': '10%', 'background-repeat':'no-repeat', 'background-position': 'center', 'background-size':'contain', 'height': 'auto'}).removeClass('py-4')
     .hover(function(){$(this).css({'background-color': 'rgba(200,0,0,0.2)'})}, function(){$(this).css({'background-color': 'rgba(0,0,0,0)'})});
     
