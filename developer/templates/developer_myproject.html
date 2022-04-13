@@ -2,7 +2,7 @@
 {% block title %}내 프로젝트 리스트{% endblock %}
 {% block content %}
 <div class="row mt-5" id="listform">
-    <h2 class="mb-4">내 프로젝트</h2>
+    <h2 class="mb-4">{% if request.session.who == 'developer' and request.session.id == developer.id %}내{% else %}{{developer.nickname}}님의{% endif %} 프로젝트</h2>
     <div class="col-12 rounded tableDiv p-0">
         {% if developer.id == request.session.id %}
         <div class="form-group row">
@@ -54,9 +54,9 @@
                     {% endfor %}
             </table>
             {% if developer.id == request.session.id %}
-            <a class="btn btn-primary" href="{% url 'Project:list' %}">프로젝트 만들러가기</a>
+            <a class="btn btn-primary m-1" href="{% url 'Project:list' %}">프로젝트 만들러가기</a>
             {% else %}
-            <a type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</a>
+            <a type="button" class="m-1 btn btn-outline-dark" onclick="history.back()">이전으로</a>
             {% endif %}
         </div>
         <div id="like" style="display:none">
