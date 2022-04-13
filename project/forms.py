@@ -41,7 +41,6 @@ class ProjectUpdateForm(forms.ModelForm):
 
     thumbnail = forms.ImageField(allow_empty_file= True, label="썸네일", required=False)
 
-
     class Meta:
         model = Project
         fields = ['title', 'summary', 'contents', 'thumbnail','startdate', 'enddate', 'private', 'language']
@@ -50,3 +49,8 @@ class ProjectUpdateForm(forms.ModelForm):
         super(ProjectUpdateForm, self).__init__(*args, **kwargs)
         language = self.instance.language
         self.initial['language'] = [lang.id for lang in language.all()]
+
+    def clean(self):
+        cleand_data = super().clean()
+        self.language = cleand_data['language']
+        print(cleand_data)
