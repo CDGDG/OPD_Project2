@@ -29,6 +29,13 @@
             <div class="bg-white detail-control">
                 <label class="px-4 d-inline-block">댓글</label>
                 <label class="noani d-inline-block w-25 text-center mt-1"><input type="checkbox" name="private" id="private"> 비공개</label>
+                <script>
+                    $(document).ready(function(){
+                        $('#private').click(function(){
+                            console.log($('#private').is(':checked'))
+                        })
+                    })
+                </script>
                 <div class="position-relative" id='commentDiv'>
                     <textarea name="comment" id="id_comment" cols="30" rows="2" style="resize:none;padding-right:10%;" class="d-block w-100 form-control"
                     {% if not request.session.id %}disabled placeholder='로그인 후 이용하세요.'{% else %}placeholder='댓글을 남겨보세요.'{% endif %}></textarea>
@@ -44,9 +51,9 @@
                     {% if comment.private %}
                         {% if board.developer.pk == request.session.id and request.session.who == 'developer' %}
                             <p class="px-1">{{comment.contents}}</p>
-                        {% elif comment.developer and comment.developer.id == request.session.id %}
+                        {% elif comment.developer and comment.developer.id == request.session.id and request.session.who == 'developer' %}
                             <p class="px-1">{{comment.contents}}</p>
-                        {% elif comment.company and comment.company.id == request.session.id %}
+                        {% elif comment.company and comment.company.id == request.session.id and request.session.who == 'company' %}
                             <p class="px-1">{{comment.contents}}</p>
                         {% else %}
                             <p class="px-1">비공개 댓글입니다</p>

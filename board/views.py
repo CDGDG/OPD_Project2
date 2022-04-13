@@ -207,7 +207,7 @@ def comment_write(request, pk):
                 developer = user,
                 contents = request.POST.get('contents')
             )
-            if private == 'on':
+            if private == 'true':
                 comment.private = True
             comment.save()
             nickname = comment.developer.nickname
@@ -217,7 +217,7 @@ def comment_write(request, pk):
                 company = user,
                 contents = request.POST.get('contents')
             )
-            if private == 'on':
+            if private == 'true':
                 comment.private = True
             comment.save()
             nickname = comment.company.name

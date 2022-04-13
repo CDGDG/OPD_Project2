@@ -13,7 +13,7 @@ $(document).ready(function(){
         $.ajax({
             url: commenturl,
             type: 'POST',
-            data: {contents: contents, 'csrfmiddlewaretoken': $("[name=csrfmiddlewaretoken]").val(), 'private': $('[name=private]').val()},
+            data: {contents: contents, 'csrfmiddlewaretoken': $("[name=csrfmiddlewaretoken]").val(), 'private': $('#private').is(':checked')},
             dataType: 'json',
             success: function(response){
                 if(response['data']=="success"){
