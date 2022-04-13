@@ -18,11 +18,11 @@
             </thead>
             <tbody>
                 {% for board in boards %}
-                <tr style="height:7vw;" onclick="location.href=`{% url 'Board:detail' board.id %}`">
+                <tr style="height:7vw;">
                     <td>{{ board.id }}</td>
-                    <td>{{ board.title }}</td>
+                    <td onclick="location.href=`{% url 'Board:detail' board.id %}`" class="clicktd">{{ board.title }}</td>
                     <td>{{ board.language.all|join:", " }}</td>
-                    <td>{{board.developer.nickname}}</td>
+                    <td onclick="location.href=`{% url 'Developer:info' board.developer.pk %}`" class="clicktd"><img src="{% if developer.pic %}{{developer.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{board.developer.nickname}}</td>
                     <td>{{ board.regdate|date:"Y-m-d H:i:s"}}</td>
                     <td>{{ board.viewcnt }}</td>
                 </tr>
