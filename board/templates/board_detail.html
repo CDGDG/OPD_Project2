@@ -4,66 +4,67 @@
 <div class="row mt-5">
     <div class="col-12 mt-4">
         <div class="form-group detailDiv rounded row p-4" id="form_id">
-                <tr onclick="location.href='/board/detail/{{board.pk}}/'">
-                    <h1>제목 : {{board.title}} </h1>
-                    <p>조회수 : {{ board.viewcnt}}</p>
-                    <hr>
-                    <p>작성일 : {{ board.regdate }}</p>
-                </tr>     
-                <label>내용</label>
-                <textarea style="height:300px; resize: none;" class="form-control" id="contents" readonly>{{board.contents}}</textarea>
-
+            <h2 class="title">{{board.title}}</h2>
+            <h6 class="text-white">조회수: {{board.viewcnt}} | 작성일: {{board.regdate}}</h6>
+            <div class="mb-4 bg-white detail-control">
+                <label for="contents">내용</label>
+                <p>{{board.contents}}</p>
+            </div>
+            <div class="mb-4 bg-white detail-control">
                 <label>첨부 파일</label>
                 {% if boardimg == '' %}
                 <p>첨부파일이 없습니다</p>
                 {% else %}
-                <a class='form-control' href="{% url 'Board:filedownload' boardimg.pk %}">{{ boardimg.img_original }}</a>
+                <a class='form-control'
+                    href="{% url 'Board:filedownload' boardimg.pk %}">{{ boardimg.img_original }}</a>
                 {% endif %}
-                
-            </label>
-            <br>
-            <div class="comment-area">
+            </div>
+            <div class="comment-area mb-4 bg-white detail-control">
+                <label for="">댓글</label>
                 <!-- Comments Form -->
-                <form action="{% url 'Board:commentwrite' board.pk %}" name="commentForm" id="commentwrite" method="POST">
+                <form action="{% url 'Board:commentwrite' board.pk %}" name="commentForm" id="commentwrite"
+                    method="POST">
                     {% csrf_token %}
-                    <div class="card my-4">
-                        <h5 class="card-header">댓글 달기:</h5>
-                        <label><input type="checkbox" name="private" id="private">비공개</label>
+                    <div class="card">
                         <div class="card-body">
-                            <div class="form-group">
+                            <div class="form-group position-relative">
                                 <textarea class="form-control" name="contents" rows="3"></textarea>
+                                <label class="noani d-inline-block w-25 text-center mt-1"><input type="checkbox"
+                                        name="private" id="private"> 비공개</label>
+                                {% if request.session.who == 'developer' %}
+                                <button type="button" id="commentwrite_button"
+                                    class="mt-1 btn btn-primary position-absolute end-0">작성</button>
+                                {% endif %}
                             </div>
-                            {% if request.session.who == 'developer' %}
-                            <button type="button" id="commentwrite_button" class="btn btn-primary">작성</button>
-                            {% endif %}
                         </div>
                     </div>
                 </form>
-                
-                <p><b>댓글 목록</b></p>
+                <label for="" class="mt-3">댓글 목록</label>
                 <!-- <p>아직 댓글이 없습니다.</p> -->
                 {% for comment in comments %}
-                <div class="media mb-4" id="comment-{{ comment.pk }}">
-                    <div class="media-body">
-                        <h5 class="mt-0">&nbsp;<small class="text-muted">{{ comment.regdate }}</small>
-                        </h5>
+                <div class="border border-1 rounded p-3 position-relative">
+                    <div class="media mb-4" id="comment-{{ comment.pk }}">
+                        <div class="media-body">
+                            <h5 class="mt-0">&nbsp;<small class="text-muted">{{ comment.regdate }}</small></h5>
+                        </div>
                     </div>
-                </div>
-                {% if comment.developer.id == request.session.id and request.session.who == 'developer' %}
-                    <b style="display: inline-block;">{{comment.developer.nickname}} :</b>
+                    {% if comment.developer.id == request.session.id and request.session.who == 'developer' %}
+                    <b style="display: inline-block;" class="bg-primary p-2 rounded text-white">{{comment.developer.nickname}}</b>
                     <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
-                
-                    <button class="btn btn-primary" id="commentdelete{{ comment.pk }}">삭제</button>
-                <hr>
+
+                    <button class="btn btn-primary position-absolute end-0 me-2" id="commentdelete{{ comment.pk }}">삭제</button>
                     <script>
-                        $(document).ready(function(){
-                            $('#commentdelete{{ comment.pk }}').click(function(){
+                        $(document).ready(function () {
+                            $('#commentdelete{{ comment.pk }}').click(function () {
                                 $.ajax({
                                     url: "{% url 'Board:commentdelete' %}",
-                                    type : "POST",
-                                    data : {'csrfmiddlewaretoken': $('#csrf_token').val(), 'pk':'{{comment.pk}}'},
+                                    type: "POST",
+                                    data: {
+                                        'csrfmiddlewaretoken': $('#csrf_token').val(),
+                                        'pk': '{{comment.pk}}'
+                                    },
                                     dataType: 'json',
-                                    success:function(response){
+                                    success: function (response) {
                                         alert('삭제성공~')
                                         location.reload();
                                     }
@@ -71,21 +72,22 @@
                             })
                         })
                     </script>
-                {% elif comment.company.id == request.session.id and request.session.who == 'company' %}
-                    <b style="display: inline-block;">{{comment.company.name}} :</b>
+                    {% elif comment.company.id == request.session.id and request.session.who == 'company' %}
+                    <b style="display: inline-block;" class="bg-warning p-2 rounded text-dark">{{comment.company.name}} :</b>
                     <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
-                
                     <button class="btn btn-primary" id="commentdelete{{ comment.pk }}">삭제</button>
-                <hr>   
                     <script>
-                        $(document).ready(function(){
-                            $('#commentdelete{{ comment.pk }}').click(function(){
+                        $(document).ready(function () {
+                            $('#commentdelete{{ comment.pk }}').click(function () {
                                 $.ajax({
                                     url: "{% url 'Board:commentdelete' %}",
-                                    type : "POST",
-                                    data : {'csrfmiddlewaretoken': $('#csrf_token').val(), 'pk':'{{comment.pk}}'},
+                                    type: "POST",
+                                    data: {
+                                        'csrfmiddlewaretoken': $('#csrf_token').val(),
+                                        'pk': '{{comment.pk}}'
+                                    },
                                     dataType: 'json',
-                                    success:function(response){
+                                    success: function (response) {
                                         alert('삭제성공~')
                                         location.reload();
                                     }
@@ -93,74 +95,72 @@
                             })
                         })
                     </script>
-                {% elif board.developer.id == request.session.id and request.session.who == 'developer' %} 
+                    {% elif board.developer.id == request.session.id and request.session.who == 'developer' %}
                     {% if comment.developer %}
-                        <b style="display: inline-block;">{{comment.developer.nickname}} :</b>
-                        <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
-                        <hr>
-                        {% elif comment.company %}
-                        <b style="display: inline-block;">{{comment.company.name}} :</b>
-                        <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
-                        <hr>
+                    <b style="display: inline-block;" class="bg-primary p-2 rounded text-white">{{comment.developer.nickname}}</b>
+                    <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
+                    <hr>
+                    {% elif comment.company %}
+                    <b style="display: inline-block;" class="bg-warning p-2 rounded text-white">{{comment.company.name}}</b>
+                    <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
+                    <hr>
                     {% endif %}
-                {% else %}
-                    {% if comment.private %}
-                        <p>비밀 댓글입니다</p>
                     {% else %}
-                        <b style="display: inline-block;">{{comment.developer.nickname}} :</b>
-                        <span style="display: inline-block;">{{ comment.contents | linebreaks }}</span>
+                    {% if comment.private %}
+                    <p>비밀 댓글입니다</p>
+                    {% else %}
+                    <b style="display: inline-block;" class="bg-primary p-2 rounded text-white">{{comment.developer.nickname}}</b>
+                    <span style="display: inline-block;" class="bg-warning p-2 rounded text-white">{{ comment.contents | linebreaks }}</span>
                     {% endif %}
-                <hr>
-                {% endif %}
-                {% empty %}
+                    <hr>
+                    {% endif %}
+                    {% empty %}
                     <p id="contents" style="color: darkgray;" readonly>아직 댓글이 없습니다...</p>
-                <hr>
-
-
-
+                    <hr>
+                </div>
                 {% endfor %}
-                
             </div>
-           
-        <div class="mt-3">
-
-            <a class="btn btn-outline-dark" href='{% url "Board:list" %}'>목록</a>
-            {% if request.session.who == 'developer' and request.session.id == board.developer.pk %}
-            <a class="btn btn-outline-dark" href='{% url "Board:update" board.pk %}'>수정하기</a>
-            <a class="btn btn-outline-dark" onclick="chkDelete()">삭제하기</a>
-            {% endif %}
-            <form action="{% url 'Board:delete' %}" name="delete" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="pk" value="{{board.pk}}">
-            </form>
-            <script>
-                function chkDelete(){
-                    //삭제 여부
-                    var r = confirm("삭제하시겠습니까?")
-                    if(r){
-                        document.forms.delete.submit();
+            <div class="mt-3">
+                <a class="btn btn-outline-dark" href='{% url "Board:list" %}'>목록</a>
+                {% if request.session.who == 'developer' and request.session.id == board.developer.pk %}
+                <a class="btn btn-outline-dark" href='{% url "Board:update" board.pk %}'>수정하기</a>
+                <a class="btn btn-outline-dark" onclick="chkDelete()">삭제하기</a>
+                {% endif %}
+                <form action="{% url 'Board:delete' %}" name="delete" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="pk" value="{{board.pk}}">
+                </form>
+                <script>
+                    function chkDelete() {
+                        //삭제 여부
+                        var r = confirm("삭제하시겠습니까?")
+                        if (r) {
+                            document.forms.delete.submit();
+                        }
                     }
-                }
-            </script>
-
+                </script>
+            </div>
         </div>
     </div>
+</div>
 </div>
 <input type="hidden" value="{{csrf_token}}" id="csrf_token">
 {% endblock %}
 
 {% block script %}
 <script>
-    $(document).ready(function(){
-        $('#commentwrite_button').click(function(){
+    $(document).ready(function () {
+        $('#commentwrite_button').click(function () {
             if ($('[name=contents]').val() == '') {
                 $('[name=contents]').focus()
                 alert('댓글을 입력해주세요')
-            }else{
+            } else {
                 document.forms['commentForm'].submit()
             }
 
         })
     })
 </script>
+<script src="/static/js/detail.js"></script>
+<link rel="stylesheet" href="/static/css/detail.css">
 {% endblock %}

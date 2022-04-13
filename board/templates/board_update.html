@@ -2,24 +2,22 @@
 {% block title %}게시글 수정{% endblock %}
 {% block content%}
 {% load bootstrap4 %}
-<h2>게시글 수정</h2>
-<hr>
-<div class="mb-3 mt-3 clearfix">
-    <span class="float-first me-2">id: {{ pk }}</span>
-</div> 
-<form action="{% url 'Board:update' pk %}" method="POST" enctype="multipart/form-data">
+<link rel="stylesheet" href="/static/css/create.css">
+<script src="/static/js/create.js"></script>
+<form action="{% url 'Board:update' pk %}" method="POST" enctype="multipart/form-data" id="form_id">
+    <h2>게시글 수정</h2>
     {% csrf_token %}
     {% bootstrap_form form %}
     {% for img in imgs %}
     <p>현재 첨부파일</p>
-    <p id="img_name" style="display:inline-block">{{img.img_original}}</p>
-    <input type="button" id="changefile" onclick="$('#fileinput').click()" value="변경하기"><br>
+    <p id="img_name" style="display:inline-block" class="border border-1 rounded">{{img.img_original}}</p>
+    <input type="button" id="changefile" onclick="$('#fileinput').click()" value="변경하기" class="mb-4">
     <input type="file" style="display:none" id="fileinput" name="img">
     {% endfor %}
     {# 게시판 #}
-    <button type="submit" class="btn btn-outline-dark">수정완료</button>
-    <button type="button" class="btn btn-outline-dark" onclick="history.back()">이전으로</button>
-    <a class="btn btn-outline-dark" href="{% url 'Board:list' %}">목록</a>
+    <a class="btn btn-outline-dark col" href="{% url 'Board:list' %}">목록</a>
+    <button type="button" class="btn btn-outline-dark mx-4 col" onclick="history.back()">이전으로</button>
+    <button type="submit" class="btn btn-primary col">수정완료</button>
 </form>
 {% endblock content %}
 {% block script %}
@@ -27,6 +25,9 @@
     $('#fileinput').change(function(){
         filename = $(this).val().split('\\')
         $('#img_name').html(filename[filename.length-1])
+    })
+    $(document).ready(function(){
+        $("input[name='language']:checked").parent('label').addClass('label-color')
     })
 </script>
 <!-- <script>
