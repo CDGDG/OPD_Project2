@@ -31,8 +31,8 @@ class Company(models.Model):
 
 
 class CompanyFollow(models.Model):
-    company = models.ForeignKey('company.Company', on_delete=models.CASCADE,related_name='%(class)s_companyfollow_company')
-    follower = models.ForeignKey('developer.Developer',on_delete=models.CASCADE,related_name='%(class)s_companyfollow_follower')
+    company = models.ForeignKey('company.Company', on_delete=models.CASCADE,related_name='companyfollow_company')
+    follower = models.ForeignKey('developer.Developer',on_delete=models.CASCADE,related_name='companyfollow_follower')
 
     class Meta:
         db_table='opd_company_follow'
