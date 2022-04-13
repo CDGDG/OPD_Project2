@@ -38,6 +38,68 @@
                     </div>
                 </form>
                 {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-5" id="id_comment_reload">
+    <div class="col-12">
+        <div class="form-group detailDiv rounded p-4 row" id="id_comment_div">
+            <div class="bg-white detail-control">
+                <label class="px-4 d-inline-block">댓글</label>
+                <label class="noani d-inline-block w-25 text-center mt-1"><input type="checkbox" name="private" id="private"> 비공개</label>
+                <div class="position-relative" id='commentDiv'>
+                    <textarea name="comment" id="id_comment" cols="30" rows="2" style="resize:none;padding-right:10%;" class="d-block w-100 form-control"
+                    {% if not request.session.id %}disabled placeholder='로그인 후 이용하세요.'{% else %}placeholder='프로젝트에 댓글을 남겨보세요.'{% endif %}></textarea>
+                    <button class="btn btn-primary position-absolute" style="right:1%;bottom:20%;" id="create_comment_btn" title="댓글을 작성해주세요.">작성</button>
+                </div>
+                {% for comment in comments|dictsortreversed:'id' %}
+                <div class='comment-control rounded p-2 mt-2 div{{comment.pk}}'>
+                    <img class="rounded-circle border border-1" style="height:3vw;width:3vw;object-fit: contain;border-color:lightcoral !important"
+                    src="{% if comment.developer and comment.developer.pic %}{{comment.developer.pic.url}}{% elif comment.developer %}/media/user_icon.png/{% elif comment.company.pic %}{{comment.company.pic.url}}{% else %}/media/thumbnail-default.jpg{% endif %}" alt="이미지 없음">
+                    <label class="px-4 d-inline-block"><a class="text-decoration-none text-white" href="{% if comment.developer %}{% url 'Developer:info' comment.developer.pk %}{% else %}{% url 'Company:detail' comment.company.pk %}{% endif %}">{% if comment.developer %}{{comment.developer.nickname}}{% else %}{{comment.company.name}}{% endif %}</a></label>
+                    <label class="px-4 d-inline-block {% if comment.developer %}bg-primary{% else %}bg-warning{% endif %}">{% if comment.developer %}개발자{% else %}기업{% endif %}</label>
+                    <label class="px-4 d-inline-block bg-success">{{comment.regdate}}</label>
+                    {% if comment.private %}
+                        <p class="px-1">비공개 댓글입니다</p>
+                    {% else %}
+                        <p class="px-1">{{comment.contents}}</p>
+                    {% endif %}
+                    {% if request.session.who == 'developer' and comment.developer.pk == request.session.id or request.session.who == 'company' and comment.company.pk == request.session.id %}
+                    <button class="btn btn-danger mb-1 {{comment.pk}}">삭제</button>
+                    <script>
+                        $('.{{comment.pk}}').click(function(){
+                            $.ajax({
+                                url: "{% url 'Board:commentdelete' %}",
+                                type: "POST", 
+                                data: {'csrfmiddlewaretoken': $("[name=csrfmiddlewaretoken]").val(), 'pk': '{{comment.pk}}'},
+                                dataType: "json", 
+                                success: function(){
+                                    console.log("삭제성공")
+                                    $('.div{{comment.pk}}').slideUp("fast", function(){$(".div{{comment.pk}}").remove()})
+                                }
+                            })
+                        })
+                    </script>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <script src="/static/js/detail.js"></script>
+                <link rel="stylesheet" href="/static/css/detail.css">
+                <script src="/static/js/project/project_detail.js"></script>
+                <script src="/static/js/board/comment.js"></script>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
                 <label for="" class="mt-3">댓글 목록</label>
                 <!-- <p>아직 댓글이 없습니다.</p> -->
                 {% for comment in comments %}
@@ -118,7 +180,6 @@
                     <hr>
                 </div>
                 {% endfor %}
-            </div>
             <div class="mt-3">
                 <a class="btn btn-outline-dark" href='{% url "Board:list" %}'>목록</a>
                 {% if request.session.who == 'developer' and request.session.id == board.developer.pk %}
@@ -139,25 +200,24 @@
                     }
                 </script>
             </div>
-        </div>
-    </div>
-</div>
+
 <input type="hidden" value="{{csrf_token}}" id="csrf_token">
 {% endblock %}
 
 {% block script %}
 <script>
-    $(document).ready(function () {
-        $('#commentwrite_button').click(function () {
-            if ($('[name=contents]').val() == '') {
-                $('[name=contents]').focus()
-                alert('댓글을 입력해주세요')
-            } else {
-                document.forms['commentForm'].submit()
-            }
+commenturl = "{% url 'Board:commentwrite' board.pk %}"
+$(document).ready(function () {
+    $('#commentwrite_button').click(function () {
+        if ($('[name=contents]').val() == '') {
+            $('[name=contents]').focus()
+            alert('댓글을 입력해주세요')
+        } else {
+            document.forms['commentForm'].submit()
+        }
 
-        })
     })
+})
 </script>
 <script src="/static/js/detail.js"></script>
 <link rel="stylesheet" href="/static/css/detail.css">
