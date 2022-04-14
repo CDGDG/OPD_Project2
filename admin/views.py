@@ -258,7 +258,8 @@ def filedownload(request, pk):
 
 
 def language(request):
-    languages = Language.objects.all()
+    languages = Language.objects.all().order_by('language')
+    print(languages)
     return render(request, 'language.html', {'languages': languages})
 
 def languageadd(request):
