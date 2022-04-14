@@ -179,7 +179,8 @@ $(document).ready(function(){
         }else{
             $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
             $('#check_address').html('')
-            joinfrm['address'].value += " "+$('#sample6_detailAddress').val()
+            joinfrm['address_detail'].value += " "+$('#sample6_extraAddress').val()
+            console.log(joinfrm['address_detail'].value)
         }
 
         // URL 
