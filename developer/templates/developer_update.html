@@ -15,10 +15,10 @@
     {% for field in form %}
     {% comment %} 프로필 사진 {% endcomment %}
     {% if field.name == "pic" %}
-    <input type="hidden" id="pic_url" value='{{pic.url}}'>
+    <input type="hidden" id="pic_url" value='{{pic.url}}'/>
     {% bootstrap_field field %}
-    <input type="button" id="basic" class="btn btn-outline-dark formbtn mb-4" value="기본 이미지로 변경"></input>
-    <input type="hidden" value="false" name="pic_default" id="pic_default">
+    <input type="button" id="basic" class="btn btn-outline-dark formbtn mb-4" value="기본 이미지로 변경"/>
+    <input type="hidden" value="false" name="pic_default" id="pic_default"/>
     {% else %}
     {% bootstrap_field field %}
     {% endif %}
@@ -30,14 +30,15 @@
         }
     </script>
     {% endfor %}
-    <input type="button" class="btn btn-primary form-control col mt-3 py-4 formbtn" id="update" value="수정완료">
-    </form>
+    <input type="button" class="btn btn-primary form-control col mt-3 py-4 formbtn" id="update" value="수정완료"/>
     <button type="button" class="btn btn-outline-dark col-2 mt-3 py-4 mx-4 formbtn" onclick="history.back()">이전으로</button>
-    <form action="{% url 'Developer:leave' %}" method="post" name="leavefrm">
-        {% csrf_token %}
-        <input type="button" class="btn btn-outline-dark col-2 mt-3 formbtn" id="leave" value="탈퇴하기"></input>
-    </form>
-    <input type="hidden" value="{{csrf_token}}" id="csrf_token">
+    <input type="button" class="btn btn-outline-dark col-2 mt-3 formbtn" id="leave" value="탈퇴하기"/>
+    <input type="hidden" value="{{csrf_token}}" id="csrf_token"/>
+</form>
+<form action="{% url 'Developer:leave' %}" method="POST" id="leavefrm" name="leavefrm">
+    {% csrf_token %}
+    <input type="hidden" name="pk" value="{{pk}}">
+</form>
 <br><br><br>
 {% endblock content %}
 {% block script %}

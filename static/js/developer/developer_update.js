@@ -124,11 +124,9 @@ $(document).ready(function(){
     $('#leave').click(function(){
         var con = confirm("정말 탈퇴하시겠습니까?")
         if(con){
-            $('[name=leavefrm]').submit()
-            alert("탈퇴되었습니다")
+            $('[name=leavefrm]').submit();
+            alert("탈퇴되었습니다");
         }
     })
-
-
 })
 
