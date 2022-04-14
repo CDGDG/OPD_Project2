@@ -220,11 +220,12 @@ def update(request):
                     if request.FILES.get('pic'):
                         developer.pic = request.FILES.get('pic')
                         developer.pic_original = developer.pic.name
-                        request.session['pic_url'] = developer.pic.url
             if request.FILES.get('resume'): 
                 developer.resume = request.FILES.get('resume')
                 developer.resume_original = developer.resume.name
             developer.save()
+            if developer.pic:
+                request.session['pic_url'] = developer.pic.url
         return redirect(f'/developer/info/{developer.pk}/')
     else:
         if not request.session.get('id'):
