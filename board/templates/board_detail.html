@@ -22,6 +22,7 @@
             
             {% if request.session.who == 'developer' and request.session.id == board.developer.pk %}
             <div class='text-end'>
+                <a class="btn btn-primary col-1 " href='{% url "Board:list" %}'>목록</a>
                 <a class="btn btn-primary col-1 " href='{% url "Board:update" board.pk %}'>수정하기</a>
                 <a class="btn btn-danger col-1" onclick="chkDelete()">삭제하기</a>
             </div>
