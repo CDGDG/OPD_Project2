@@ -151,8 +151,13 @@ def detail(request, pk):
                 is_like = Company.objects.filter(id=id, likeproject=project).count()==1
         except Developer.DoesNotExist or Company.DoesNotExist:
             raise Http404('알 수 없는 사용자입니다.')
+
     # 댓글
     comments = ProjectComment.objects.filter(project=project, parentComment=None)
+
+    # 조회수 +1
+    project.viewcnt += 1
+    project.save()
 
     return render(request, 'project_detail.html', {'project': project, 'is_like': is_like, 'docs': docs, 'comments': comments})
 

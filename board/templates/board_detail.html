@@ -20,6 +20,14 @@
                 {% endif %}
             </div>
             
+            {% if request.session.who == 'developer' and request.session.id == board.developer.pk %}
+            <a class="btn btn-primary mb-1" href='{% url "Board:update" board.pk %}'>수정하기</a>
+            <a class="btn btn-danger" onclick="chkDelete()">삭제하기</a>
+            {% endif %}
+            <form action="{% url 'Board:delete' %}" name="delete" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="pk" value="{{board.pk}}">
+            </form>
         </div>
     </div>
 </div>
