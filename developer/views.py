@@ -155,17 +155,17 @@ def info(request,pk):
     else :
             gender = 'female'
 
-    if request.session.get('id') == pk:
+    if request.session.get('who')=='developer' and request.session.get('id') == pk:
         return render(request,'developer_info.html',{'developer':developer,'birth':birth,'gender':gender,'password':developer.password})
     else:
         follow_check = None
         if request.session.get('who') == 'developer':
-            if Follow.objects.filter(developer=request.session.get('id'),follower = pk):
+            if Follow.objects.filter(developer=request.session.get('id'),follower = pk).count()>0:
                 follow_check = True
             else:
                 follow_check = False
         elif request.session.get('who') == 'company':
-            if CompanyFollow.objects.filter(company=request.session.get('id'),follower = pk):
+            if CompanyFollow.objects.filter(company=request.session.get('id'),follower = pk).count()>0:
                 follow_check = True
             else:
                 follow_check = False
@@ -217,11 +217,12 @@ def update(request):
                     if request.FILES.get('pic'):
                         developer.pic = request.FILES.get('pic')
                         developer.pic_original = developer.pic.name
-                        request.session['pic_url'] = developer.pic.url
             if request.FILES.get('resume'): 
                 developer.resume = request.FILES.get('resume')
                 developer.resume_original = developer.resume.name
             developer.save()
+            if developer.pic:
+                request.session['pic_url'] = developer.pic.url
         return redirect(f'/developer/info/{developer.pk}/')
     else:
         if not request.session.get('id'):
@@ -232,7 +233,7 @@ def update(request):
             pic = None
         # resume, developer.resume= developer.resume, None
         form = UpdateForm(instance=developer)
-        return render(request,'developer_update.html',{'form':form,'pic':pic})
+        return render(request,'developer_update.html',{'form':form,'pic':pic, 'pk': developer.pk})
 
 def myproject(request,pk):
     if not request.session.get('id'):
@@ -331,6 +332,7 @@ def list(request):
 def leave(request):
     print("========================="+request.session.get('who')+"===================")
     pk = request.POST.get('pk')
+    print(pk)
     developer = Developer.objects.get(pk = pk)
     developer.delete()
     if request.session.get('who') == "admin":
