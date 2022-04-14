@@ -96,18 +96,6 @@ class LoginForm(forms.Form):
             
 
 class UpdateForm(forms.ModelForm):
-    password = forms.CharField(
-        error_messages={
-            'required' : '비밀번호를 입력해주세요'
-        },
-        widget=forms.PasswordInput,max_length=500,label='비밀번호 수정',required=False
-    )
-    re_password = forms.CharField(
-        error_messages={
-            'required' : '비밀번호를 입력해주세요'
-        },
-        widget=forms.PasswordInput,max_length=500,label='비밀번호 확인',required=False
-    )
 
     CHOICES = []
     for lang in Language.objects.all():
@@ -120,7 +108,7 @@ class UpdateForm(forms.ModelForm):
 
     class Meta:
         model = Developer
-        fields = ['password','re_password','language','pic','resume']
+        fields = ['language','pic','resume']
 
     def __init__(self, *args, **kwargs):
         super(UpdateForm, self).__init__(*args, **kwargs)

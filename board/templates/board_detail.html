@@ -4,7 +4,7 @@
 <div class="row mt-5">
     <div class="col-12 mt-4">
         <div class="form-group detailDiv rounded row p-4" id="form_id">
-            <h2 class="title">{{board.title}}</h2>
+            <h2 class="title">{{board.title}}({{board.language.all|join:", "}})</h2>
             <h6 class="text-white">조회수: {{board.viewcnt}} | 작성일: {{board.regdate}}</h6>
             <div class="mb-4 bg-white detail-control">
                 <label for="contents">내용</label>
@@ -22,6 +22,7 @@
             
             {% if request.session.who == 'developer' and request.session.id == board.developer.pk %}
             <div class='text-end'>
+                <a class="btn btn-primary col-1 " href='{% url "Board:list" %}'>목록</a>
                 <a class="btn btn-primary col-1 " href='{% url "Board:update" board.pk %}'>수정하기</a>
                 <a class="btn btn-danger col-1" onclick="chkDelete()">삭제하기</a>
             </div>
@@ -30,6 +31,15 @@
                 {% csrf_token %}
                 <input type="hidden" name="pk" value="{{board.pk}}">
             </form>
+            <script>
+                function chkDelete(){
+                    // 삭제 여부 확인
+                    var r = confirm('삭제 하시겠습니까?')
+                    if(r){
+                        document.forms['delete'].submit();
+                    }
+                }
+            </script>
         </div>
     </div>
 </div>
