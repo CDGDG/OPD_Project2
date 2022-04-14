@@ -236,7 +236,7 @@ def update(request):
             pic = None
         # resume, developer.resume= developer.resume, None
         form = UpdateForm(instance=developer)
-        return render(request,'developer_update.html',{'form':form,'pic':pic})
+        return render(request,'developer_update.html',{'form':form,'pic':pic, 'pk': developer.pk})
 
 def myproject(request,pk):
     if not request.session.get('id'):
@@ -335,6 +335,7 @@ def list(request):
 def leave(request):
     print("========================="+request.session.get('who')+"===================")
     pk = request.POST.get('pk')
+    print(pk)
     developer = Developer.objects.get(pk = pk)
     developer.delete()
     if request.session.get('who') == "admin":
