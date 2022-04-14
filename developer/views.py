@@ -119,19 +119,16 @@ def check_nick(request):
 def checkPassword(request):
     developer = Developer.objects.get(pk = request.session.get('id'))
     password = request.POST.get('password')
+    print(password)
     check = request.POST.get('check')
     context = {}
     # info에서 수정하기 버튼 클릭시 비밀번호 확인
-    if check == "check":
-        if password == "":
-            context['blank'] = True
-        elif not check_password(password,developer.password):
-            context['data'] = 'fail'
-    # 수정할때 비밀번호확인
-    else:
-        if password:
-            if check_password(password,developer.password):
-                context['data'] = 'fail'
+    if password == "":
+        context['blank'] = True
+    elif not check_password(password,developer.password):
+        context['data'] = 'fail'
+    elif check_password(password, developer.password):
+        context['data'] = 'success'
 
     return JsonResponse(context)
 
@@ -341,3 +338,10 @@ def leave(request):
     else:
         return logout(request)
     
+def changepassword(request):
+    developer = Developer.objects.get(pk = request.session.get('id'))
+    password = request.POST.get('password')
+    print(password)
+    developer.password = make_password(password)
+    developer.save()
+    return JsonResponse({'data': 'success'})
