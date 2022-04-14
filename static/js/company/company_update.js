@@ -31,7 +31,7 @@ $(document).ready(function(){
     })
 
     // 기본 이미지로 변경
-    $('#basic').click(function(){
+    $('#basic').click(function(){   
         $('#id_pic').change(function(e){
             readPic(e)
         }).siblings('label').css({'background-image': "url(/media/thumbnail-default.jpg/)"})

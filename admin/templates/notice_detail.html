@@ -8,7 +8,7 @@
             <h6 class="text-white">조회수: {{notice.viewcnt}} | 작성일: {{notice.regdate}}</h6>
             <div class="mb-4 bg-white detail-control">
                 <label for="contents">내용</label>
-                <p>{{notice.contents}}</p>
+                <textarea style="resize:none;" readonly class="form-control contents">{{notice.contents}}</textarea>
             </div>
             <div class="mb-4 bg-white detail-control">
                 {% if noticeimg == '' %}

@@ -32,7 +32,7 @@
             </div>
             <div class="mb-4 bg-white detail-control">
                 <label for="summary">회사 소개</label>
-                <p class="text-center">{{company.summary}}</p>
+                <textarea style="resize:none;" readonly class="form-control contents">{{company.summary}}</textarea>
             </div>
             <div class="mb-4 bg-white detail-control">
                 <label for="language">사용 언어</label>
@@ -100,6 +100,7 @@
 {% endblock %}
 
 {% block script %}
+
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=07122cd49f381e116815c93018d46ab7&libraries=services"></script>
 <script>
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
@@ -172,7 +173,6 @@
         })
     })
 </script>
-
 <script src="/static/js/detail.js"></script>
 <link rel="stylesheet" href="/static/css/detail.css">
 {% endblock  %}

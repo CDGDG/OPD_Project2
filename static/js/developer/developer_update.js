@@ -19,6 +19,7 @@ $(document).ready(function(){
     })
 
     $('#fileinput').removeClass('form-control-file').parent().addClass('form-control px-2 pb-2')
+    $('#id_resume').removeClass('form-control-file').addClass('d-block')
     
 
     $('[for=resume-clear_id],#id_resume, #resume-clear_id').addClass('noani')

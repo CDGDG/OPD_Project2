@@ -166,8 +166,11 @@ def update(request, pk):
             if request.FILES.get('thumbnail'):
                 project.thumbnail = request.FILES.get('thumbnail')
                 project.thumbnail_original = request.FILES['thumbnail'].name
+            
 
             project.save()
+            for _language in form.language:
+                project.language.add(Language.objects.get(pk=_language))
             # 문서
             docnum = request.POST.get('docnum')
             for i in range(int(docnum)):
@@ -180,12 +183,13 @@ def update(request, pk):
                     )
                     document.save()
 
-
             return redirect(f"/project/detail/{pk}/")
+        else:
+            print('project:update - form 검증 False')
     else:
         if not request.session.get('id'):
             return render(request,'no_login.html',{'next':"Project:list"})
-        print('project:update - form 검증 False')
+        
     thumbnail, project.thumbnail = project.thumbnail, None
     form = ProjectUpdateForm(instance=project)
     return render(request, 'project_update.html', {'form': form, 'thumbnail': thumbnail, 'docs': documents,'pk': pk,'project':project})
