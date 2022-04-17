@@ -22,7 +22,7 @@
                     <td onclick="location.href=`{% url 'Board:detail' board.id %}`" class="clicktd">{{ board.title }}</td>
                     <td>{{ board.language.all|join:", " }}</td>
                     <td class="clicktd" onclick="location.href = `{% url 'Developer:info' board.developer.id %}`">   
-                    <img src="{% if developer.pic %}{{developer.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{board.developer.nickname}}
+                    <img src="{% if board.developer.pic %}{{board.developer.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;"><br>{{board.developer.nickname}}
                     </td>
                     <td>{{ board.regdate|date:"Y-m-d H:i:s"}}</td>
                     <td>{{ board.viewcnt }}</td>

@@ -28,7 +28,7 @@
                         {% endif %}
                     </td>
                     <td onclick='location.href = `{% url "Developer:info" recruit.project.leader.pk %}`' class="clicktd">
-                        <img src="{% if recruit.project.leader.thumbnail %}recruit.project.leader.thumbnail.url{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:3vw;object-fit: contain;display:block;margin:0 auto;">
+                        <img src="{% if recruit.project.leader.pic %}{{recruit.project.leader.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:3vw;object-fit: contain;display:block;margin:0 auto;">
                         {{recruit.project.leader.nickname}}
                     </td>
                     <td>{{recruit.project.d_likeproject.count|add:recruit.project.c_likeproject.count}}</td>

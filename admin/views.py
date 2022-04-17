@@ -24,6 +24,8 @@ from django.core.mail import EmailMessage
 import string
 import random
 
+def end(request):
+    return render(request, 'end.html')
 
 def home(request):
     if request.method=="GET":
@@ -258,7 +260,8 @@ def filedownload(request, pk):
 
 
 def language(request):
-    languages = Language.objects.all()
+    languages = Language.objects.all().order_by('language')
+    print(languages)
     return render(request, 'language.html', {'languages': languages})
 
 def languageadd(request):

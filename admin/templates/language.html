@@ -1,18 +1,24 @@
 {% extends 'base.html' %}
 {% block title %}언어 목록{% endblock %}
 {% block content %}
-<form action="{% url 'Admin:languagedelete' %}" method="GET">
-    <input type="submit" class="btn btn-primary mt-3" value="삭제">
-    <a class="btn btn-primary mt-3" href='{% url 'Admin:languageadd' %}'>추가</a>
-    <br><br>
-    <h2 class="mb-4">언어 목록</h2>
-    <ul>
-        {% for language in languages %}
-            <li>{{ language.language }}</li>
-        {% endfor %}
-    </ul>
-    
-</form>
-<br><br><br>
-
+<div class="row mt-5">
+    <div class="col-12 mt-4">
+        <div class="form-group detailDiv rounded p-4" id="form_id">
+            <form action="{% url 'Admin:languagedelete' %}" method="GET">
+                <h2 class="title">언어 관리</h2>
+                <div class="mb-2 bg-white detail-control mt-1">
+                    {% for language in languages %}
+                    <div class="d-inline-block border border-1 rounded p-2 text-bold mb-4">{{ language.language }}</div>
+                    {% endfor %}
+                </div>
+                <div class="text-end">
+                    <input type="submit" class="col-1 btn btn-primary mt-3" value="삭제">
+                    <a class="col-1 btn btn-primary mt-3" href='{% url 'Admin:languageadd' %}'>추가</a>
+                </div>
+            </form> 
+        </div>
+    </div>
+</div>
+<script src="/static/js/detail.js"></script>
+<link rel="stylesheet" href="/static/css/detail.css">
 {% endblock  %}

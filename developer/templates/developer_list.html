@@ -50,7 +50,7 @@
                 <li class="page-item active">
                     <a class="page-link" href="#">{{ developer.number }} / {{ developer.paginator.num_pages }}</a>
                 </li>    
-                {% if companys.has_next %}
+                {% if developer.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="?p={{ developer.next_page_number }}&s={{ search }}&m={{ menu }}">다음으로</a>
                 </li>
