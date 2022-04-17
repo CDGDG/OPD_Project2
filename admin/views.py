@@ -24,6 +24,8 @@ from django.core.mail import EmailMessage
 import string
 import random
 
+def end(request):
+    return render(request, 'end.html')
 
 def home(request):
     if request.method=="GET":

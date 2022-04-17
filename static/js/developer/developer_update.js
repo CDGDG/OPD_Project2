@@ -50,52 +50,52 @@ $(document).ready(function(){
         let first = null;
         let target = "";
 
-        target = "#id_password"
-        if(password != ""){
-            $.ajax({
-                url: checkPassword_url,
-                type:"POST",
-                data : {'csrfmiddlewaretoken': $('#csrf_token').val(),'password':password,'check':check},
-                datatype:'json',
-                async: false,
-                success:function(response){
-                    if(response.data == "fail"){
-                        //updatefrm['password'].focus();
-                        $(target).siblings('label').addClass('wrongLabel')
-                        $('#check_password').html('<p style="color:red">현재 사용중인 비밀번호입니다</p>');
-                        first = first?first:target;
-                        console.log(first)
-                        //return false;
-                    }else if(!reg_pass.test(updatefrm['password'].value.trim())){
-                        //updatefrm['password'].focus();
-                        $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
-                        $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>');
-                        //return false;
-                        first = first?first:target;
+        // target = "#id_password"
+        // if(password != ""){
+        //     $.ajax({
+        //         url: checkPassword_url,
+        //         type:"POST",
+        //         data : {'csrfmiddlewaretoken': $('#csrf_token').val(),'password':password,'check':check},
+        //         datatype:'json',
+        //         async: false,
+        //         success:function(response){
+        //             if(response.data == "fail"){
+        //                 //updatefrm['password'].focus();
+        //                 $(target).siblings('label').addClass('wrongLabel')
+        //                 $('#check_password').html('<p style="color:red">현재 사용중인 비밀번호입니다</p>');
+        //                 first = first?first:target;
+        //                 console.log(first)
+        //                 //return false;
+        //             }else if(!reg_pass.test(updatefrm['password'].value.trim())){
+        //                 //updatefrm['password'].focus();
+        //                 $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
+        //                 $('#check_password').html('<p style="color:red">유효한 비밀번호가 아닙니다</p>');
+        //                 //return false;
+        //                 first = first?first:target;
                         
-                    } else{
-                        $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
-                    }
-                }
-            })
-            target="#id_re_password"
-            if(updatefrm['re_password'].value.trim()==""){
-                //updatefrm['re_password'].focus();
-            $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
-            $('#check_re_password').html('<p style="color:red">비밀번호 확인을 입력해주세요</p>');
-            //return false;
-            first = first?first:target
-        }else if(updatefrm['password'].value.trim() != updatefrm['re_password'].value.trim()){
-            //updatefrm['re_password'].focus();
-            $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
-            $('#check_re_password').html('<p style="color:red">비밀번호가 다릅니다</p>');
-            //return false;
-            first = first?first:target
-        }
-        else{
-            $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
-        }
-    }
+        //             } else{
+        //                 $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
+        //             }
+        //         }
+        //     })
+        //     target="#id_re_password"
+        //     if(updatefrm['re_password'].value.trim()==""){
+        //         //updatefrm['re_password'].focus();
+        //     $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
+        //     $('#check_re_password').html('<p style="color:red">비밀번호 확인을 입력해주세요</p>');
+        //     //return false;
+        //     first = first?first:target
+        // }else if(updatefrm['password'].value.trim() != updatefrm['re_password'].value.trim()){
+        //     //updatefrm['re_password'].focus();
+        //     $(target).addClass('is-invalid').siblings('label').addClass('wrongLabel')
+        //     $('#check_re_password').html('<p style="color:red">비밀번호가 다릅니다</p>');
+        //     //return false;
+        //     first = first?first:target
+        // }
+        // else{
+        //     $(target).removeClass('is-invalid').addClass('is-valid').siblings('label').removeClass('wrongLabel')
+        // }
+        // }
     
         
         target = "#id_language"

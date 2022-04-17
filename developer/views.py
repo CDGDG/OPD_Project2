@@ -221,6 +221,8 @@ def update(request):
                 developer.resume = request.FILES.get('resume')
                 developer.resume_original = developer.resume.name
             developer.save()
+            for _language in form.language:
+                developer.language.add(Language.objects.get(pk=_language))
             if developer.pic:
                 request.session['pic_url'] = developer.pic.url
         return redirect(f'/developer/info/{developer.pk}/')

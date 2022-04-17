@@ -174,6 +174,7 @@ def update(request, pk):
             
 
             project.save()
+            project.language.clear()
             for _language in form.language:
                 project.language.add(Language.objects.get(pk=_language))
             # 문서

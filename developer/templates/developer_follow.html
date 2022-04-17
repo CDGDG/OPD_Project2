@@ -15,7 +15,7 @@
             <tbody>
                 {% for f in follow %}
                 <tr style="height:7vw;" onclick='location.href="/developer/info/{{f.follower.id}}/"'>
-                    <td>{{f.follower}}</td>
+                    <td>{{f.follower.nickname}}</td>
                     <td>
                         <img src="{% if f.follower.pic %}{{f.follower.pic.url}}{% else %}/media/user_icon.png/{% endif %}" alt="" style="height:4vw;object-fit: contain;">
                     </td>

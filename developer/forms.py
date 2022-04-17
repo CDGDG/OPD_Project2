@@ -114,3 +114,7 @@ class UpdateForm(forms.ModelForm):
         super(UpdateForm, self).__init__(*args, **kwargs)
         language = self.instance.language
         self.initial['language'] = [lang.id for lang in language.all()]
+
+    def clean(self):
+        cleand_data = super().clean()
+        self.language = cleand_data['language']
